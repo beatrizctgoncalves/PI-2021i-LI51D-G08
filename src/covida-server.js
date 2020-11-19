@@ -1,16 +1,18 @@
-const http = require('http')
-const router = require('./router')
-const webApi = require('./covida-web-api')
-const port = 8080;
+'use strict'
 
-router.get('/games', webApi.getAllGames)
-//TODO: router.get('/games/:id', webApi.getGame)
+const PORT = 8080;
 
-const server = http.createServer(router);
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
+const db = require('./covida-db');
+const data = require('./igdb-data');
+const services = require('./covida-services');
+const webApi = webApiCreate(app, services);
 
 // listening on port 8080
-server.listen(8080, () => console.log(`Listening at http://localhost:${port}`))
+app.listen(8080, () => console.log(`Listening at http://localhost:${port}`))
 
-
-
-//https://id.twitch.tv/oauth2/token?client_id=s4fwgb8isqexk2j87n2xagqfc3hhy6&client_secret=fn8q07ysz01au8aymek0idhk0rvb4r&grant_type=client_credentials
