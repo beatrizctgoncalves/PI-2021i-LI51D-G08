@@ -4,12 +4,12 @@ function webApiCreate(app, services){
     const wa = {
         getMostPopularGames: function(req, res) {
             console.log("Most Popular Games")
-            services.getMostPopularGames(/*TODO*/)
+            services.getMostPopularGames(((err, resp) => processCallBack(err, resp, res)))
         },
 
-        getGame: function(req, res) {
+        getGameByName: function(req, res) {
             console.log("Specific Game")
-            services.getGame(/*TODO*/)
+            services.getGameByName(((err, resp) => processCallBack(err, resp, res)))
         },
 
         postGroup: function(req, res) {
@@ -49,7 +49,7 @@ function webApiCreate(app, services){
     }
 
     app.get('/games', wa.getMostPopularGames);
-    app.get('/game/:id_game', wa.getGame);
+    app.get('/game/:id_game', wa.getGameByName);
     app.post('/group', wa.postGroup);
     app.put('/group/:id_group', wa.putGroup);
     app.get('/group', wa.getAllGroups);

@@ -1,78 +1,34 @@
-module.exports = (CovidaGamesData, CovidaDB) => {
-    return {
-        getMostPopularGames: getMostPopularGames,
-        getGame: getGame,
-        postGroup: postGroup,
-        putGroup: putGroup,
-        getAllGroups: getAllGroups,
-        getGroup: getGroup,
-        putGameOnGroup: putGameOnGroup,
-        deleteGameFromGroup: deleteGameFromGroup,
-        getGameFromGroup: getGameFromGroup
-    }
- 
-    
-};
+'use strict'
 
-function getMostPopularGames(queryOrderBy, callback) {
-    rsp.json(tasks)
+const urllib = require('urllib')
+
+const LASTFM_HOST = 'https://api.igdb.com/v4/'
+const LASTFM_KEY = '79b2506be8ce86d852882e1774f1f2e8'
+const LASTFM_TOP_TRACKS = `?method=artist.gettoptracks&format=json&api_key=${LASTFM_KEY}&artist=`
+
+/**
+ * @param {String} artist Name of the band or artist.
+ * @param {function(Error, Array)} cb Callback receiving an array with tracks names or Error if not succeeded
+ */
+function getTopTracks(artist, cb) {
+    const path = LASTFM_HOST + LASTFM_TOP_TRACKS + artist
+    urllib.request(path, (err, data, res) => {
+        if(err) return cb(err)
+        const obj = JSON.parse(data)
+        cb(null, obj.toptracks.track.map(t => t.name))
+    })
 }
 
-function getTask(req, rsp) {
-    const id = req.params.id
-    const task = tasks.find(t => t.id == id)
-    if(task) {
-      return rsp.json(task)
-    }
-    sendNotFound(req, rsp)
-  }
-  
-  function deleteTask(req, rsp) {
-    const id = req.params.id
-    let newTasks = tasks.filter(t => t.id != id)
-  
-    if(newTasks.length != tasks.length) {
-      tasks = newTasks
-      return sendChangeSuccess(req, rsp, id, "deleted")
-    }
-    sendNotFound(req, rsp)
-  }
-  
-  function updateTask(req, rsp) {
-    const id = req.params.id
-    const task = tasks.find(t => t.id == id)
-    if(task) {
-      task.name = req.body.name
-      task.description = req.body.description
-      return sendChangeSuccess(req, rsp, id, "updated")
-    }
-    sendNotFound(req, rsp)
-  }
-  
-  function createTask(req, rsp) {
-    const task = { name: req.body.name, description: req.body.description}
-    const id = task.id = ++maxId;
-    //tasks.id = tasks.map(t => t.id).sort().pop()+1 // Just for fun, but extremely inefficient!!! 
-  
-    tasks.push(task)
-    return sendChangeSuccess(req, rsp, id, "created", `/${id}`)
-  }
-  
-  
-  function Error(msg, uri) {
-    this.error = msg
-    this.uri = uri
-  }
-  
-  
-  function sendNotFound(req, rsp) {
-    rsp.status(404).json(new Error("Resource not found", req.originalUrl))
-  }
-  
-  function sendChangeSuccess(req, rsp, id, changeType, urlSuffix = "") {
-    rsp.json({
-      status : `task wit id ${id} ${changeType}`,
-      uri: req.originalUrl + urlSuffix
-    })
-  }
-    
+/**
+ * @param {String} artist Artist name
+ * @param {function(Error, Array)} cb Callback receives an array of Artist objects with given name or 
+ * an Error if there is no Artist with given name.
+ */
+function searchArtist(artist, cb) {
+
+}
+
+
+module.exports = {
+    'getTopTracks': getTopTracks
+}
