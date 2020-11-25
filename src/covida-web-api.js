@@ -1,10 +1,15 @@
 'use strict'
 
-function webApiCreate(app, services){
+function webApiCreate(app, services) {
     const wa = {
         getMostPopularGames: function(req, res) {
             console.log("Most Popular Games")
-            services.getMostPopularGames(((err, resp) => processCallBack(err, resp, res)))
+            services.getMostPopularGames(processGetPopularGames);
+
+            function processGetPopularGames(err, popularGamesObj) {
+            rsp.statusCode = 200;
+            rsp.end(JSON.stringify(popularGamesObj))
+            }
         }
     }
 
@@ -13,17 +18,5 @@ function webApiCreate(app, services){
     return wa;
 }
 
-function processCallBack(err,resp,res){
-    if(err)
-      responseHandler(err.statusCode, err.body,res)
-    else
-      responseHandler(resp.statusCode,resp.body,res)
-  }
-  
-function responseHandler(statusCode, body,res){
-    res.setHeader('content-type', 'application/json');
-    res.writeHead(statusCode)
-    res.end(JSON.stringify(body));
-}
 
 module.exports = webApiCreate

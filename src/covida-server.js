@@ -8,8 +8,6 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-const db = require('./covida-db');
-const data = require('./igdb-data');
 const webApi = require('./covida-web-api');
 const services = require('./covida-services');
 webApi(app, services);
