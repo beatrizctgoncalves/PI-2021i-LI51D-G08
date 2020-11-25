@@ -1,63 +1,33 @@
 'use strict'
 
-const urllib = require('urllib')
+ const data = require('./igdb-data');
+ const db = require('./covida-db');
 
-const IGDB_HOST = 'https://api.igdb.com/v4/games'
-const IGDB_KEY = 's4fwgb8isqexk2j87n2xagqfc3hhy6'
-const IGDB_TOP_GAMES = `fields *;`
 
-var request = {
-    host = 'https://api.igdb.com/v4/games',
-    key = '5tfgildk5un7ie5tz6fzywdd1dcryr',
-    client_id = 's4fwgb8isqexk2j87n2xagqfc3hhy6'
-}
+function services(data, db){
 
-/**
- * @param {function(Error, Array)} cb Callback receiving an array with top games or Error if not succeeded
- */
-function getTopGames(cb) {
-    urllib.request(IGDB_HOST, 
-        {
-            method: 'GET',
-            headers: {
-                'Client-ID' : 's4fwgb8isqexk2j87n2xagqfc3hhy6',
-                'Key' :'5tfgildk5un7ie5tz6fzywdd1dcryr'
-            },
-            data: {
-                'top_games': 'fields *; where rating > 75;',
-            }
+    function isInvalid(id) { return !id || !Number(id) }
+
+    const theServices = {
+        getMostPopularGames : function (cb) {
+            data.getMostPopularGames(cb)
         },
-            (err, data, res) => {
-                console.log(res.status, res.headers);
-            }
-        );
-    
-}
 
-/**
- * @param {String} game Game name
- * @param {function(Error, Array)} cb Callback receives an array of Game objects with given name or 
- * an Error if there is no Game with given name.
- */
-function searchGame(game, cb) {
-    urllib.request(IGDB_HOST, 
-        {
-            method: 'GET',
-            headers: {
-                'Client-ID' : 's4fwgb8isqexk2j87n2xagqfc3hhy6',
-                'Key' :'5tfgildk5un7ie5tz6fzywdd1dcryr'
-            },
-            data: {
-                'game': 'fields *; where name = ' + game,
+        getGameByName : function (name, cb) {
+            if(!name){
+                return cb(
+                    error.create(
+                        error.ARGUMENT_ERROR,
+                        'Invalid Game name'
+                    )
+                )
             }
-        },
-            (err, data, res) => {
-                console.log(res.status, res.headers);
-            }
-        );
+            data.getGameByName(name, cb)
+        }
+    };
+    return theServices;
 }
 
 
-module.exports = {
-    'getTopTracks': getTopTracks
-}
+module.exports = services;
+
