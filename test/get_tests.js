@@ -1,5 +1,6 @@
 const request  = require('request');
 const assert = require('assert');
+const assert = require('assert');
 
 const MOCHA_TIMEOUT = 10000000;
 
