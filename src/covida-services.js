@@ -58,3 +58,6 @@ function searchGame(game, cb) {
 }
 
 
+module.exports = {
+    'getTopTracks': getTopTracks
+}

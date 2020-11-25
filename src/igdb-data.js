@@ -1,43 +1,53 @@
 'use strict'
 const error = require("./error")
 const urllib  = require('urllib ');
-const baseUrl = 'https://api.igdb.com/v4/'
-const API_KEY = 's4fwgb8isqexk2j87n2xagqfc3hhy6';
+const IGDB_HOST = 'https://api.igdb.com/v4/games'
+const IGDB_KEY = 's4fwgb8isqexk2j87n2xagqfc3hhy6'
 
-module.exports = {
-  getMostPopularGames : function (cb) {
-    const url = `${baseUrl}games?api_key=${API_KEY}`
-    requestUrl(url,cb)
-  },
 
-  getGameByName : function (name, cb) {
-    console.log('Get Game by name: ' + name);
-    const url = `${baseUrl}?api_key=${API_KEY}&query=${name}`
-    requestUrl(url,cb)
-  }
-};
-
-function requestUrl(url,cb) {
-  urllib.request(
-      url,
-      (err, res, body) => {
-        //TODO
-      }
-  )
+/**
+ * @param {function(Error, Array)} cb Callback receiving an array with top games or Error if not succeeded
+ */
+  function getTopGames(nr,cb) {
+    urllib.request(IGDB_HOST, 
+        {
+            method: 'GET',
+            headers: {
+                'Client-ID' : 's4fwgb8isqexk2j87n2xagqfc3hhy6',
+                'Key' :'5tfgildk5un7ie5tz6fzywdd1dcryr'
+            },
+            data: {
+                'top_games': 'fields *; where rating > 0;desc rating;limit {$nr};',
+            }
+        },
+            (err, data, res) => {
+                console.log(res.status, res.headers, data);
+            }
+        );
+    
 }
 
-function processRequest(cb, res, body){
-  res.body = Array.isArray(body.results) ?
-      body.results.map(game => getGameObject(game))
-      :
-      getGameObject(body);
-  cb(null, res)
-}
+model.exports = getTopGames
 
-function getGameObject (refObject) {
-  return {
-    id: refObject.id,
-    name: refObject.name,
-    summary: refObject.summary,
-  }
+/**
+ * @param {String} game Game name
+ * @param {function(Error, Array)} cb Callback receives an array of Game objects with given name or 
+ * an Error if there is no Game with given name.
+ */
+function searchGame(game, cb) {
+    urllib.request(IGDB_HOST, 
+        {
+            method: 'GET',
+            headers: {
+                'Client-ID' : 's4fwgb8isqexk2j87n2xagqfc3hhy6',
+                'Key' :'5tfgildk5un7ie5tz6fzywdd1dcryr'
+            },
+            data: {
+                'game': 'fields *; where name = ' + game,
+            }
+        },
+            (err, data, res) => {
+                console.log(res.status, res.headers);
+            }
+        );
 }
