@@ -8,4 +8,6 @@ function getMostPopularGames(processGetPopularGames) {
 }
 
 
-module.exports = getMostPopularGames;
+module.exports = {
+    getMostPopularGames : getMostPopularGames
+}

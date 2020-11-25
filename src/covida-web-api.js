@@ -1,10 +1,12 @@
 'use strict'
 
+const serv  = require('./covida-services.js');
+
 function webApiCreate(app, services) {
     const wa = {
         getMostPopularGames: function(req, res) {
             console.log("Most Popular Games")
-            services.getMostPopularGames(processGetPopularGames);
+            serv.getMostPopularGames(processGetPopularGames);
 
             function processGetPopularGames(err, popularGamesObj) {
             rsp.statusCode = 200;

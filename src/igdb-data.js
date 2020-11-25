@@ -9,17 +9,25 @@ const IGDB_KEY = 'Bearer 5tfgildk5un7ie5tz6fzywdd1dcryr'
  * @param {function(Error, Array)} cb Callback receiving an array with top games or Error if not succeeded
  */
 function getMostPopularGames(processGetPopularGames) {
-    const options = {
-        'method': 'GET',
-        'uri': `${IGDB_HOST}/games`,
-    };
-    urllib.request(IGDB_HOST, options, (err, res, body) => {
-        if (err == null) {
-            popularGamesObj = JSON.parse(body);
+    
 
-            return processGetPopularGames(null, popularGamesObj.results.map(e => [{"name": e.name,}])) // All games' names
-        }
-    });
+    urllib.request(`${IGDB_HOST}/games`,
+        {
+            'method' : 'GET',
+            'headers' : {
+                'Client-ID' : IGDB_CID,
+                'Authorization' : IGDB_KEY
+            },
+            'data' : {
+                'name' : 'Dogou Souken'
+            },
+            'dataType' : 'json'
+        },
+        (err, res, data) => {
+            console.log(data)
+            
+        })
+        console.log("FIM")
 }
 
 
