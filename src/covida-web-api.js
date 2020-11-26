@@ -2,7 +2,7 @@
 
 const serv  = require('./covida-services.js');
 
-function webApiCreate(app, services) {
+function webApiCreate(app) {
     const wa = {
         getMostPopularGames: function(req, res) {
             console.log("Most Popular Games")

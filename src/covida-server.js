@@ -9,8 +9,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 const webApi = require('./covida-web-api');
-const services = require('./covida-services');
-webApi(app, services);
+webApi(app);
 
 // listening on port 8080
 app.listen(8080, () => console.log(`Listening at http://localhost:${PORT}`))
