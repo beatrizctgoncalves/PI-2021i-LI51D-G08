@@ -8,7 +8,7 @@ function getGamesWithName(game_name, processGetGamesWithName) {
 }
 
 function createGroup(group_name, group_desc, processCreateGroup) {
-    db.getGroupByName(group_name, processGetGroup);
+    db.getGroupWithName(group_name, processGetGroup);
 
     function processGetGroup(err, groupObj) {
         if (!groupObj.length) {
@@ -28,16 +28,13 @@ function listGroups(processListGroups) {
     function cb(err,groupObj) {
         processListGroups(err,groupObj)
     }
-
-
-
 }
 
-function getGroupWithName(group_name,processGetGroupWithName) {
-    db.getGroupByName(group_name,cb);
+function getGroupWithName(group_name, processGetGroupWithName) {
+    db.getGroupWithName(group_name, cb);
 
     function cb(err, groupObj) {
-        processGetGroupWithName(err,groupObj)
+        processGetGroupWithName(err, groupObj)
     }
 }
 

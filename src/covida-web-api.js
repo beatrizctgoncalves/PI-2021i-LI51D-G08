@@ -27,7 +27,7 @@ function webApiCreate(app) {
         },
 
         listGroups: function(req,res) {
-            console.log("List groups: ")
+            console.log("List Groups")
             serv.listGroups(processListGroups);
 
             function processListGroups(err, groupListObj) {
@@ -39,12 +39,12 @@ function webApiCreate(app) {
         },
 
         getGroupWithName: function(req, res) {
-            console.log("Group Details:")
-            serv.getGroupWithName(req.params.group_name, processGroupWithName);
+            console.log("Specific Group")
+            serv.getGroupWithName(req.params.group_name, processGetGroupWithName);
 
-            function processGroupWithName(err, groupObj) {
+            function processGetGroupWithName(err, groupObj) {
                 res.statusCode = 200;
-                res.end(groupObj)                
+                res.end(JSON.stringify(groupObj))                
             } //TODO treat errors
         },
     }

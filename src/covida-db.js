@@ -13,8 +13,12 @@ function createGroup(name, desc, processCreateGroup) {
     processCreateGroup(null, console.log("Number of groups : " + Groups_Database.length))
 }
 
-function getGroupByName(name, processGetGroup) {
-    processGetGroup(null, Groups_Database.filter( group => group.name = name))
+function getGroupWithName(name, processGetGroupWithName) {
+    var group = Groups_Database.filter(e => {
+        return e.name === name
+    })
+    console.log(group)
+    return processGetGroupWithName(null, group)
 }
 
 function listGroups(processListGroups) {
@@ -24,6 +28,6 @@ function listGroups(processListGroups) {
 
 module.exports = {
     createGroup: createGroup,
-    getGroupByName: getGroupByName,
+    getGroupWithName: getGroupWithName,
     listGroups: listGroups
 }
