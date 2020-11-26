@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-const webApi = require('./covida-web-api');
+const webApi = require('./covida-web-api.js');
 webApi(app);
 
 // listening on port 8080

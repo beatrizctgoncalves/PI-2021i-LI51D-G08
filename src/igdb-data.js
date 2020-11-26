@@ -29,60 +29,6 @@ function getGamesWithName(name, processGetGamesWithName) {
     })
 }
 
-function requestServerOptions(method, path, body) {
-    if (body != null)
-        return {
-            'method': method,
-            'uri': `${IGDB_HOST}${path}`,
-            'headers': {
-                'Client-ID' : `${IGDB_CID}`,
-                'Authorization' : `Bearer ${IGDB_KEY}`
-            },
-            'body': body,
-            'json': true
-        };
-    else
-        return {
-            'method': method,
-            'uri': `${IGDB_HOST}${path}`,
-            'headers': {
-                'Client-ID' : `${IGDB_CID}`,
-                'Key' : `${IGDB_KEY}`
-            },
-            'json': true
-        }
-}
-
-function post(options, beforeOrAfter) {
-    beforeOrAfter(function (done) {
-        request.post(options, (err, res, body) => {
-            done()
-        })
-    });
-
-    refresh(beforeOrAfter)
-}
-
-function put(options, beforeOrAfter) {
-    beforeOrAfter(function (done) {
-        request.put(options, (err, res, body) => {
-            done()
-        })
-    });
-
-    refresh(beforeOrAfter)
-}
-
-function del(options, beforeOrAfter) {
-    beforeOrAfter(function (done) {
-        request.delete(options, (err, res, body) => {
-            done()
-        })
-    });
-
-    refresh(beforeOrAfter)
-}
-
 function getErrObj(code, message = "Service Unavailable") {
     switch (code) {
         case 503:
@@ -105,9 +51,5 @@ function getErrObj(code, message = "Service Unavailable") {
 
 module.exports = {
     getGamesWithName: getGamesWithName,
-    requestServerOptions: requestServerOptions,
-    post: post,
-    put: put,
-    del : del,
     getErrObj: getErrObj
 }
