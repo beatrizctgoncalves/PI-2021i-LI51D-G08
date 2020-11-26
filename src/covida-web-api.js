@@ -12,13 +12,23 @@ function webApiCreate(app) {
             rsp.statusCode = 200;
             rsp.end(JSON.stringify(popularGamesObj))
             }
+        },
+
+        getGamesWithName: function(req, res) {
+            console.log("Specific Game")
+            serv.getGamesWithName(req.params.game_name, processGetGamesWithName);
+
+            function processGetGamesWithName(err, gamesObj) {
+                rsp.statusCode = 200;
+                rsp.end(JSON.stringify(gamesObj))
+            }
         }
     }
 
     app.get('/games', wa.getMostPopularGames);
+    app.get('/games/:game_name', wa.getGamesWithName);
    
     return wa;
 }
-
 
 module.exports = webApiCreate

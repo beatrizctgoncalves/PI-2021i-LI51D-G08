@@ -4,10 +4,14 @@
  const db = require('./covida-db');
 
 function getMostPopularGames(processGetPopularGames) {
-    return data.getMostPopularGames(processGetPopularGames)
+    data.getMostPopularGames(processGetPopularGames)
 }
 
+function getGamesWithName(game_name, processGetGamesWithName) {
+    data.getGamesWithName(game_name, processGetGamesWithName)
+}
 
 module.exports = {
-    getMostPopularGames : getMostPopularGames
+    getMostPopularGames : getMostPopularGames,
+    getGamesWithName : getGamesWithName
 }
