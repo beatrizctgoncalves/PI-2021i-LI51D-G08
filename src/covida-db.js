@@ -3,7 +3,7 @@
 const Groups_Database = []
 
 function createGroup(name, desc, processCreateGroup) {
-    let group = {
+    var group = {
         name: name,
         desc: desc,
         games : []
@@ -14,10 +14,16 @@ function createGroup(name, desc, processCreateGroup) {
 }
 
 function getGroupByName(name, processGetGroup) {
-    processGetGroup(null, console.log("Ok"))
+    processGetGroup(null, Groups_Database.filter( group => group.name = name))
 }
+
+function listGroups(processListGroups) {
+    return processListGroups(null,Groups_Database)
+}
+
 
 module.exports = {
     createGroup: createGroup,
-    getGroupByName: getGroupByName
+    getGroupByName: getGroupByName,
+    listGroups: listGroups
 }

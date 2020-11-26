@@ -11,7 +11,7 @@ function createGroup(group_name, group_desc, processCreateGroup) {
     db.getGroupByName(group_name, processGetGroup);
 
     function processGetGroup(err, groupObj) {
-        if (groupObj == null) {
+        if (!groupObj.length) {
             db.createGroup(group_name, group_desc, cb);
         } else {
             errorMessageObj = {"error": "Group already exists"};
@@ -23,7 +23,27 @@ function createGroup(group_name, group_desc, processCreateGroup) {
     }
 }
 
+function listGroups(processListGroups) {
+    db.listGroups(cb)
+    function cb(err,groupObj) {
+        processListGroups(err,groupObj)
+    }
+
+
+
+}
+
+function getGroupWithName(group_name,processGetGroupWithName) {
+    db.getGroupByName(group_name,cb);
+
+    function cb(err, groupObj) {
+        processGetGroupWithName(err,groupObj)
+    }
+}
+
 module.exports = {
     getGamesWithName: getGamesWithName,
-    createGroup: createGroup
+    createGroup: createGroup,
+    listGroups:listGroups,
+    getGroupWithName:getGroupWithName
 }

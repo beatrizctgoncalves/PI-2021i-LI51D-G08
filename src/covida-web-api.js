@@ -1,5 +1,6 @@
 'use strict'
 
+const { listGroups } = require('./covida-db.js');
 const serv  = require('./covida-services.js');
 
 function webApiCreate(app) {
@@ -11,7 +12,7 @@ function webApiCreate(app) {
             function processGetGamesWithName(err, gamesObj) {
                 res.statusCode = 200;
                 res.end(gamesObj)                
-            }
+            } //TODO treat errors
         },
 
         createGroup: function(req, res) {
@@ -22,13 +23,37 @@ function webApiCreate(app) {
                 if(createdMessageObj.error) res.statusCode = 403; //Forbidden
                     else res.statusCode = 201;
                 res.end(JSON.stringify(createdMessageObj))
+            } //TODO treat errors
+        },
+
+        listGroups: function(req,res) {
+            console.log("List groups: ")
+            serv.listGroups(processListGroups);
+
+            function processListGroups(err, groupListObj) {
+                if(err == null) {
+                    res.statusCode = 200 //OK
+                } //TODO treat errors
+                res.end(JSON.stringify(groupListObj))
             }
-        }
+        },
+
+        getGroupWithName: function(req, res) {
+            console.log("Group Details:")
+            serv.getGroupWithName(req.params.group_name, processGroupWithName);
+
+            function processGroupWithName(err, groupObj) {
+                res.statusCode = 200;
+                res.end(groupObj)                
+            } //TODO treat errors
+        },
     }
 
     app.get('/games/:game_name', wa.getGamesWithName);
     app.post('/groups', wa.createGroup);
-   
+    app.get('/groups',wa.listGroups)
+    app.get('/groups/:group_name',wa.getGroupWithName)
+
     return wa;
 }
 
