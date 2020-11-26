@@ -13,7 +13,6 @@ function createGroup(name, desc, processCreateGroup) {
     processCreateGroup(null, console.log("Number of groups : " + Groups_Database.length))
 }
 
-
 function getGroupByName(name, processGetGroup) {
     processGetGroup(null, console.log("Ok"))
 }

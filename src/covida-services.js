@@ -7,7 +7,7 @@ function getGamesWithName(game_name, processGetGamesWithName) {
     data.getGamesWithName(game_name, processGetGamesWithName)
 }
 
-function createGroup(group_name, group_desc, processGetGroup) {
+function createGroup(group_name, group_desc, processCreateGroup) {
     db.getGroupByName(group_name, processGetGroup);
 
     function processGetGroup(err, groupObj) {
