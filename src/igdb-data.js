@@ -18,7 +18,7 @@ function getMostPopularGames(processGetPopularGames) {
             'Content-Type': 'text/plain',
             'Cookie': '__cfduid=d1a60445fdbc34aaa784100229f2f2d811605798257'
         },
-        body: 'fields name, follows; where follows > 800; sort follows desc;'
+        body: 'fields id, name, summary;'
     };
     urllib.request(options, function (error, res, data) {
         if (error == null) {
@@ -40,11 +40,12 @@ function getGamesWithName(name, processGetGamesWithName) {
             'Content-Type': 'text/plain',
             'Cookie': '__cfduid=d1a60445fdbc34aaa784100229f2f2d811605798257'
         },
-        body: JSON.stringify({"data":"fields name, follows;where follows > 800;sort follows desc;"})
+        data: 'fields id, name, summary;where follows > 800;sort follows desc;'
     };
-    urllib.request(`${IGDB_HOST}/games`, options, function (error, res, data) {
+    urllib.request(`${IGDB_HOST}/games`, options, function (error, data, res) {
         if (error == null) {
-            gamesDetails = JSON.parse(data)
+            console.log(data.toString())
+            gamesDetails = JSON.parse(data.toString())
             processGetGamesWithName(null, gamesDetails.results)
         }
     })
