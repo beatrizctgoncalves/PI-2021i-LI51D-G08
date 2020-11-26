@@ -1,35 +1,14 @@
 'use strict'
 
-const urllib  = require('urllib');
+const urllib  = require('urllib').create();
 const IGDB_HOST = 'https://api.igdb.com/v4'
 const IGDB_CID = 's4fwgb8isqexk2j87n2xagqfc3hhy6'
 const IGDB_KEY = 'Bearer 5tfgildk5un7ie5tz6fzywdd1dcryr'
 
 /**
  * @param {function(Error, Array)} cb Callback receiving an array with top games or Error if not succeeded
+ * TODO: Cb is missing
  */
-function getMostPopularGames(processGetPopularGames) {
-    var options = {
-        'method': 'POST',
-        'url': 'https://api.igdb.com/v4/games',
-        'headers': {
-            'Client-ID': 's4fwgb8isqexk2j87n2xagqfc3hhy6',
-            'Authorization': 'Bearer 5tfgildk5un7ie5tz6fzywdd1dcryr',
-            'Content-Type': 'text/plain',
-            'Cookie': '__cfduid=d1a60445fdbc34aaa784100229f2f2d811605798257'
-        },
-        body: 'fields id, name, summary;'
-    };
-    urllib.request(options, function (error, res, data) {
-        if (error == null) {
-            var popularGamesObj = JSON.parse(JSON.stringify(data));
-            console.log(popularGamesObj.response)
-            processGetPopularGames(null, popularGamesObj.response.map(e => [{"name": e.name}])) // All series name
-        }
-    });
-    console.log("FIM")
-}
-
 function getGamesWithName(name, processGetGamesWithName) {
     const options = {
         'method': 'POST',
@@ -40,13 +19,12 @@ function getGamesWithName(name, processGetGamesWithName) {
             'Content-Type': 'text/plain',
             'Cookie': '__cfduid=d1a60445fdbc34aaa784100229f2f2d811605798257'
         },
-        data: 'fields id, name, summary;where follows > 800;sort follows desc;'
+        data: `search "${name}"; fields name, rating, summary;`
     };
-    urllib.request(`${IGDB_HOST}/games`, options, function (error, data, res) {
+    urllib.request(`${IGDB_HOST}/games`, options, function(error, data, res) {
         if (error == null) {
-            console.log(data.toString())
-            gamesDetails = JSON.parse(data.toString())
-            processGetGamesWithName(null, gamesDetails.results)
+            var gamesDetails = data.toString()  
+            processGetGamesWithName(null, gamesDetails)
         }
     })
 }
@@ -126,7 +104,6 @@ function getErrObj(code, message = "Service Unavailable") {
 }
 
 module.exports = {
-    getMostPopularGames: getMostPopularGames,
     getGamesWithName: getGamesWithName,
     requestServerOptions: requestServerOptions,
     post: post,
