@@ -12,10 +12,10 @@ const IGDB_KEY = 'Bearer 5tfgildk5un7ie5tz6fzywdd1dcryr'
 function getGamesWithName(name, processGetGamesWithName) {
     const options = {
         'method': 'POST',
-        'url': 'https://api.igdb.com/v4/games',
+        'url': `${IGDB_HOST}/games`,
         'headers': {
-            'Client-ID': 's4fwgb8isqexk2j87n2xagqfc3hhy6',
-            'Authorization': 'Bearer 5tfgildk5un7ie5tz6fzywdd1dcryr',
+            'Client-ID': `${IGDB_CID}`,
+            'Authorization': `${IGDB_KEY}`,
             'Content-Type': 'text/plain',
             'Cookie': '__cfduid=d1a60445fdbc34aaa784100229f2f2d811605798257'
         },
@@ -23,34 +23,12 @@ function getGamesWithName(name, processGetGamesWithName) {
     };
     urllib.request(`${IGDB_HOST}/games`, options, function(error, data, res) {
         if (error == null) {
-            var gamesDetails = data.toString()  
-            console.log(res.statusCode)
+            var gamesDetails = data.toString();
             processGetGamesWithName(null, gamesDetails)
         }
     })
 }
 
-function getErrObj(code, message = "Service Unavailable") {
-    switch (code) {
-        case 503:
-            return {
-                'statusCode': 503,
-                'body': {"status": message}
-            };
-        case 409:
-            return {
-                'statusCode': 409,
-                'body': {"status": message}
-            };
-        case 404:
-            return {
-                'statusCode': 404,
-                'body': {"status": message}
-            }
-    }
-}
-
 module.exports = {
-    getGamesWithName: getGamesWithName,
-    getErrObj: getErrObj
+    getGamesWithName: getGamesWithName
 }

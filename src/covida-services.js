@@ -2,17 +2,18 @@
 
  const data = require('./igdb-data.js');
  const db = require('./covida-db.js');
- const error = require('./error'); 
-const { getErrObj } = require('./igdb-data.js');
-function getGamesWithName(game_name, cb) {
-    if(!game_name){
-        return cb(
-            error.create(
-                error.ARGUMENT_ERROR,
-                'Invalid Game name'
-        ))
-    }
+
+function getGamesWithName(game_name, processGetGamesWithName) {
     data.getGamesWithName(game_name, cb)
+
+    function cb(err, gameObj) {
+        if(gameObj === "[]") {
+            var errorMessageObj = "Bad request: the game you inserted doesnt exist.";
+            processGetGamesWithName(err, errorMessageObj)
+        } else {
+            processGetGamesWithName(err, gameObj);
+        }
+    }
 }
 
 function createGroup(group_name, group_desc, processCreateGroup) {
@@ -46,35 +47,26 @@ function getGroupWithName(group_name, processGetGroupWithName) {
     }
 }
 
-function addGameToGroup(group_name,game_name, processPutGameToGroup){
-    if(!group_name){
-        return processPutGameToGroup(
-            error.create(
-                error.ARGUMENT_ERROR, 'Please indicate a valid group name'
-            )
-        )
+function addGameToGroup(game_name, group_name, processAddGameToGroup){
+    db.getGroupWithName(group_name, processGetGroup);
+
+    function processGetGroup(err, groupObj) {
+        if (groupObj.length) {
+            db.addGameToGroup(game_name, group_name, cb);
+        } else {
+            var errorMessageObj = {"error": "Bad request: The group you inserted doesnt exist."};
+            processAddGameToGroup(err, errorMessageObj);
+        }
     }
-    if(!game_name){
-        return processPutGameToGroup(
-            error.create(
-                error.NOT_FOUND,
-                'No game was given'
-            )
-        )
+    function cb(err) {
+        processAddGameToGroup(err, "Game added successfully to the group!")
     }
-    db.addGameToGroup(game_name, group_name, cb)
-    function cb(err,groupObj){
-        processPutGameToGroup(err,getErrObj)
-    }
-    
 }
-
-
 
 module.exports = {
     getGamesWithName: getGamesWithName,
     createGroup: createGroup,
     listGroups:listGroups,
     getGroupWithName:getGroupWithName,
-    addGameToGroup : addGameToGroup
+    addGameToGroup: addGameToGroup
 }
