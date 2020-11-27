@@ -59,43 +59,48 @@ function webApiCreate(app) {
             console.log("Add Game to Group")
             serv.addGameToGroup(req.params.game_name, req.params.group_name, processAddGameToGroup)
 
-            function processAddGameToGroup(err, groupObj){
-                res.statusCode = 200;
+            function processAddGameToGroup(err, groupObj) {
+                if (groupObj.error) {
+                    res.statusCode = 400;
+                } else {
+                    res.statusCode = 200;
+                }
                 res.end(JSON.stringify(groupObj))
             }
         },
         
         editGroup: function(req,res) {
-            console.log("Editing group:")
-            serv.editGroup(req.params.group_name,req.body.name, req.body.desc,processEditGroup)
+            console.log("Editing Group")
+            serv.editGroup(req.params.group_name, req.body.name, req.body.desc, processEditGroup)
 
-            function processEditGroup(err,groupObj) {
-                if(groupObj.error) res.statusCode = 403; //Forbidden99
-                else res.statusCode = 201;
-                res.end(JSON.stringify(groupObj))
-            }
+            function processEditGroup(err, createdMessageObj) {
+                if(createdMessageObj.error) {
+                    res.statusCode = 403; //Forbidden
+                } else {
+                    res.statusCode = 201;
+                }
+                res.end(JSON.stringify(createdMessageObj))
+            } 
         },
 
         removeGame: function(req,res) {
-            console.llog("Removing a game:")
+            console.log("Removing a game:")
             serv.removeGame(req.params.group_name,req.body.game_name,processRemoveGame)
 
-            function processRemoveGame(err,gameObj) {
+            function processRemoveGame(err, gameObj) {
                 if(gameObj.error) res.statusCode = 403;
                 else res.statusCode = 201;
                 res.end(JSON.stringify(gameObj))
             }
         }
     }
-
     app.get('/games/:game_name', wa.getGamesWithName);
     app.post('/groups', wa.createGroup);
     app.get('/groups', wa.listGroups);
     app.get('/groups/:group_name', wa.getGroupWithName);
-    app.put(`/groups/:group_name/games/:game_name`, wa.addGameToGroup),
-    app.put('/groups/:group_name/edit', wa.editGroup)
-    app.put('/groups/:group_name/remove',wa.removeGame)
-
+    app.put(`/groups/:group_name/games/:game_name`, wa.addGameToGroup);
+    app.put('/groups/:group_name', wa.editGroup);
+    app.delete('/groups/:group_name/games/:game_name',wa.removeGame);
 
     return wa;
 }
