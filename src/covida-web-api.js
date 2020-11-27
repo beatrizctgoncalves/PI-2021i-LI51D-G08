@@ -70,9 +70,20 @@ function webApiCreate(app) {
             serv.editGroup(req.params.group_name,req.body.name, req.body.desc,processEditGroup)
 
             function processEditGroup(err,groupObj) {
-                if(groupObj.error) res.statusCode = 403; //Forbidden
+                if(groupObj.error) res.statusCode = 403; //Forbidden99
                 else res.statusCode = 201;
                 res.end(JSON.stringify(groupObj))
+            }
+        },
+
+        removeGame: function(req,res) {
+            console.llog("Removing a game:")
+            serv.removeGame(req.params.group_name,req.body.game_name,processRemoveGame)
+
+            function processRemoveGame(err,gameObj) {
+                if(gameObj.error) res.statusCode = 403;
+                else res.statusCode = 201;
+                res.end(JSON.stringify(gameObj))
             }
         }
     }
@@ -83,6 +94,7 @@ function webApiCreate(app) {
     app.get('/groups/:group_name', wa.getGroupWithName);
     app.put(`/groups/:group_name/games/:game_name`, wa.addGameToGroup),
     app.put('/groups/:group_name/edit', wa.editGroup)
+    app.put('/groups/:group_name/remove',wa.removeGame)
 
 
     return wa;

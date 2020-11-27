@@ -71,11 +71,19 @@ function editGroup(old_name,new_name,new_desc,processEditGroup) {
     }
 }
 
+function removeGame(group_name,game_name,processRemoveGame) {
+    db.removeGame(group_name,game_name,cb)
+
+    function cb(err,gameObj) {
+        processRemoveGame(err,gameObj)
+    }
+}
 module.exports = {
     getGamesWithName: getGamesWithName,
     createGroup: createGroup,
     listGroups:listGroups,
     getGroupWithName:getGroupWithName,
     addGameToGroup: addGameToGroup,
-    editGroup: editGroup
+    editGroup: editGroup,
+    removeGame:removeGame
 }
