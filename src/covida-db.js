@@ -25,9 +25,24 @@ function listGroups(processListGroups) {
     return processListGroups(null,Groups_Database)
 }
 
+function addGameToGroup(group_name, game_name, processPutGameToGroup){
+     var group = Groups_Database.find(match => match.group_name === group_name)
+     if(!group){
+         return processPutGameToGroup(
+             error.create(
+                 error.NOT_FOUND,
+                 'Could not find group with that name ${group_name}'
+             ))
+     }
+     
+     return processPutGameToGroup(null,group)
+     
+ }
+
 
 module.exports = {
     createGroup: createGroup,
     getGroupWithName: getGroupWithName,
     listGroups: listGroups
+   // addGameToGroup : addGameToGroup
 }
