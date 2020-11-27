@@ -3,12 +3,13 @@
  const data = require('./igdb-data.js');
  const db = require('./covida-db.js');
  const error = require('./error'); 
+const { getErrObj } = require('./igdb-data.js');
 function getGamesWithName(game_name, cb) {
     if(!game_name){
         return cb(
             error.create(
                 error.ARGUMENT_ERROR,
-                'Invalid TvShow name'
+                'Invalid Game name'
         ))
     }
     data.getGamesWithName(game_name, cb)
@@ -62,6 +63,9 @@ function addGameToGroup(group_name,game_name, processPutGameToGroup){
         )
     }
     db.addGameToGroup(game_name, group_name, cb)
+    function cb(err,groupObj){
+        processPutGameToGroup(err,getErrObj)
+    }
     
 }
 
@@ -71,5 +75,6 @@ module.exports = {
     getGamesWithName: getGamesWithName,
     createGroup: createGroup,
     listGroups:listGroups,
-    getGroupWithName:getGroupWithName
+    getGroupWithName:getGroupWithName,
+    addGameToGroup : addGameToGroup
 }

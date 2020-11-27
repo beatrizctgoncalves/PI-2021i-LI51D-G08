@@ -26,7 +26,11 @@ function listGroups(processListGroups) {
 }
 
 function addGameToGroup(group_name, game_name, processPutGameToGroup){
-     var group = Groups_Database.find(match => match.group_name === group_name)
+    console.log("group name + ", group_name)
+    console.log("game name + ", game_name)
+    //console.log("Add Game to " + group_name)
+     var group = Groups_Database.find(match => match.name === game_name)
+     console.log('$$$$$',group)
      if(!group){
          return processPutGameToGroup(
              error.create(
@@ -34,15 +38,14 @@ function addGameToGroup(group_name, game_name, processPutGameToGroup){
                  'Could not find group with that name ${group_name}'
              ))
      }
-     
+     group.games.push(group_name)
      return processPutGameToGroup(null,group)
-     
  }
 
 
 module.exports = {
     createGroup: createGroup,
     getGroupWithName: getGroupWithName,
-    listGroups: listGroups
-   // addGameToGroup : addGameToGroup
+    listGroups: listGroups,
+    addGameToGroup : addGameToGroup
 }
