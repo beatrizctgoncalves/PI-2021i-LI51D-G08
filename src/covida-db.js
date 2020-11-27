@@ -49,11 +49,19 @@ function removeGame(group_name,game_name,proccessRemoveGame) {
     return proccessRemoveGame(null,Groups_Database[group].games)
 }
 
+function getGroupDetails(group_name, processGroupDetails) {
+    console.log("Groups Details : ", group_name)
+    var group = Groups_Database.find(g => g.group_name === group)
+    console.log(group)
+    return processGroupDetails(null,group)
+}
+
 module.exports = {
     createGroup: createGroup,
     getGroupWithName: getGroupWithName,
     listGroups: listGroups,
     addGameToGroup: addGameToGroup,
     editGroup: editGroup,
-    removeGame: removeGame
+    removeGame: removeGame,
+    getGroupDetails : getGroupDetails
 }

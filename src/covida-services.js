@@ -97,6 +97,14 @@ function removeGame(group_name,game_name,processRemoveGame) {
     }
 }
 
+function getGroupDetails(group_name, processGroupDetails) {
+    db.getGroupDetails(group_name, cb)
+
+    function cb(err,groupObj) {
+        processGroupDetails(err,groupObj)
+    }
+}
+
 module.exports = {
     getGamesWithName: getGamesWithName,
     createGroup: createGroup,
@@ -104,5 +112,6 @@ module.exports = {
     getGroupWithName:getGroupWithName,
     addGameToGroup: addGameToGroup,
     editGroup: editGroup,
-    removeGame: removeGame
+    removeGame: removeGame,
+    getGroupDetails : getGroupDetails
 }

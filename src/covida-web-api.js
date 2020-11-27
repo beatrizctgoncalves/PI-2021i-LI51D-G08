@@ -92,7 +92,16 @@ function webApiCreate(app) {
                 else res.statusCode = 201;
                 res.end(JSON.stringify(gameObj))
             }
-        }
+        },
+        getGroupDetails : function(req,res){
+            console.log("Group Details")
+            serv.getGroupDetails(req.params.group_name, processGroupDetails)
+            
+            function processGroupDetails(err, groupObj) {
+                res.statusCode = 200;
+                res.end(JSON.stringify(groupObj))
+          }
+      }
     }
     app.get('/games/:game_name', wa.getGamesWithName);
     app.post('/groups', wa.createGroup);
@@ -101,6 +110,7 @@ function webApiCreate(app) {
     app.put(`/groups/:group_name/games/:game_name`, wa.addGameToGroup);
     app.put('/groups/:group_name', wa.editGroup);
     app.delete('/groups/:group_name/games/:game_name',wa.removeGame);
+    app.get('/groups/:group_name/details',wa.getGroupDetails)
 
     return wa;
 }
