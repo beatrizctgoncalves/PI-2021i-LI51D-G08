@@ -63,6 +63,17 @@ function webApiCreate(app) {
                 res.statusCode = 200;
                 res.end(JSON.stringify(groupObj))
             }
+        },
+        
+        editGroup: function(req,res) {
+            console.log("Editing group:")
+            serv.editGroup(req.params.group_name,req.body.name, req.body.desc,processEditGroup)
+
+            function processEditGroup(err,groupObj) {
+                if(groupObj.error) res.statusCode = 403; //Forbidden
+                else res.statusCode = 201;
+                res.end(JSON.stringify(groupObj))
+            }
         }
     }
 
@@ -70,7 +81,9 @@ function webApiCreate(app) {
     app.post('/groups', wa.createGroup);
     app.get('/groups', wa.listGroups);
     app.get('/groups/:group_name', wa.getGroupWithName);
-    app.put(`/groups/:group_name/games/:game_name`, wa.addGameToGroup)
+    app.put(`/groups/:group_name/games/:game_name`, wa.addGameToGroup),
+    app.put('/groups/:group_name/edit', wa.editGroup)
+
 
     return wa;
 }

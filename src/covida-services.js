@@ -63,10 +63,19 @@ function addGameToGroup(game_name, group_name, processAddGameToGroup){
     }
 }
 
+function editGroup(old_name,new_name,new_desc,processEditGroup) {
+    db.getGroupWithName(old_name,cb)
+
+    function cb(err,groupObj) {
+        processEditGroup(err,groupObj)
+    }
+}
+
 module.exports = {
     getGamesWithName: getGamesWithName,
     createGroup: createGroup,
     listGroups:listGroups,
     getGroupWithName:getGroupWithName,
-    addGameToGroup: addGameToGroup
+    addGameToGroup: addGameToGroup,
+    editGroup: editGroup
 }

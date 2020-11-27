@@ -30,10 +30,16 @@ function addGameToGroup(game_name, group_name, processAddGameToGroup){
 
     return processAddGameToGroup(null, group)
 }
+function editGroup(old_name,new_name,new_desc,processEditGroup) {
+    var old_group = Groups_Database.findIndex(g => g.name ==  old_name)
 
+    console.log("Group" + old_group)
+    return processEditGroup(null,old_group)
+}
 module.exports = {
     createGroup: createGroup,
     getGroupWithName: getGroupWithName,
     listGroups: listGroups,
-    addGameToGroup: addGameToGroup
+    addGameToGroup: addGameToGroup,
+    editGroup: editGroup
 }
