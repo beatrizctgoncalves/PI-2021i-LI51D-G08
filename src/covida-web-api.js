@@ -93,25 +93,28 @@ function webApiCreate(app) {
                 res.end(JSON.stringify(gameObj))
             }
         },
-
-        getGroupDetails : function(req,res){
-            console.log("Group Details")
-            serv.getGroupDetails(req.params.group_name, processGroupDetails)
+        //ITS FINE
+        getGamesWithRating : function(req,res) {
+            console.log("Game From Group")
+            serv.getGamesWithRating(req.params.group_name, req.params.max, req.params.min, processGetGamesWithRating)
             
-            function processGroupDetails(err, groupObj) {
-                res.statusCode = 200;
-                res.end(JSON.stringify(groupObj))
-          }
-      }
+            function processGetGamesWithRating(err, gameObj) {
+                if(gameObj.error) res.statusCode = 403;
+                else res.statusCode = 205;
+                res.end(JSON.stringify(gameObj))
+            }
+        }
     }
     app.get('/games/:game_name', wa.getGamesWithName);
+
     app.post('/groups', wa.createGroup);
     app.get('/groups', wa.listGroups);
     app.get('/groups/:group_name', wa.getGroupWithName);
-    app.put(`/groups/:group_name/games/:game_name`, wa.addGameToGroup);
     app.put('/groups/:group_name', wa.editGroup);
-    app.delete('/groups/:group_name/games/:game_name',wa.removeGame);
-    app.get('/groups/:group_name/details',wa.getGroupDetails)
+
+    app.get('/groups/:group_name/games', wa.getGamesWithRating);
+    app.put(`/groups/:group_name/games/:game_name`, wa.addGameToGroup);
+    app.delete('/groups/:group_name/games/:game_name', wa.removeGame);
 
     return wa;
 }

@@ -99,14 +99,14 @@ function removeGame(group_name, game_name, processRemoveGame) {
 
     function processGetGroupWithName(err, groupObj) {
         if (groupObj.length) {
-            db.removeGame(group_name, game_name, isGameRemoved)
+            db.removeGame(group_name, game_name, cb)
 
-            function isGameRemoved(err, gameObj) {
+            function cb(err, gameObj) {
                 if(JSON.stringify(gameObj) === "[]") {
                     var errorMessageObj = {"error": "Bad request: the game you inserted doesnt exist in this group."};
                     processRemoveGame(err, errorMessageObj)
                 } else {
-                    cb(err);
+                    processRemoveGame(err, "Game deleted successfully!");
                 }
             }
         } else {
@@ -114,17 +114,37 @@ function removeGame(group_name, game_name, processRemoveGame) {
             processRemoveGame(err, errorMessageObj);
         }
     }
-
-    function cb(err) {
-        processRemoveGame(err, "Game deleted successfully!")
-    }
 }
 
-function getGroupDetails(group_name, processGroupDetails) {
-    db.getGroupDetails(group_name, cb)
+//ITS WRONG
+function getGamesWithRating(group_name, rating_max, rating_min, processGetGamesWithRating) {
+    db.getGroupWithName(group_name, processGetGroupWithName);
 
-    function cb(err,groupObj) {
-        processGroupDetails(err,groupObj)
+    function processGetGroupWithName(err, groupObj) {
+        if (groupObj.length) {
+            db.getGamesFromGroup(group_name, rating_max, rating_min, processGetGamesFromGroup);
+
+            function processGetGamesFromGroup(err, gameObj) {
+                if(JSON.stringify(gameObj) === "[]") {
+                    var errorMessageObj = {"error": "Bad request: the group you inserted doesnt have games."};
+                    processGetGamesFromGroup(err, errorMessageObj)
+                } else {
+                    data.getGamesWithRating(gameObj, rating_max, rating_min, cb)
+
+                    function cb(err, gamesWithRatingObj) {
+                        if(JSON.stringify(gamesWithRatingObj) === "[]") {
+                            var errorMessageObj = {"error": "Bad request: the group you inserted doesnt have games between the total_ratings interval you defined."};
+                            processGetGamesWithRating(err, errorMessageObj)
+                        } else {
+                            processGetGamesWithRating(err, gamesWithRatingObj)
+                        }
+                    }
+                }
+            }
+        } else {
+            var errorMessageObj = {"error": "Bad request: The group you inserted doesnt exist."};
+            processGetGamesWithRating(err, errorMessageObj);
+        }
     }
 }
 
@@ -136,5 +156,5 @@ module.exports = {
     addGameToGroup: addGameToGroup,
     editGroup: editGroup,
     removeGame: removeGame,
-    getGroupDetails : getGroupDetails
+    getGamesWithRating : getGamesWithRating
 }

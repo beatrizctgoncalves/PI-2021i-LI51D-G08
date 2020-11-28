@@ -14,9 +14,7 @@ function createGroup(name, desc, processCreateGroup) {
 }
 
 function getGroupWithName(name, processGetGroupWithName) {
-    var group = Groups_Database.filter(e => {
-        return e.name === name
-    })
+    var group = Groups_Database.filter(g => g.name === name)
     return processGetGroupWithName(null, group)
 }
 
@@ -47,12 +45,11 @@ function removeGame(group_name, game_name, proccessRemoveGame) {
     games = games.splice(gm_idx, 1)
     return proccessRemoveGame(null, games)
 }
-
-function getGroupDetails(group_name, processGroupDetails) {
-    console.log("Groups Details : ", group_name)
-    var group = Groups_Database.find(g => g.group_name === group)
-    console.log(group)
-    return processGroupDetails(null, group)
+//IDKKKK
+function getGamesFromGroup(group_name, rating_max, rating_min, processGetGameFromGroup) {
+    var group = Groups_Database.findIndex(g => g.name === group_name)
+    var games = Groups_Database[group].games;
+    return processGetGameFromGroup(null, games)
 }
 
 module.exports = {
@@ -62,5 +59,5 @@ module.exports = {
     addGameToGroup: addGameToGroup,
     editGroup: editGroup,
     removeGame: removeGame,
-    getGroupDetails : getGroupDetails
+    getGamesFromGroup: getGamesFromGroup
 }
