@@ -45,7 +45,7 @@ function removeGame(group_name, game_name, proccessRemoveGame) {
     games = games.splice(gm_idx, 1)
     return proccessRemoveGame(null, games)
 }
-//IDKKKK
+
 function getGamesFromGroup(group_name, rating_max, rating_min, processGetGameFromGroup) {
     var group = Groups_Database.findIndex(g => g.name === group_name)
     var games = Groups_Database[group].games;

@@ -93,7 +93,7 @@ function webApiCreate(app) {
                 res.end(JSON.stringify(gameObj))
             }
         },
-        //ITS FINE
+        
         getGamesWithRating : function(req,res) {
             console.log("Game From Group")
             serv.getGamesWithRating(req.params.group_name, req.params.max, req.params.min, processGetGamesWithRating)
@@ -101,7 +101,7 @@ function webApiCreate(app) {
             function processGetGamesWithRating(err, gameObj) {
                 if(gameObj.error) res.statusCode = 403;
                 else res.statusCode = 205;
-                res.end(JSON.stringify(gameObj))
+                res.end(gameObj)
             }
         }
     }

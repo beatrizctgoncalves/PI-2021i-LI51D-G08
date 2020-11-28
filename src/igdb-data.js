@@ -23,28 +23,7 @@ function getGamesWithName(name, processGetGamesWithName) {
         }
     })
 }
-//ITS WRONG
-function getGamesWithRating(game, rating_max, rating_min, processGetGamesWithRating) {
-    const options = {
-        'method': 'POST',
-        'url': `${IGDB_HOST}/games`,
-        'headers': {
-            'Client-ID': `${IGDB_CID}`,
-            'Authorization': `${IGDB_KEY}`,
-            'Content-Type': 'text/plain'
-        },
-        data: `fields name, total_rating, summary; where total_rating > ${rating_min}; where total_rating < ${rating_max}; sort name desc;`
-    };
-    console.log()
-    urllib.request(`${IGDB_HOST}/games`, options, function(error, data, res) {
-        if (error == null) {
-            var gamesDetails = data.toString();
-            processGetGamesWithRating(null, gamesDetails)
-        }
-    })
-}
 
 module.exports = {
-    getGamesWithName: getGamesWithName,
-    getGamesWithRating: getGamesWithRating
+    getGamesWithName: getGamesWithName
 }

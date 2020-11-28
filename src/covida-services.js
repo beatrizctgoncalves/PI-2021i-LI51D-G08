@@ -34,8 +34,14 @@ function createGroup(group_name, group_desc, processCreateGroup) {
 
 function listGroups(processListGroups) {
     db.listGroups(cb)
+
     function cb(err,groupObj) {
-        processListGroups(err,groupObj)
+        if(JSON.stringify(groupObj) === "[]") {
+            var errorMessageObj = {"error": "Bad request: there are no groups on the database."};
+            processListGroups(err, errorMessageObj)
+        } else {
+            processListGroups(err, groupObj);
+        }
     }
 }
 
@@ -129,13 +135,16 @@ function getGamesWithRating(group_name, rating_max, rating_min, processGetGamesW
                     var errorMessageObj = {"error": "Bad request: the group you inserted doesnt have games."};
                     processGetGamesFromGroup(err, errorMessageObj)
                 } else {
-                    data.getGamesWithRating(gameObj, rating_max, rating_min, cb)
+                    var gameName = JSON.stringify(gameObj).replace('"', '').replace('[', '').replace(']', '').replace('"', '')
+                    data.getGamesWithName(gameName, cb)
 
                     function cb(err, gamesWithRatingObj) {
                         if(JSON.stringify(gamesWithRatingObj) === "[]") {
-                            var errorMessageObj = {"error": "Bad request: the group you inserted doesnt have games between the total_ratings interval you defined."};
+                            var errorMessageObj = "Bad request: the group you inserted doesnt have games between the total_ratings interval you defined.";
                             processGetGamesWithRating(err, errorMessageObj)
                         } else {
+                            //Falta ir buscar o total_rating
+                            console.log(gamesWithRatingObj.total_rating)
                             processGetGamesWithRating(err, gamesWithRatingObj)
                         }
                     }
