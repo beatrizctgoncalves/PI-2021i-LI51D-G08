@@ -70,7 +70,6 @@ function addGameToGroup(game_name, group_name, processAddGameToGroup){
                     var errorMessageObj = {"error": "Bad request: the game you inserted doesnt exist."};
                     processAddGameToGroup(err, errorMessageObj)
                 } else {
-                    
                     db.addGameToGroup(gameObj, group_name, cb);
                 }
             }
@@ -132,7 +131,6 @@ function getGamesWithRating(group_name, rating_max, rating_min, processGetGamesW
             db.getGamesFromGroup(group_name, rating_max, rating_min, processGetGamesFromGroup);
 
             function processGetGamesFromGroup(err, gameObj) {
-                console.log(gameObj)
                 if(JSON.stringify(gameObj) === "[]") {
                     var errorMessageObj = {"error": "Bad request: the group you inserted doesnt have games."};
                     processGetGamesFromGroup(err, errorMessageObj)

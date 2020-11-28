@@ -6,7 +6,7 @@ function createGroup(name, desc, processCreateGroup) {
     var group = {
         name: name,
         desc: desc,
-        games : []
+        games: []
     }
     Groups_Database.push(group)
     console.log("Group inserted ----> " + group.name)
@@ -23,18 +23,24 @@ function listGroups(processListGroups) {
 }
 
 function addGameToGroup(game, group_name, processAddGameToGroup){
-    var group = Groups_Database.findIndex(g => g.name === group_name)
-    Groups_Database[group].games.push(game)
+    var group = Groups_Database.findIndex(g => g.name === group_name);
+    var gameArray = {
+        id: game[0].id,
+        name: game[0].name,
+        summary: game[0].summary,
+        total_rating : game[0].total_rating
+    }
+    Groups_Database[group].games.push(gameArray);
 
     return processAddGameToGroup(null, group)
 }
 
 function editGroup(old_name, new_name, new_desc,processEditGroup) {
-    var old_group = Groups_Database.findIndex(g => g.name ==  old_name)
+    var old_group = Groups_Database.findIndex(g => g.name === old_name)
     Groups_Database[old_group].name = new_name;
     Groups_Database[old_group].desc = new_desc;
 
-    return processEditGroup(null,old_group)
+    return processEditGroup(null, old_group)
 }
 
 function removeGame(group_name, game_name, proccessRemoveGame) {
@@ -49,7 +55,10 @@ function removeGame(group_name, game_name, proccessRemoveGame) {
 function getGamesFromGroup(group_name, rating_max, rating_min, processGetGameFromGroup) {
     var group = Groups_Database.findIndex(g => g.name === group_name)
     var games = Groups_Database[group].games;
-    var games_within_rating = games.filter(game => game.total_rating > rating_min && game.total_rating < rating_max)
+    
+    var games_within_rating = games.filter(g => g.total_rating >= rating_min && g.total_rating <= rating_max)
+    console.log(games_within_rating)
+
     return processGetGameFromGroup(null, games_within_rating)
 }
 
