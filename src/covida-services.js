@@ -43,7 +43,12 @@ function getGroupWithName(group_name, processGetGroupWithName) {
     db.getGroupWithName(group_name, cb);
 
     function cb(err, groupObj) {
-        processGetGroupWithName(err, groupObj)
+        if(JSON.stringify(groupObj) === "[]") {
+            var errorMessageObj = {"error": "Bad request: the group you inserted doesnt exist."};
+            processGetGroupWithName(err, errorMessageObj)
+        } else {
+            processGetGroupWithName(err, groupObj);
+        }
     }
 }
 
@@ -89,11 +94,29 @@ function editGroup(old_name, new_name, new_desc, processEditGroup) {
     }
 }
 
-function removeGame(group_name,game_name,processRemoveGame) {
-    db.removeGame(group_name,game_name,cb)
+function removeGame(group_name, game_name, processRemoveGame) {
+    db.getGroupWithName(group_name, processGetGroupWithName);
 
-    function cb(err,gameObj) {
-        processRemoveGame(err,gameObj)
+    function processGetGroupWithName(err, groupObj) {
+        if (groupObj.length) {
+            db.removeGame(group_name, game_name, isGameRemoved)
+
+            function isGameRemoved(err, gameObj) {
+                if(JSON.stringify(gameObj) === "[]") {
+                    var errorMessageObj = {"error": "Bad request: the game you inserted doesnt exist in this group."};
+                    processRemoveGame(err, errorMessageObj)
+                } else {
+                    cb(err);
+                }
+            }
+        } else {
+            var errorMessageObj = {"error": "Bad request: The group you inserted doesnt exist."};
+            processRemoveGame(err, errorMessageObj);
+        }
+    }
+
+    function cb(err) {
+        processRemoveGame(err, "Game deleted successfully!")
     }
 }
 

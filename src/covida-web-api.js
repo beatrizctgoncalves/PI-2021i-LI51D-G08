@@ -70,7 +70,7 @@ function webApiCreate(app) {
         },
         
         editGroup: function(req,res) {
-            console.log("Editing Group")
+            console.log("Edit Group")
             serv.editGroup(req.params.group_name, req.body.name, req.body.desc, processEditGroup)
 
             function processEditGroup(err, createdMessageObj) {
@@ -84,15 +84,16 @@ function webApiCreate(app) {
         },
 
         removeGame: function(req,res) {
-            console.log("Removing a game:")
+            console.log("Remove Game")
             serv.removeGame(req.params.group_name,req.body.game_name,processRemoveGame)
 
             function processRemoveGame(err, gameObj) {
                 if(gameObj.error) res.statusCode = 403;
-                else res.statusCode = 201;
+                else res.statusCode = 205;
                 res.end(JSON.stringify(gameObj))
             }
         },
+
         getGroupDetails : function(req,res){
             console.log("Group Details")
             serv.getGroupDetails(req.params.group_name, processGroupDetails)

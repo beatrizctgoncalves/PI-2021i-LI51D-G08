@@ -39,21 +39,20 @@ function editGroup(old_name, new_name, new_desc,processEditGroup) {
     return processEditGroup(null,old_group)
 }
 
-function removeGame(group_name,game_name,proccessRemoveGame) {
+function removeGame(group_name, game_name, proccessRemoveGame) {
     var group = Groups_Database.findIndex(g => g.name === group_name)
     var games = Groups_Database[group].games
     var gm_idx = games.findIndex(game => game.name === game_name) 
     
-    Groups_Database[games].games = games.splice(gm_idx,1)
-
-    return proccessRemoveGame(null,Groups_Database[group].games)
+    games = games.splice(gm_idx, 1)
+    return proccessRemoveGame(null, games)
 }
 
 function getGroupDetails(group_name, processGroupDetails) {
     console.log("Groups Details : ", group_name)
     var group = Groups_Database.find(g => g.group_name === group)
     console.log(group)
-    return processGroupDetails(null,group)
+    return processGroupDetails(null, group)
 }
 
 module.exports = {
