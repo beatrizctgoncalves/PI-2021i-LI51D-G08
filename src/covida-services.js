@@ -70,7 +70,8 @@ function addGameToGroup(game_name, group_name, processAddGameToGroup){
                     var errorMessageObj = {"error": "Bad request: the game you inserted doesnt exist."};
                     processAddGameToGroup(err, errorMessageObj)
                 } else {
-                    db.addGameToGroup(game_name, group_name, cb);
+                    
+                    db.addGameToGroup(gameObj, group_name, cb);
                 }
             }
         } else {
@@ -131,23 +132,12 @@ function getGamesWithRating(group_name, rating_max, rating_min, processGetGamesW
             db.getGamesFromGroup(group_name, rating_max, rating_min, processGetGamesFromGroup);
 
             function processGetGamesFromGroup(err, gameObj) {
+                console.log(gameObj)
                 if(JSON.stringify(gameObj) === "[]") {
                     var errorMessageObj = {"error": "Bad request: the group you inserted doesnt have games."};
                     processGetGamesFromGroup(err, errorMessageObj)
                 } else {
-                    var gameName = JSON.stringify(gameObj).replace('"', '').replace('[', '').replace(']', '').replace('"', '')
-                    data.getGamesWithName(gameName, cb)
-
-                    function cb(err, gamesWithRatingObj) {
-                        if(JSON.stringify(gamesWithRatingObj) === "[]") {
-                            var errorMessageObj = "Bad request: the group you inserted doesnt have games between the total_ratings interval you defined.";
-                            processGetGamesWithRating(err, errorMessageObj)
-                        } else {
-                            //Falta ir buscar o total_rating
-                            console.log(gamesWithRatingObj.total_rating)
-                            processGetGamesWithRating(err, gamesWithRatingObj)
-                        }
-                    }
+                    processGetGamesWithRating(err,JSON.stringify(gameObj))
                 }
             }
         } else {

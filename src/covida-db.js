@@ -22,9 +22,9 @@ function listGroups(processListGroups) {
     return processListGroups(null,Groups_Database)
 }
 
-function addGameToGroup(game_name, group_name, processAddGameToGroup){
+function addGameToGroup(game, group_name, processAddGameToGroup){
     var group = Groups_Database.findIndex(g => g.name === group_name)
-    Groups_Database[group].games.push(game_name)
+    Groups_Database[group].games.push(game)
 
     return processAddGameToGroup(null, group)
 }
@@ -49,7 +49,8 @@ function removeGame(group_name, game_name, proccessRemoveGame) {
 function getGamesFromGroup(group_name, rating_max, rating_min, processGetGameFromGroup) {
     var group = Groups_Database.findIndex(g => g.name === group_name)
     var games = Groups_Database[group].games;
-    return processGetGameFromGroup(null, games)
+    var games_within_rating = games.filter(game => game.total_rating > rating_min && game.total_rating < rating_max)
+    return processGetGameFromGroup(null, games_within_rating)
 }
 
 module.exports = {

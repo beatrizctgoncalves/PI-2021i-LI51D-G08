@@ -57,8 +57,9 @@ function webApiCreate(app) {
 
         addGameToGroup : function(req,res) {
             console.log("Add Game to Group")
-            serv.addGameToGroup(req.params.game_name, req.params.group_name, processAddGameToGroup)
-
+            
+            serv.addGameToGroup(req.params.game_name , req.params.group_name, processAddGameToGroup)
+           
             function processAddGameToGroup(err, groupObj) {
                 if (groupObj.error) {
                     res.statusCode = 400;
