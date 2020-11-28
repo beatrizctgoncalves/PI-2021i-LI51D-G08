@@ -55,9 +55,8 @@ function removeGame(group_name, game_name, proccessRemoveGame) {
 function getGamesFromGroup(group_name, rating_max, rating_min, processGetGameFromGroup) {
     var group = Groups_Database.findIndex(g => g.name === group_name)
     var games = Groups_Database[group].games;
-    
-    var games_within_rating = games.filter(g => g.total_rating >= rating_min && g.total_rating <= rating_max)
-    console.log(games_within_rating)
+    console.log(games)
+    var games_within_rating = games.filter(g => g.total_rating >= rating_min && g.total_rating <= rating_max).map((game) => game.name)
 
     return processGetGameFromGroup(null, games_within_rating)
 }

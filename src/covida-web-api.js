@@ -113,7 +113,7 @@ function webApiCreate(app) {
     app.get('/groups/:group_name', wa.getGroupWithName);
     app.put('/groups/:group_name', wa.editGroup);
 
-    app.get('/groups/:group_name/games', wa.getGamesWithRating);
+    app.get('/groups/:group_name/:max/:min', wa.getGamesWithRating);
     app.put(`/groups/:group_name/games/:game_name`, wa.addGameToGroup);
     app.delete('/groups/:group_name/games/:game_name', wa.removeGame);
 
