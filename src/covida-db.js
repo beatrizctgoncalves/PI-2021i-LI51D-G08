@@ -52,13 +52,15 @@ function removeGame(group_name, game_name, proccessRemoveGame) {
     return proccessRemoveGame(null, games)
 }
 
-function getGamesFromGroup(group_name, rating_max, rating_min, processGetGameFromGroup) {
+function getRatingsFromGames(group_name, max, min, processGetRatingsFromGames) {
     var group = Groups_Database.findIndex(g => g.name === group_name)
     var games = Groups_Database[group].games;
-    console.log(games)
-    var games_within_rating = games.filter(g => g.total_rating >= rating_min && g.total_rating <= rating_max).map((game) => game.name)
+    
+    var games_within_rating = games.filter(g => g.total_rating >= min && g.total_rating <= max)
+    console.log(games.total_rating)
+    console.log(games_within_rating)
 
-    return processGetGameFromGroup(null, games_within_rating)
+    return processGetRatingsFromGames(null, games_within_rating)
 }
 
 module.exports = {
@@ -68,5 +70,5 @@ module.exports = {
     addGameToGroup: addGameToGroup,
     editGroup: editGroup,
     removeGame: removeGame,
-    getGamesFromGroup: getGamesFromGroup
+    getRatingsFromGames: getRatingsFromGames
 }

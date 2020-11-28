@@ -123,24 +123,29 @@ function removeGame(group_name, game_name, processRemoveGame) {
 }
 
 //ITS WRONG
-function getGamesWithRating(group_name, rating_max, rating_min, processGetGamesWithRating) {
+function getRatingsFromGames(group_name, max, min, processGetRatingsFromGames) {
     db.getGroupWithName(group_name, processGetGroupWithName);
 
     function processGetGroupWithName(err, groupObj) {
         if (groupObj.length) {
-            db.getGamesFromGroup(group_name, rating_max, rating_min, processGetGamesFromGroup);
+            if(min >=0 && max <= 100) {
+                db.getRatingsFromGames(group_name, max, min, cb);
 
-            function processGetGamesFromGroup(err, gameObj) {
-                if(JSON.stringify(gameObj) === "[]") {
-                    var errorMessageObj = {"error": "Bad request: the group you inserted doesnt have games."};
-                    processGetGamesFromGroup(err, errorMessageObj)
-                } else {
-                    processGetGamesWithRating(err,JSON.stringify(gameObj))
+                function cb(err, gameObj) {
+                    if(JSON.stringify(gameObj) === "[]") {
+                        var errorMessageObj = {"error": "Bad request: the group you inserted doesnt have games."};
+                        processGetRatingsFromGames(err, errorMessageObj)
+                    } else {
+                        processGetRatingsFromGames(err,JSON.stringify(gameObj))
+                    }
                 }
+            } else {
+                let errormessageObj= {"error" :" Interval is not within a possible range"}
+                processGetRatingsFromGames(null, errormessageObj)
             }
         } else {
             var errorMessageObj = {"error": "Bad request: The group you inserted doesnt exist."};
-            processGetGamesWithRating(err, errorMessageObj);
+            processGetRatingsFromGames(err, errorMessageObj);
         }
     }
 }
@@ -153,5 +158,5 @@ module.exports = {
     addGameToGroup: addGameToGroup,
     editGroup: editGroup,
     removeGame: removeGame,
-    getGamesWithRating : getGamesWithRating
+    getRatingsFromGames: getRatingsFromGames
 }

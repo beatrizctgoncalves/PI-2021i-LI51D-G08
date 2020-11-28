@@ -95,11 +95,14 @@ function webApiCreate(app) {
             }
         },
         
-        getGamesWithRating : function(req,res) {
+        getRatingsFromGames : function(req,res) {
             console.log("Game From Group")
-            serv.getGamesWithRating(req.params.group_name, req.params.max, req.params.min, processGetGamesWithRating)
+            console.log(req.params.max)
+            console.log(req.params.min)
+
+            serv.getRatingsFromGames(req.params.group_name, req.params.max, req.params.min, processGetRatingsFromGames)
             
-            function processGetGamesWithRating(err, gameObj) {
+            function processGetRatingsFromGames(err, gameObj) {
                 if(gameObj.error) res.statusCode = 403;
                 else res.statusCode = 205;
                 res.end(gameObj)
@@ -113,7 +116,7 @@ function webApiCreate(app) {
     app.get('/groups/:group_name', wa.getGroupWithName);
     app.put('/groups/:group_name', wa.editGroup);
 
-    app.get('/groups/:group_name/:max/:min', wa.getGamesWithRating);
+    app.get('/groups/:group_name/games/:min&:max', wa.getRatingsFromGames);
     app.put(`/groups/:group_name/games/:game_name`, wa.addGameToGroup);
     app.delete('/groups/:group_name/games/:game_name', wa.removeGame);
 
