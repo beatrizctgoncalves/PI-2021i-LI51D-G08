@@ -105,7 +105,7 @@ function getRatingsFromGames(group_name, max, min, processGetRatingsFromGames) {
                         var errorMessageObj = {"error": "The group you inserted doesnt have games."};
                         processGetRatingsFromGames(err, errorMessageObj)
                     } else {
-                        processGetRatingsFromGames(err,JSON.stringify(gameObj))
+                        processGetRatingsFromGames(err, gameObj)
                     }
                 }
             } else {

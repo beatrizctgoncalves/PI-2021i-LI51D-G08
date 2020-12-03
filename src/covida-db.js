@@ -33,7 +33,7 @@ function addGameToGroup(game, group_name, processAddGameToGroup){
     }
     Groups_Database[group].games.push(gameArray);
 
-    return processAddGameToGroup(null, group)
+    processAddGameToGroup(null, group)
 }
 
 function getRatingsFromGames(group_name, max, min, processGetRatingsFromGames) {
