@@ -19,7 +19,7 @@ function getGamesWithName(name, processGetGamesWithName) { //Most of the request
     };
     urllib.request(`${IGDB_HOST}`, options, function(error, data, res) {
         if (error == null) {
-            processGetGamesWithName(null, JSON.parse(data.toString()))
+            processGetGamesWithName(null, JSON.parse(data.toString())) //Parses a JSON string, constructing the JavaScript value or object described by the string
         }
     })
 }

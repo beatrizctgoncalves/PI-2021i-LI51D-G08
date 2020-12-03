@@ -25,6 +25,8 @@ function listGroups(processListGroups) {
 
 function addGameToGroup(game, group_name, processAddGameToGroup){
     var group = Groups_Database.findIndex(g => g.name === group_name);
+    //Put each object of game separately because then we have just one object in games that have all of the information
+    //If we didnt do this, games[] would have an object per game inserted
     var gameArray = {
         id: game[0].id,
         name: game[0].name,

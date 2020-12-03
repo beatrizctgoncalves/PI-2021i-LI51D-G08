@@ -42,13 +42,14 @@ function removeGame(req, res) { //Implementation of the route to delete a specif
     serv.removeGame(req.params.group_name, req.body.game_name, (err, groupObj) => processCb(err, groupObj, res))
 }
 
+//Process a callback
 function processCb(err, obj, res) {
     if(obj.error) {
         res.statusCode = 404; //Not Found
     } else {
-        res.statusCode = 200 //OK
+        res.statusCode = 200; //OK
     }
-    res.json(obj)
+    res.json(obj) //send the response in json
 }
 
 module.exports = {
