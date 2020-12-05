@@ -200,12 +200,12 @@ function editGroup(old_name, new_name, new_desc, processEditGroup) {
 }
 
 //Implementation of the route to delete a specific game which accesses to the database
-function removeGameById(group_name, game_name, processRemoveGameById) {
+function removeGameById(group_name, game_id, processRemoveGameById) {
     db.getGroupByName(group_name, processGetGroupByName);
 
     function processGetGroupByName(statusCode, groupObj) {
         if (groupObj.length) {
-            db.removeGameById(group_name, game_name, cb)
+            db.removeGameById(group_name, game_id, cb)
 
             function cb(statusCode, gameObj) {
                 if(JSON.stringify(gameObj) === "[]") {

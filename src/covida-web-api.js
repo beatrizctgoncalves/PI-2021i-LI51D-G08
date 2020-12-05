@@ -49,7 +49,7 @@ function editGroup(req, res) { //Implementation of the route to update a specifi
 
 function removeGameById(req, res) { //Implementation of the route to delete a specific game from a group
     console.log("Remove Game By ID")
-    serv.removeGameById(req.params.group_name, req.body.game_name, (groupObj, statusCode) => processCb(groupObj, statusCode, res))
+    serv.removeGameById(req.params.group_name, req.body.game_id, (groupObj, statusCode) => processCb(groupObj, statusCode, res))
 }
 
 //Process a callback

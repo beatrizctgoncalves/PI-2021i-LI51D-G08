@@ -23,5 +23,5 @@ app.put('/groups/:group_name', webApi.editGroup); //Update a specific group
 app.get('/groups/:group_name/games/:min&:max', webApi.getRatingsFromGames); //Get a game between the given interval of values
 app.put(`/groups/:group_name/games/name/:game_name`, webApi.addGameByNameToGroup); //Add a specific game by name to a group
 app.put(`/groups/:group_name/games/id/:game_id`, webApi.addGameByIdToGroup); //Add a specific game by id to a group
-app.delete('/groups/:group_name/games/:game_name', webApi.removeGameById); //Remove a specific game by id from a group
+app.delete('/groups/:group_name/games/:game_id', webApi.removeGameById); //Remove a specific game by id from a group
 
