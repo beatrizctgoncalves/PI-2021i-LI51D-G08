@@ -5,34 +5,54 @@
 
  //All methods have a callback so the access to the api can be asynchronous
 
- //Implementation of the route to get a specific game which accesses to the api
-function getGamesWithName(game_name, processGetGamesWithName) {
-    data.getGamesWithName(game_name, cb)
+ //Implementation of the route to get a specific game by name which accesses to the api
+function getGamesByName(game_name, processGetGamesByName) {
+    data.getGamesByName(game_name, cb)
 
-    function cb(err, gameObj) {
+    function cb(statusCode, gameObj) {
         if(gameObj === "[]") {
-            var errorMessageObj = "The game you inserted doesnt exist.";
-            processGetGamesWithName(err, errorMessageObj)
+            statusCode = 404
+            var errorMessageObj = "The game you inserted doesnt exist. Please insert a valid Name!";
+            processGetGamesByName(statusCode, errorMessageObj);
         } else {
-            processGetGamesWithName(err, gameObj);
+            statusCode = 200
+            processGetGamesByName(statusCode, gameObj);
         }
     }
 }
 
+//Implementation of the route to get a specific game by id which accesses to the api
+function getGamesById(game_id, processGetGamesById) {
+    data.getGamesById(game_id, cb);
+
+    function cb(statusCode, gameObj) {
+        if(JSON.stringify(gameObj) === "[]") {
+            statusCode = 404
+            var errorMessageObj = "The game you inserted doesnt exist. Please insert a valid ID!";
+            processGetGamesById(statusCode, errorMessageObj);
+        } else {
+            statusCode = 200
+            processGetGamesById(statusCode, gameObj)
+        }
+    }        
+}
+
 //Implementation of the route to create a group which accesses to the database
 function createGroup(group_name, group_desc, processCreateGroup) {
-    db.getGroupWithName(group_name, processGetGroup);
+    db.getGroupByName(group_name, processGetGroup);
 
-    function processGetGroup(err, groupObj) {
+    function processGetGroup(statusCode, groupObj) {
         if (!groupObj.length) {
             db.createGroup(group_name, group_desc, cb);
         } else {
+            statusCode = 404;
             var errorMessageObj = {"error": "Group already exists"};
-            processCreateGroup(err, errorMessageObj);
+            processCreateGroup(statusCode, errorMessageObj);
         }
     }
-    function cb(err) {
-        processCreateGroup(err, "Group created successfully");
+    function cb(statusCode) {
+        statusCode = 201
+        processCreateGroup(statusCode, "Group created successfully");
     }
 }
 
@@ -40,134 +60,182 @@ function createGroup(group_name, group_desc, processCreateGroup) {
 function listGroups(processListGroups) {
     db.listGroups(cb)
 
-    function cb(err,groupObj) {
+    function cb(statusCode, groupObj) {
         if(JSON.stringify(groupObj) === "[]") {
+            statusCode = 404;
             var errorMessageObj = {"error": "There are no groups on the database."};
-            processListGroups(err, errorMessageObj)
+            processListGroups(statusCode, errorMessageObj);
         } else {
-            processListGroups(err, groupObj);
+            statusCode = 200;
+            processListGroups(statusCode, groupObj);
         }
     }
 }
 
 //Implementation of the route to get a specific group which accesses to the database
-function getGroupWithName(group_name, processGetGroupWithName) {
-    db.getGroupWithName(group_name, cb);
+function getGroupByName(group_name, processGetGroupByName) {
+    db.getGroupByName(group_name, cb);
 
-    function cb(err, groupObj) {
+    function cb(statusCode, groupObj) {
         if(JSON.stringify(groupObj) === "[]") {
+            statusCode = 404;
             var errorMessageObj = {"error": "The group you inserted doesnt exist."};
-            processGetGroupWithName(err, errorMessageObj)
+            processGetGroupByName(statusCode, errorMessageObj)
         } else {
-            processGetGroupWithName(err, groupObj);
+            statusCode = 200;
+            processGetGroupByName(statusCode, groupObj);
         }
     }
 }
 
-//Implementation of the route to add a game to a specific group which accesses to the database
-function addGameToGroup(game_name, group_name, processAddGameToGroup){
-    db.getGroupWithName(group_name, processGetGroupWithName);
+//Implementation of the route to add a game by name to a specific group which accesses to the database
+function addGameByNameToGroup(game_name, group_name, processAddGameByNameToGroup){
+    db.getGroupByName(group_name, processGetGroupByName);
 
-    function processGetGroupWithName(err, groupObj) {
+    function processGetGroupByName(statusCode, groupObj) {
         if (groupObj.length) {
-            data.getGamesWithName(game_name, processGetGamesWithName)
+            data.getGamesByName(game_name, processGetGamesByName)
 
-            function processGetGamesWithName(err, gameObj) {
+            function processGetGamesByName(statusCode, gameObj) {
                 if(gameObj === "[]") {
+                    statusCode = 404;
                     var errorMessageObj = {"error": "The game you inserted doesnt exist."};
-                    processAddGameToGroup(err, errorMessageObj)
+                    processAddGameByNameToGroup(statusCode, errorMessageObj)
                 } else {
                     db.addGameToGroup(gameObj, group_name, cb);
                 }
             }
         } else {
+            statusCode = 404;
             var errorMessageObj = {"error": "The group you inserted doesnt exist."};
-            processAddGameToGroup(err, errorMessageObj);
+            processAddGameByNameToGroup(statusCode, errorMessageObj);
         }
     }
 
-    function cb(err) {
-        processAddGameToGroup(err, "Game added successfully to the group!")
+    function cb(statusCode) {
+        statusCode = 200
+        processAddGameByNameToGroup(statusCode, "Game added successfully to the group!")
+    }
+}
+
+//Implementation of the route to add a game by name to a specific group which accesses to the database
+function addGameByIdToGroup(game_id, group_name, processAddGameByIdToGroup){
+    db.getGroupByName(group_name, processGetGroupByName);
+
+    function processGetGroupByName(statusCode, groupObj) {
+        if (groupObj.length) {
+            data.getGamesById(game_id, processGetGamesById)
+
+            function processGetGamesById(statusCode, gameObj) {
+                if(gameObj === "[]") {
+                    statusCode = 404;
+                    var errorMessageObj = {"error": "The game you inserted doesnt exist."};
+                    processAddGameByIdToGroup(statusCode, errorMessageObj)
+                } else {
+                    db.addGameToGroup(gameObj, group_name, cb);
+                }
+            }
+        } else {
+            statusCode = 404;
+            var errorMessageObj = {"error": "The group you inserted doesnt exist."};
+            processAddGameByIdToGroup(statusCode, errorMessageObj);
+        }
+    }
+
+    function cb(statusCode) {
+        statusCode = 200
+        processAddGameByIdToGroup(statusCode, "Game added successfully to the group!")
     }
 }
 
 //Implementation of the route to get a game between the given interval of values which accesses to both database and api
 function getRatingsFromGames(group_name, max, min, processGetRatingsFromGames) {
-    db.getGroupWithName(group_name, processGetGroupWithName);
+    db.getGroupByName(group_name, processGetGroupByName);
 
-    function processGetGroupWithName(err, groupObj) {
+    function processGetGroupByName(statusCode, groupObj) {
         if (groupObj.length) {
             if(min >=0 && max <= 100) {
                 db.getRatingsFromGames(group_name, max, min, cb);
 
-                function cb(err, gameObj) {
+                function cb(statusCode, gameObj) {
                     if(JSON.stringify(gameObj) === "[]") {
+                        statusCode = 404
                         var errorMessageObj = {"error": "The group you inserted doesnt have games."};
-                        processGetRatingsFromGames(err, errorMessageObj)
+                        processGetRatingsFromGames(statusCode, errorMessageObj)
                     } else {
-                        processGetRatingsFromGames(err, gameObj)
+                        statusCode = 200
+                        processGetRatingsFromGames(statusCode, gameObj)
                     }
                 }
             } else {
+                statusCode = 404
                 let errormessageObj= {"error" :"Interval is not within a possible range"}
-                processGetRatingsFromGames(null, errormessageObj)
+                processGetRatingsFromGames(statusCode, errormessageObj)
             }
         } else {
+            statusCode = 404
             var errorMessageObj = {"error": "The group you inserted doesnt exist."};
-            processGetRatingsFromGames(err, errorMessageObj);
+            processGetRatingsFromGames(statusCode, errorMessageObj);
         }
     }
 }
 
 //Implementation of the route to update a specific group which accesses to the database
 function editGroup(old_name, new_name, new_desc, processEditGroup) {
-    db.getGroupWithName(old_name, processGetGroupWithName);
+    db.getGroupByName(old_name, processGetGroupWithName);
 
-    function processGetGroupWithName(err, groupObj) {
+    function processGetGroupWithName(statusCode, groupObj) {
         if (groupObj.length) {
             db.editGroup(old_name, new_name, new_desc, cb);
         } else {
+            statusCode = 404
             var errorMessageObj = {"error": "The group you inserted doesnt exist."};
-            processEditGroup(err, errorMessageObj);
+            processEditGroup(statusCode, errorMessageObj);
         }
     }
-    function cb(err) {
-        processEditGroup(err, "Group edited successfully!")
+    function cb(statusCode) {
+        statusCode = 200
+        processEditGroup(statusCode, "Group edited successfully!")
     }
 }
 
 //Implementation of the route to delete a specific game which accesses to the database
-function removeGame(group_name, game_name, processRemoveGame) {
-    db.getGroupWithName(group_name, processGetGroupWithName);
+function removeGameById(group_name, game_name, processRemoveGameById) {
+    db.getGroupByName(group_name, processGetGroupByName);
 
-    function processGetGroupWithName(err, groupObj) {
+    function processGetGroupByName(statusCode, groupObj) {
         if (groupObj.length) {
-            db.removeGame(group_name, game_name, cb)
+            db.removeGameById(group_name, game_name, cb)
 
-            function cb(err, gameObj) {
+            function cb(statusCode, gameObj) {
                 if(JSON.stringify(gameObj) === "[]") {
+                    statusCode = 404
                     var errorMessageObj = {"error": "The game you inserted doesnt exist in this group."};
-                    processRemoveGame(err, errorMessageObj)
+                    processRemoveGameById(statusCode, errorMessageObj)
                 } else {
-                    processRemoveGame(err, "Game deleted successfully!");
+                    statusCode = 200
+                    processRemoveGameById(statusCode, "Game deleted successfully!");
                 }
             }
         } else {
+            statusCode = 404
             var errorMessageObj = {"error": "The group you inserted doesnt exist."};
-            processRemoveGame(err, errorMessageObj);
+            processRemoveGameById(statusCode, errorMessageObj);
         }
     }
 }
 
 module.exports = {
-    getGamesWithName: getGamesWithName,
+    getGamesByName: getGamesByName,
+    getGamesById: getGamesById,
 
     createGroup: createGroup,
-    listGroups:listGroups,
-    getGroupWithName:getGroupWithName,
-    addGameToGroup: addGameToGroup,
+    listGroups: listGroups,
+    getGroupByName: getGroupByName,
+    addGameByNameToGroup: addGameByNameToGroup,
+    addGameByIdToGroup: addGameByIdToGroup,
 
     getRatingsFromGames: getRatingsFromGames,
     editGroup: editGroup,
-    removeGame: removeGame,
+    removeGameById: removeGameById,
 }
