@@ -4,19 +4,6 @@ const SERVER_HOST = "localhost";
 const SERVER_PORT = 8080;
 const SERVER_URI = `http://${SERVER_HOST}:${SERVER_PORT}/`;
 
-describe('Get A Specific Game By Name', () => {
-    test('Should get a specific game by name', () => {
-        return frisby.get(`${SERVER_URI}games/name/Captivus`)
-        .expect('status', 200)
-        .expect('json', [{
-            "id": 68841,
-            "name": "Captivus",
-            "summary": "Join the movement! Build a deck, equip your ship, and take on others in intense 1v1 card battles!",
-            "url": "https://www.igdb.com/games/captivus"
-        }])
-    })
-});
-
 describe('Get A Specific Game By ID', () => {
     test('Should get a specific game by id', () => {
         return frisby.get(`${SERVER_URI}games/id/1`)

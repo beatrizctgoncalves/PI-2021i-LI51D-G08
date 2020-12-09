@@ -6,15 +6,6 @@
 
  //All methods have a callback so the access to the api can be asynchronous
 
- //Implementation of the route to get a specific game by name which accesses to the api
-function getGamesByName(game_name, processGetGamesByName) {
-    data.getGamesByName(game_name, cb)
-
-    function cb(err, gameObj) {
-        processGetGamesByName(err, gameObj);
-    }
-}
-
 //Implementation of the route to get a specific game by id which accesses to the api
 function getGamesById(game_id, processGetGamesById) {
     data.getGamesById(game_id, cb);
@@ -96,7 +87,7 @@ function removeGameById(group_name, game_id, processRemoveGameById) {
 }
 
 module.exports = {
-    getGamesByName: getGamesByName,
+
     getGamesById: getGamesById,
 
     createGroup: createGroup,

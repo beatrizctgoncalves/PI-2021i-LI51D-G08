@@ -12,7 +12,6 @@ const webApi = require('./covida-web-api.js'); //Import the covida-web-api
 const PORT = 8080;
 app.listen(8080, () => console.log(`Listening at http://localhost:${PORT}`)) //Listening on port 8080
 
-app.get('/games/name/:game_name', webApi.getGamesByName); //Get a specific game by name
 app.get('/games/id/:game_id', webApi.getGamesById); //Get a specific game by id
 
 app.post('/groups', webApi.createGroup); //Post a group in the database

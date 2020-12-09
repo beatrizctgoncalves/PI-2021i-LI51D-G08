@@ -2,10 +2,7 @@
 
 const serv  = require('./covida-services.js');
 
-function getGamesByName(req, res) { //Implementation of the route to get a specific game by name
-    console.log("Get A Specific Game By Name")
-    serv.getGamesByName(req.params.game_name, (statusCode, gameObj) => processCb(statusCode, gameObj, res));
-}
+
 
 function getGamesById(req, res) { //Implementation of the route to get a specific game by id
     console.log("Get A Specific Game By ID")
@@ -54,7 +51,7 @@ function processCb(statusCode, obj, res) {
 }
 
 module.exports = {
-    getGamesByName: getGamesByName,
+   
     getGamesById: getGamesById,
     
     createGroup: createGroup,
