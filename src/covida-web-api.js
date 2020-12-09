@@ -19,29 +19,34 @@ function listGroups(req, res) { //Implementation of the route to get all groups
     serv.listGroups((statusCode, groupObj) => processCb(statusCode, groupObj, res));
 }
 
-function getGroupByName(req, res) { //Implementation of the route to get a specific group
+function getGroupByID(req, res) { //Implementation of the route to get a specific group
     console.log("Get A Specific Group")
-    serv.getGroupByName(req.params.group_name, (statusCode, groupObj) => processCb(statusCode, groupObj, res));
+    serv.getGroupByID(req.params.group_id, (statusCode, groupObj) => processCb(statusCode, groupObj, res));
 }
 
 function addGameByIdToGroup(req, res) { //Implementation of the route to add a game by id to a specific group
     console.log("Add Game to Group")        
-    serv.addGameByIdToGroup(req.params.game_id, req.params.group_name, (statusCode, groupObj) => processCb(statusCode, groupObj, res))
+    serv.addGameByIdToGroup(req.params.game_id, req.params.group_id, (statusCode, groupObj) => processCb(statusCode, groupObj, res))
 }
 
 function getRatingsFromGames(req,res) { //Implementation of the route to get a game between the given interval of values
     console.log("Get Ratings From Games From Group")
-    serv.getRatingsFromGames(req.params.group_name, req.params.max, req.params.min, (statusCode, gameObj) => processCb(statusCode, gameObj, res));
+    serv.getRatingsFromGames(req.params.group_id, req.params.max, req.params.min, (statusCode, gameObj) => processCb(statusCode, gameObj, res));
 }
 
 function editGroup(req, res) { //Implementation of the route to update a specific group
     console.log("Edit Group")
-    serv.editGroup(req.params.group_name, req.body.name, req.body.desc, (statusCode, groupObj) => processCb(statusCode, groupObj, res))
+    serv.editGroup(req.params.group_id, req.body.name, req.body.desc, (statusCode, groupObj) => processCb(statusCode, groupObj, res))
 }
 
 function removeGameById(req, res) { //Implementation of the route to delete a specific game from a group
     console.log("Remove Game By ID")
-    serv.removeGameById(req.params.group_name, req.params.game_id, (statusCode, groupObj) => processCb(statusCode, groupObj, res))
+    serv.removeGameById(req.params.group_id, req.params.game_id, (statusCode, groupObj) => processCb(statusCode, groupObj, res))
+}
+
+function removeGroup(req,res){
+    console.log("Remove Group by ID")
+    serv.removeGroup(req.params.group_id, (statusCode,groupObj) => processCb(statusCode,groupObj,res))
 }
 
 //Process a callback
@@ -56,10 +61,11 @@ module.exports = {
     
     createGroup: createGroup,
     listGroups: listGroups,
-    getGroupByName: getGroupByName,
+    getGroupByID: getGroupByID,
     addGameByIdToGroup: addGameByIdToGroup,
     
     getRatingsFromGames: getRatingsFromGames,
     editGroup: editGroup,
-    removeGameById: removeGameById
+    removeGameById: removeGameById,
+    removeGroup : removeGroup
 }

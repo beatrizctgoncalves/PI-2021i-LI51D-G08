@@ -34,23 +34,23 @@ function listGroups(processListGroups) {
 }
 
 //Implementation of the route to get a specific group which accesses to the database
-function getGroupByName(group_name, processGetGroupByName) {
-    db.getGroupByName(group_name, cb);
+function getGroupByID(group_id, processGetGroupByID) {
+    db.getGroupByID(group_id, cb);
 
     function cb(err, groupObj) {
-        processGetGroupByName(err, groupObj);
+        processGetGroupByID(err, groupObj);
     }
 }
 
 //Implementation of the route to add a game by name to a specific group which accesses to the database
-function addGameByIdToGroup(game_id, group_name, processAddGameByIdToGroup){
+function addGameByIdToGroup(game_id, group_id, processAddGameByIdToGroup){
     data.getGamesById(game_id, processGetGamesById)
 
     function processGetGamesById(err, gameObj) {
         if(gameObj === "[]") {
             processAddGameByIdToGroup(error.NOT_FOUND, error.setError({ "error": "The game you inserted doesnt exist." }))
         } else {
-            db.addGameToGroup(gameObj, group_name, cb);
+            db.addGameToGroup(gameObj, group_id, cb);
         }
     }
 
@@ -60,8 +60,8 @@ function addGameByIdToGroup(game_id, group_name, processAddGameByIdToGroup){
 }
 
 //Implementation of the route to get a game between the given interval of values which accesses to both database and api
-function getRatingsFromGames(group_name, max, min, processGetRatingsFromGames) {
-    db.getRatingsFromGames(group_name, max, min, cb);
+function getRatingsFromGames(group_id, max, min, processGetRatingsFromGames) {
+    db.getRatingsFromGames(group_id, max, min, cb);
     
     function cb(err, gameObj) {
         processGetRatingsFromGames(err, gameObj);
@@ -69,8 +69,8 @@ function getRatingsFromGames(group_name, max, min, processGetRatingsFromGames) {
 }
 
 //Implementation of the route to update a specific group which accesses to the database
-function editGroup(old_name, new_name, new_desc, processEditGroup) {
-    db.editGroup(old_name, new_name, new_desc, cb);
+function editGroup(group_id, new_name, new_desc, processEditGroup) {
+    db.editGroup(group_id, new_name, new_desc, cb);
     
     function cb(err, groupObj) {
         processEditGroup(err, groupObj)
@@ -78,11 +78,19 @@ function editGroup(old_name, new_name, new_desc, processEditGroup) {
 }
 
 //Implementation of the route to delete a specific game which accesses to the database
-function removeGameById(group_name, game_id, processRemoveGameById) {
-    db.removeGameById(group_name, game_id, cb)
+function removeGameById(group_id, game_id, processRemoveGameById) {
+    db.removeGameById(group_id, game_id, cb)
 
     function cb(err, gameObj) {
         processRemoveGameById(err, gameObj);
+    }
+}
+
+function removeGroup(group_id, processRemoveGroup){
+    db.removeGroup(group_id, cb)
+
+    function cb(err,gameObj){
+        processRemoveGroup(err,gameObj)
     }
 }
 
@@ -92,10 +100,11 @@ module.exports = {
 
     createGroup: createGroup,
     listGroups: listGroups,
-    getGroupByName: getGroupByName,
+    getGroupByID: getGroupByID,
     addGameByIdToGroup: addGameByIdToGroup,
 
     getRatingsFromGames: getRatingsFromGames,
     editGroup: editGroup,
     removeGameById: removeGameById,
+    removeGroup : removeGroup
 }
