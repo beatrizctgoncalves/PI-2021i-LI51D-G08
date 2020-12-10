@@ -1,6 +1,6 @@
 'use strict'
 
-const error = require('./error')
+const error = require('./responses')
 
 const Groups_Database = [] //The repository in memory
 
@@ -17,16 +17,37 @@ function createGroup(name, desc, processCreateGroup) {
     return processCreateGroup(201, { "message": "Group created successfully!" })
 }
 
+function listGroups(processListGroups) {
+    if(Groups_Database.length === 0) return processListGroups(error.NOT_FOUND, error.setError({ "error": "There are no groups." }))
+    return processListGroups(200, Groups_Database)
+}
+
 function getGroupByID(id, processGetGroupByID) {
     var group = Groups_Database.filter(g => g.id === id)
     if(group == -1) return processGetGroupByID(error.NOT_FOUND, error.setError({ "error": "The group you inserted doesnt exist." }))
     return processGetGroupByID(200, group)
 }
 
-function listGroups(processListGroups) {
-    if(Groups_Database.length === 0) return processListGroups(error.NOT_FOUND, error.setError({ "error": "There are no groups." }))
-    return processListGroups(200, Groups_Database)
+function editGroup(group_id, new_name, new_desc, processEditGroup) {
+    var old_group = Groups_Database.findIndex(g => g.id === parseInt(group_id))
+    if(old_group == -1) {
+        return processEditGroup(error.NOT_FOUND, error.setError({ "error": "The group you inserted doesnt exist." }))
+    }
+    Groups_Database[old_group].name = new_name;
+    Groups_Database[old_group].desc = new_desc;
+    return processEditGroup(200, { "message": "Group edited successfully!" })
 }
+
+function removeGroup(group_id, processRemoveGroup) {
+    var group = Groups_Database.findIndex(g => g.id === parseInt(group_id))
+   
+    if(group == -1) {
+        return processRemoveGroup(error.NOT_FOUND, error.setError({ "error": "The group you inserted doesnt exist." }))
+    }
+    Groups_Database.splice(group, 1)
+    return processRemoveGroup(200, { "message":  "Group deleted successfully!" })
+}
+
 
 function addGameToGroup(game, group_id, processAddGameToGroup){
     console.log(group_id)
@@ -55,16 +76,6 @@ function getRatingsFromGames(group_id, max, min, processGetRatingsFromGames) {
     return processGetRatingsFromGames(200, games_within_rating)
 }
 
-function editGroup(group_id, new_name, new_desc, processEditGroup) {
-    var old_group = Groups_Database.findIndex(g => g.id === parseInt(group_id))
-    if(old_group == -1) {
-        return processEditGroup(error.NOT_FOUND, error.setError({ "error": "The group you inserted doesnt exist." }))
-    }
-    Groups_Database[old_group].name = new_name;
-    Groups_Database[old_group].desc = new_desc;
-    return processEditGroup(200, { "message": "Group edited successfully!" })
-}
-
 function removeGameById(group_id, game_id, processRemoveGameById) {
     var group = Groups_Database.findIndex(g => g.id === parseInt(group_id))
     if(group == -1) {
@@ -79,24 +90,14 @@ function removeGameById(group_id, game_id, processRemoveGameById) {
     return processRemoveGameById(200, { "message":  "Game deleted successfully!" })
 }
 
-function removeGroup(group_id, processRemoveGroup) {
-    var group = Groups_Database.findIndex(g => g.id === parseInt(group_id))
-   
-    if(group == -1) {
-        return processRemoveGroup(error.NOT_FOUND, error.setError({ "error": "The group you inserted doesnt exist." }))
-    }
-    Groups_Database.splice(group, 1)
-    return processRemoveGroup(200, { "message":  "Group deleted successfully!" })
-}
-
 module.exports = {
     createGroup: createGroup,
-    getGroupByID: getGroupByID,
     listGroups: listGroups,
-    addGameToGroup: addGameToGroup,
-
-    getRatingsFromGames: getRatingsFromGames,
+    getGroupByID: getGroupByID,
     editGroup: editGroup,
+    removeGroup : removeGroup,
+
+    addGameToGroup: addGameToGroup,
+    getRatingsFromGames: getRatingsFromGames,
     removeGameById: removeGameById,
-    removeGroup : removeGroup
 }
