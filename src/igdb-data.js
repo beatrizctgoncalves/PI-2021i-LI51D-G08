@@ -1,7 +1,8 @@
 'use strict'
 
-const responses = require('./responses')
+const error = require('./error')
 const fetch = require('node-fetch')
+const { response } = require('express')
 
 const IGDB_HOST = 'https://api.igdb.com/v4/games' //API IGDB's base URL with a specific endpoint
 const IGDB_CID = 's4fwgb8isqexk2j87n2xagqfc3hhy6'
@@ -15,7 +16,7 @@ function getGamesById(id) {
     myHeaders.append("Authorization", `${IGDB_KEY}`);
     myHeaders.append("Content-Type", "text/plain");
 
-    var raw = `fields name, total_rating, summary, url; where id = ${id}`;
+    var raw = `fields name, total_rating, summary, url; where id = ${id};`;
 
     //These properties are part of the Fetch Standard
     var requestOptions = {
@@ -24,15 +25,14 @@ function getGamesById(id) {
         body: raw, // request body
         redirect: 'follow', // set to `manual` to extract redirect headers, `error` to reject redirect
     };
-    fetch(`${IGDB_HOST}`, requestOptions)
+    return fetch(`${IGDB_HOST}`, requestOptions)
         .then(response => response.json()) //Expecting a json response
         .then(body => {
-            let results = body.results;
-            console.log(results);
-            if (results != "[]") return results;
-            else return responses.error(`The game with id = ${game_id} does not exist!`, responses.NOT_FOUND);
+            //IMPROVE CODE
+            if(body[0].status === 400) return error.setError(error.NOT_FOUND, error.GAME_NOT_FOUND_MSG);
+            else return body;
         })
-        .catch(() => Promise.reject("Something went wrong!"));
+        .catch(() => Promise.reject(error.API_ERROR_MSG));
 }
 
 module.exports = {

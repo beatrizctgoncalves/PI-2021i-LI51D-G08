@@ -2,7 +2,8 @@
 
 const data = require('./igdb-data.js');
 const db = require('./covida-db.js');
-const responses = require('./responses');
+const error = require('./error');
+const success = require('./success');
 
  //All methods have a callback so the access to the api can be asynchronous
 
@@ -11,21 +12,20 @@ function getGamesById(game_id) {
     return data.getGamesById(game_id)
         .then(gamesObj => {
             if (gamesObj) {
-                return responses.success(
-                    `Game ${game_id} found`,
-                    responses.OK,
+                return success.setSuccess(
+                    success.OK,
                     gamesObj
                 )
             } else {
-                return responses.error(
-                    `Cannot find game with id = ${game_id}`,
-                    responses.NOT_FOUND
+                return error.error(
+                    error.NOT_FOUND,
+                    error.GAME_NOT_FOUND_MSG
                 )
             }
         })
         .catch(err => {
                 if (err.short) return Promise.reject(err)
-                else return responses.error(err, msg)
+                else return error.error(error.API_ERROR, error.API_ERROR_MSG)
             }
         )
 }

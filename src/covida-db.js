@@ -1,6 +1,6 @@
 'use strict'
 
-const error = require('./responses')
+const error = require('./error')
 
 const Groups_Database = [] //The repository in memory
 

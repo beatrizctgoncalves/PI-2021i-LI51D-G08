@@ -2,27 +2,18 @@
 
 const serv  = require('./covida-services.js');
 
-const responseCodes = [];
-responseCodes[serv.OK] = 200;
-responseCodes[serv.CREATED] = 201;
-
-responseCodes[serv.NOT_FOUND] = 404;
-responseCodes[serv.CONFLICT] = 409;
-responseCodes[serv.DB_ERROR] = 500;
-responseCodes[serv.API_ERROR] = 503;
-
 //Handle multiple asynchronous operations easily and provide better error handling than callbacks and events
-function promisesAsyncImplementation(promise, rsp) {
+function promisesAsyncImplementation(promise, res) {
     promise
         .then(result => {
             //Success reponse
-            rsp.statusCode = responseCodes[result.short]
-            rsp.json({success: result})
+            res.statusCode = result.status
+            res.json(result.body)
         })
         .catch(err => {
             //Error response
-            rsp.statusCode = responseCodes[err.short]
-            rsp.json({error: err})
+            res.statusCode = err.status
+            res.json(err.body)
         });
 }
 
@@ -31,7 +22,7 @@ function getGamesById(req, res) { //Implementation of the route to get a specifi
     console.log("Get A Specific Game By ID")
     promisesAsyncImplementation(
         serv.getGamesById(req.params.game_id),
-        rsp
+        res
     )
 }
 
