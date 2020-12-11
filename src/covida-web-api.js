@@ -29,7 +29,8 @@ function getGamesById(req, res) { //Implementation of the route to get a specifi
 
 function createGroup(req, res) { //Implementation of the route to create a group
     console.log("Create Group")
-    serv.createGroup(req.body.name, req.body.desc, (statusCode, groupObj) => processCb(statusCode, groupObj, res));
+    //serv.createGroup(req.body.name, req.body.desc, (statusCode, groupObj) => processCb(statusCode, groupObj, res));
+    promisesAsyncImplementation(serv.createGroup(req.body.name, req.body.desc),res)
 }
 
 function listGroups(req, res) { //Implementation of the route to get all groups

@@ -9,6 +9,7 @@ module.exports = {
     GROUP_NOT_FOUND_MSG: "Could not found group!",
     DB_ERROR_MSG: "Error in DataBase",
     API_ERROR_MSG: "Error in IGDB API",
+    GROUP_EXISTS: "This group already exists",
 
     setError: function (status, message) {
         return {

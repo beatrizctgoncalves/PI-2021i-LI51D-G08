@@ -1,20 +1,39 @@
 'use strict'
 
 const error = require('./error')
+const fetch = require('node-fetch')
 
-const Groups_Database = [] //The repository in memory
+//const Groups_Database = [] //The repository in memory
+var count = 0;
+const baseUri = `http://localhost:9200/`
+const Uri = {
+    CREAT_GROUP: `${baseUri}groups/`
+}
+var myHeaders = new fetch.Headers();
 
-function createGroup(name, desc, processCreateGroup) {
-    var group = Groups_Database.findIndex(g => g.name === name);
-    if(group != -1) return processCreateGroup(error.NOT_FOUND, error.setError({ "error": "The group you inserted already exists." }))
-    var group = {
-        id: Groups_Database.length + 1,
-        name: name,
-        desc: desc,
-        games: []
-    }
-    Groups_Database.push(group)
-    return processCreateGroup(201, { "message": "Group created successfully!" })
+    myHeaders.append("Content-Type", "application/json");
+
+function createGroup(name, desc) {
+    //var group = Groups_Database.findIndex(g => g.name === name);
+    //if(group != -1) return Promise.reject(error.NOT_FOUND, error.GROUP_NOT_FOUND_MSG)
+    
+    var group = JSON.stringify({
+        "id": count + 1,
+        "name": name,
+        "desc": desc,
+        "games": []
+    })
+    var requestOptions = {
+        method: 'POST', // most of the requests to the API IGDB use the POST method
+        headers: myHeaders, // request headers. format is the identical to that accepted by the Headers constructor (see below)
+        body: group, // request body
+        redirect: 'follow', // set to `manual` to extract redirect headers, `error` to reject redirect
+    };
+    
+    //return processCreateGroup(201, { "message": "Group created successfully!" })
+    
+    return fetch(Uri.CREAT_GROUP,requestOptions).then(response => response.json())
+                                .then(body => {console.log(body); return body})
 }
 
 function listGroups(processListGroups) {

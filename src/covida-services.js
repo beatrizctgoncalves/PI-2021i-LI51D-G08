@@ -32,12 +32,13 @@ function getGamesById(game_id) {
 
 
 //Implementation of the route to create a group which accesses to the database
-function createGroup(group_name, group_desc, processCreateGroup) {
-    db.createGroup(group_name, group_desc, cb);
-
-    function cb(err, groupObj) {
-        processCreateGroup(err, groupObj);
+function createGroup(group_name, group_desc) {
+    if(!group_name || !group_desc){
+        return 
+        Promise.reject(error.setError(error.BAD_REQUEST, error.BAD_REQUEST_MSG))
     }
+    db.createGroup(group_name, group_desc);
+    return success.setSuccess(success.OK, success.GROUP_CREATED_MSG) 
 }
 
 //Implementation of the route to get all groups which accesses to the database
@@ -59,12 +60,13 @@ function getGroupByID(group_id, processGetGroupByID) {
 }
 
 //Implementation of the route to update a specific group which accesses to the database
-function editGroup(group_id, new_name, new_desc, processEditGroup) {
-    db.editGroup(group_id, new_name, new_desc, cb);
-    
-    function cb(err, groupObj) {
-        processEditGroup(err, groupObj)
+function editGroup(group_id, new_name, new_desc) {
+    if(!group_id || !new_name || !new_desc){
+        return Promise.reject(error.setError(error.BAD_REQUEST,error.BAD_REQUEST_MSG))
     }
+    return db.editGroup(group_id, new_name, new_desc);
+    
+    
 }
 
 function removeGroup(group_id, processRemoveGroup){
