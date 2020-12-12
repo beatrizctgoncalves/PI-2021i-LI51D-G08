@@ -1,0 +1,39 @@
+module.exports = {
+    //SUCCESS
+    OK: 200,
+    CREATED: 201,
+
+    GROUP_CREATED_MSG: "Group successfully created!",
+    GROUP_EDITED_MSG: "Group successfully edited!",
+    GROUP_DELETED_MSG: "Group successfully deleted!",
+    GAME_DELETED_FROM_GROUP_MSG: "Game successfully deleted!",
+    GAME_ADD_TO_GROUP_MSG: "Game successfully added to the group!",
+
+    setSuccess: function (status, obj) {
+        return {
+            status: status,
+            body: obj,
+        }
+    },
+
+    //ERROR
+    BAD_REQUEST: 400,
+    NOT_FOUND: 404,
+    CONFLIT_GROUP: 409,
+    DB_ERROR: 500,
+    API_ERROR: 503,
+
+    BAD_REQUEST_MSG: "Please insert a valid parameter!",
+    GAME_NOT_FOUND_MSG: "Could not find game!",
+    GROUP_NOT_FOUND_MSG: "Could not find group!",
+    CONFLIT_GROUP_MSG: "This group already exists!",
+    DB_ERROR_MSG: "Error in DataBase",
+    API_ERROR_MSG: "Error in IGDB API",
+
+    setError: function (status, message) {
+        return Promise.reject({
+            status: status,
+            body: message
+        })
+    }
+};

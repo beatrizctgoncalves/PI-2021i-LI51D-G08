@@ -1,8 +1,7 @@
 'use strict'
 
-const error = require('./error')
+const responses = require('./responses')
 const fetch = require('node-fetch')
-const { response } = require('express')
 
 const IGDB_HOST = 'https://api.igdb.com/v4/games' //API IGDB's base URL with a specific endpoint
 const IGDB_CID = 's4fwgb8isqexk2j87n2xagqfc3hhy6'
@@ -29,10 +28,10 @@ function getGamesById(id) {
         .then(response => response.json()) //Expecting a json response
         .then(body => {
             //IMPROVE CODE
-            if(body[0].status === 400) return error.setError(error.NOT_FOUND, error.GAME_NOT_FOUND_MSG);
+            if(body[0].status === 400) return undefined;
             else return body;
         })
-        .catch(() => Promise.reject(error.API_ERROR_MSG));
+        .catch(() => Promise.reject(responses.API_ERROR_MSG));
 }
 
 module.exports = {

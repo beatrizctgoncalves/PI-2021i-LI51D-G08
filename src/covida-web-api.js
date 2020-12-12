@@ -23,14 +23,16 @@ function getGamesById(req, res) { //Implementation of the route to get a specifi
     promisesAsyncImplementation(
         serv.getGamesById(req.params.game_id),
         res
-    )
+    );
 }
 
 
 function createGroup(req, res) { //Implementation of the route to create a group
     console.log("Create Group")
-    //serv.createGroup(req.body.name, req.body.desc, (statusCode, groupObj) => processCb(statusCode, groupObj, res));
-    promisesAsyncImplementation(serv.createGroup(req.body.name, req.body.desc),res)
+    promisesAsyncImplementation(
+        serv.createGroup(req.body.name, req.body.desc),
+        res
+    );
 }
 
 function listGroups(req, res) { //Implementation of the route to get all groups
@@ -68,13 +70,6 @@ function getRatingsFromGames(req,res) { //Implementation of the route to get a g
 function removeGameById(req, res) { //Implementation of the route to delete a specific game from a group
     console.log("Remove Game By ID")
     serv.removeGameById(req.params.group_id, req.params.game_id, (statusCode, groupObj) => processCb(statusCode, groupObj, res))
-}
-
-
-//Process a callback
-function processCb(statusCode, obj, res) {
-    res.statusCode = statusCode;
-    res.json(obj) //Send the response in json
 }
 
 module.exports = {
