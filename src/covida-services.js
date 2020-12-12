@@ -39,8 +39,8 @@ function createGroup(group_name, group_desc) {
                 responses.GROUP_CREATED_MSG
             )
         })
-        .catch(() => {
-            return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
+        .catch(err => {
+            return responses.setError(err.status, err.body)
         })
     } else {
         return responses.setError(responses.BAD_REQUEST, responses.BAD_REQUEST_MSG)
@@ -53,8 +53,8 @@ function listGroups() {
         .then(groupObj => {
             if(groupObj) {
                 return responses.setSuccess(
-                    responses.CREATED,
-                    responses.GROUP_CREATED_MSG
+                    responses.OK,
+                    groupObj
                 )
             } else {
                 return responses.setError(
@@ -69,12 +69,24 @@ function listGroups() {
 }
 
 //Implementation of the route to get a specific group which accesses to the database
-function getGroupByID(group_id, processGetGroupByID) {
-    db.getGroupByID(group_id, cb);
-
-    function cb(err, groupObj) {
-        processGetGroupByID(err, groupObj);
-    }
+function getGroupByID(group_id) {
+    return db.getGroupByID(group_id)
+        .then(groupObj => {
+            if(groupObj) {
+                return responses.setSuccess(
+                    responses.OK,
+                    groupObj
+                )
+            } else {
+                return responses.setError(
+                    responses.NOT_FOUND,
+                    responses.GROUP_NOT_FOUND_MSG
+                )
+            }
+        })
+        .catch(err => {
+            return responses.setError(err.status, err.body)
+        })
 }
 
 //Implementation of the route to update a specific group which accesses to the database

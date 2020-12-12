@@ -45,34 +45,52 @@ function listGroups(req, res) { //Implementation of the route to get all groups
 
 function getGroupByID(req, res) { //Implementation of the route to get a specific group
     console.log("Get A Specific Group")
-    serv.getGroupByID(req.params.group_id, (statusCode, groupObj) => processCb(statusCode, groupObj, res));
+    promisesAsyncImplementation(
+        serv.getGroupByID(req.params.group_id),
+        res
+    );
 }
 
 function editGroup(req, res) { //Implementation of the route to update a specific group
     console.log("Edit Group")
-    serv.editGroup(req.params.group_id, req.body.name, req.body.desc, (statusCode, groupObj) => processCb(statusCode, groupObj, res))
+    promisesAsyncImplementation(
+        serv.editGroup(req.params.group_id, req.body.name, req.body.desc),
+        res
+    );
 }
 
 function removeGroup(req,res){
     console.log("Remove Group by ID")
-    serv.removeGroup(req.params.group_id, (statusCode,groupObj) => processCb(statusCode,groupObj,res))
+    promisesAsyncImplementation(
+        serv.removeGroup(req.params.group_id),
+        res
+    );
 }
 
 
 function addGameByIdToGroup(req, res) { //Implementation of the route to add a game by id to a specific group
     console.log("Add Game to Group")        
-    serv.addGameByIdToGroup(req.params.game_id, req.params.group_id, (statusCode, groupObj) => processCb(statusCode, groupObj, res))
+    promisesAsyncImplementation(
+        serv.addGameByIdToGroup(req.params.game_id, req.params.group_id),
+        res
+    );
 }
 
 function getRatingsFromGames(req,res) { //Implementation of the route to get a game between the given interval of values
     console.log("Get Ratings From Games From Group")
-    serv.getRatingsFromGames(req.params.group_id, req.params.max, req.params.min, (statusCode, gameObj) => processCb(statusCode, gameObj, res));
+    promisesAsyncImplementation(
+        serv.getRatingsFromGames(req.params.group_id, req.params.max, req.params.min),
+        res
+    );
 }
 
 
 function removeGameById(req, res) { //Implementation of the route to delete a specific game from a group
     console.log("Remove Game By ID")
-    serv.removeGameById(req.params.group_id, req.params.game_id, (statusCode, groupObj) => processCb(statusCode, groupObj, res))
+    promisesAsyncImplementation(
+        serv.removeGameById(req.params.group_id, req.params.game_id),
+        res
+    );
 }
 
 module.exports = {

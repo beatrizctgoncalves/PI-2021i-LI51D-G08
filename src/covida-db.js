@@ -5,12 +5,7 @@ const fetch = require('node-fetch')
 
 const SERVER_URL = 'http://localhost:8080';
 
-const Groups_Database = [{
-        "id": 1,
-        "name": "name",
-        "desc": "desc",
-        "games": []
-    }] //The repository in memory
+const Groups_Database = [] //The repository in memory
 
 function createGroup(name, desc) {
     var group = {
@@ -21,53 +16,58 @@ function createGroup(name, desc) {
     }
     Groups_Database.push(group)
 
-    return fetch(`${SERVER_URL}/groups`, {
+    return fetch(`${SERVER_URL}/groups/_doc`, {
         method: 'POST',
         headers: { //Request headers. format is the identical to that accepted by the Headers constructor (see below)
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(group) //Request body
     })
-    .then(response => response.json()) //Expecting a json response
-    .then(body => {
-        console.log("KKKKKKKKKK")
-        return body;
-    })
-    .catch(() => {
-        return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
-    })
+        .then(response => response.json()) //Expecting a json response
+        .then(body => {
+            console.log("KKKKKKKKKK")
+            return body.result;
+        })
+        .catch(() => {
+            return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
+        })
 }
 
 function listGroups() {
-    if(Groups_Database.length === 0) {
-        console.log("SECOND")
-        return 0;
-    }
-    return fetch(`${SERVER_URL}/groups`, {
+    return fetch(`${SERVER_URL}/groups/_search`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: null,
-        redirect: 'follow', // set to `manual` to extract redirect headers, `error` to reject redirect
+        body: null
     })
     .then(response => response.json()) //Expecting a json response
     .then(body => {
-        console.log("KKKKKKKKKKKKKK")
-        console.log(body)
-        if(body.length) return body;
-        else {
-            console.log("333333333333333333333")
-            return undefined;
-        }
+        if(body.length) return body.hits.hits.map(hit => hit._source);
+        else return undefined;
     })
-    .catch(() => Promise.reject(responses.DB_ERROR_MSG));
+    .catch(() => {
+        return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
+    });
 }
 
-function getGroupByID(id, processGetGroupByID) {
-    var group = Groups_Database.filter(g => g.id === id)
-    if(group == -1) return processGetGroupByID(error.NOT_FOUND, error.setError({ "error": "The group you inserted doesnt exist." }))
-    return processGetGroupByID(200, group)
+function getGroupByID(id) {
+    return fetch(`${SERVER_URL}/groups/${id}/_search?q=id:${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: null
+    })
+        .then(response => response.json())
+        .then(body => {
+            let hit = body.hits.hits;
+            if (hit.length) return hit[0]._source;
+            return undefined;
+        })
+        .catch(() => {
+            return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
+        });
 }
 
 function editGroup(group_id, new_name, new_desc, processEditGroup) {
