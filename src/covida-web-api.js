@@ -28,7 +28,10 @@ function getGamesById(req, res) { //Implementation of the route to get a specifi
 
 function getGamesByName(req, res) { //Implementation of the route to get a specific game
     console.log("Get A Specific Game")
-    serv.getGamesWithName(req.params.game_name, (err, gameObj) => processCb(err, gameObj, res));
+    promisesAsyncImplementation(
+        serv.getGamesByName(req.params.game_name),
+        res
+    );
 }
 
 function createGroup(req, res) { //Implementation of the route to create a group

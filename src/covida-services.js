@@ -29,17 +29,25 @@ function getGamesById(game_id) {
 }
 
  //Implementation of the route to get a specific game which accesses to the api
- function getGamesByName(game_name, processGetGamesByName) {
-    data.getGamesByName(game_name, cb)
-
-    function cb(err, gameObj) {
-        if(gameObj === "[]") {
-            var errorMessageObj = "The game you inserted doesnt exist.";
-            processGetGamesByName(err, errorMessageObj)
-        } else {
-            processGetGamesByName(err, gameObj);
-        }
-    }
+ function getGamesByName(game_name) {
+    return data.getGamesByName(game_name)
+        .then(gamesObj =>  {
+            console.log(gamesObj)
+            if(gamesObj) {
+                return responses.setSuccess(
+                    responses.OK,
+                    gamesObj
+                )
+            } else {
+                return responses.setError(
+                    responses.NOT_FOUND,
+                    responses.GAME_NOT_FOUND_MSG
+                )
+            }
+        })
+        .catch(err => {
+            return responses.setError(err.status,err.body)
+        })
 }
 
 
