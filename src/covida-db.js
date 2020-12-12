@@ -24,13 +24,8 @@ function createGroup(name, desc) {
         body: JSON.stringify(group) //Request body
     })
         .then(response => response.json()) //Expecting a json response
-        .then(body => {
-            console.log("KKKKKKKKKK")
-            return body.result;
-        })
-        .catch(() => {
-            return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
-        })
+        .then(body => body.result)
+        .catch(() => responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG))
 }
 
 function listGroups() {
@@ -59,77 +54,142 @@ function getGroupByID(id) {
         },
         body: null
     })
-        .then(response => response.json())
-        .then(body => {
-            let hit = body.hits.hits;
-            if (hit.length) return hit[0]._source;
-            return undefined;
-        })
-        .catch(() => {
-            return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
-        });
+    .then(response => response.json())
+    .then(body => {
+        let hit = body.hits.hits;
+        console.log(hit)
+        if (hit.length) return hit[0]._source;
+        return undefined;
+    })
+    .catch(() => {
+        return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
+    });
 }
 
 function editGroup(group_id, new_name, new_desc, processEditGroup) {
-    var old_group = Groups_Database.findIndex(g => g.id === parseInt(group_id))
-    if(old_group == -1) {
-        return processEditGroup(error.NOT_FOUND, error.setError({ "error": "The group you inserted doesnt exist." }))
-    }
-    Groups_Database[old_group].name = new_name;
-    Groups_Database[old_group].desc = new_desc;
-    return processEditGroup(200, { "message": "Group edited successfully!" })
+    return fetch(`${SERVER_URL}/groups/_doc/_update_by_query`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "query": {
+                "match": {
+                    "id": `${group_id}`
+                }
+            },
+            "script": {
+                "source": "ctx._source.name = params.name; ctx._source.desc = params.desc",
+                "params": {
+                    "name": `${new_name}`,
+                    "desc": `${new_desc}`,
+                }
+            }
+        })
+    })
+    .then(response => response.json())
+    .then(body => {
+        console.log(body)
+        if(body) return body.updated;
+        return undefined;
+    })
+    .catch(() => {
+        return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
+    });
 }
 
-function removeGroup(group_id, processRemoveGroup) {
-    var group = Groups_Database.findIndex(g => g.id === parseInt(group_id))
-   
-    if(group == -1) {
-        return processRemoveGroup(error.NOT_FOUND, error.setError({ "error": "The group you inserted doesnt exist." }))
-    }
-    Groups_Database.splice(group, 1)
-    return processRemoveGroup(200, { "message":  "Group deleted successfully!" })
+function removeGroup(group_id) {
+    return fetch(`${SERVER_URL}/groups/_doc/_delete_by_query`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "query": {
+                "match": {
+                    "id": `${group_id}`
+                }
+            }
+        })
+    })
+    .then(response => response.json())
+    .then(body => body.deleted)
+    .catch(() => responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG))
 }
 
 
-function addGameToGroup(game, group_id, processAddGameToGroup){
-    console.log(group_id)
-    var group = Groups_Database.findIndex(g => g.id === parseInt(group_id));
-    if(group == -1) return processAddGameToGroup(error.NOT_FOUND, error.setError({ "error": "The group you inserted doesnt exist." }))
-
-    //Put each object of game separately because then we have just one object in games that have all of the information
-    //If we didnt do this, games[] would have an object per game inserted
-    var gameArray = {
-        id: game[0].id,
-        name: game[0].name,
-        summary: game[0].summary,
-        total_rating : game[0].total_rating
-    }
-    Groups_Database[group].games.push(gameArray);
-    return processAddGameToGroup(200, { "message": "Game added successfully to the group!" })
+function addGameToGroup(game, group_id){
+    return fetch(`${SERVER_URL}/groups/_doc/_update_by_query`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "query": {
+                "match": {
+                    "id": `${group_id}`
+                }
+            },
+            "script": {
+                "lang": "painless",
+                "inline": "ctx._source.games.add(params.game)",
+                "params": {
+                    "games": game
+                }
+            }
+        })
+    })
+        .then(response => response.json())
+        .then(body => body.updated)
+        .catch(() => responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG))
 }
 
-function getRatingsFromGames(group_id, max, min, processGetRatingsFromGames) {
-    var group = Groups_Database.findIndex(g => g.name === parseInt(group_id))
-    if(group == -1) {
-        return processGetRatingsFromGames(error.NOT_FOUND, error.setError({ "error": "The group you inserted doesnt exist." }))
-    }
-    var games = Groups_Database[group].games;
-    var games_within_rating = games.filter(g => g.total_rating >= min && g.total_rating <= max)
-    return processGetRatingsFromGames(200, games_within_rating)
+//NOT SURE YET
+function getRatingsFromGames(group_id, max, min) {
+    return fetch(`${SERVER_URL}/groups/${group_id}/games/_search`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: null
+    })
+    .then(response => response.json())
+    .then(body => {
+        let hit = body.hits.hits;
+        console.log(hit)
+        if (hit.length) return hit[0]._source;
+        return undefined;
+    })
+    .catch(() => {
+        return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
+    });
 }
 
-function removeGameById(group_id, game_id, processRemoveGameById) {
-    var group = Groups_Database.findIndex(g => g.id === parseInt(group_id))
-    if(group == -1) {
-        return processRemoveGameById(error.NOT_FOUND, error.setError({ "error": "The group you inserted doesnt exist." }))
-    }
-    var games = Groups_Database[group].games
-    var gm_idx = games.findIndex(game => game.id === parseInt(game_id)) 
-    if(gm_idx == -1) {
-        return processRemoveGameById(error.NOT_FOUND, error.setError({ "error": "The game you inserted doesnt exist in this group." }))
-    }
-    games.splice(gm_idx, 1)
-    return processRemoveGameById(200, { "message":  "Game deleted successfully!" })
+function removeGameById(group_id, game_id) {
+    return fetch(`${SERVER_URL}/groups/_doc/_update_by_query`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+                "query": {
+                    "match": {
+                        "id": `${group_id}`
+                    }
+                },
+                "script": {
+                    "lang": "painless",
+                    "inline": "ctx._source.games.remove(params.game_id)",
+                    "params": {
+                        "removeGame": game_id
+                    }
+                }
+            }
+        )
+    })
+    .then(response => response.json())
+    .then(body => body.updated)
+    .catch(() => responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG))
 }
 
 module.exports = {
