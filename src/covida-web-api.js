@@ -26,6 +26,10 @@ function getGamesById(req, res) { //Implementation of the route to get a specifi
     );
 }
 
+function getGamesByName(req, res) { //Implementation of the route to get a specific game
+    console.log("Get A Specific Game")
+    serv.getGamesWithName(req.params.game_name, (err, gameObj) => processCb(err, gameObj, res));
+}
 
 function createGroup(req, res) { //Implementation of the route to create a group
     console.log("Create Group")
@@ -95,6 +99,7 @@ function removeGameById(req, res) { //Implementation of the route to delete a sp
 
 module.exports = {
     getGamesById: getGamesById,
+    getGamesByName: getGamesByName,
     
     createGroup: createGroup,
     listGroups: listGroups,

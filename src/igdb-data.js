@@ -36,6 +36,26 @@ function getGamesById(id) {
         });
 }
 
+//This method acesses to the API IGDB and make a request to get a specific game
+function getGamesByName(name, processGetGamesWithName) { //Most of the requests to the API IGDB use the POST method
+    const options = {
+        'method': 'POST', 
+        'url': `${IGDB_HOST}`,
+        'headers': {
+            'Client-ID': `${IGDB_CID}`,
+            'Authorization': `${IGDB_KEY}`,
+            'Content-Type': 'text/plain'
+        },
+        data: `search "${name}"; fields name, total_rating, summary;`
+    };
+    urllib.request(`${IGDB_HOST}`, options, function(error, data, res) {
+        if (error == null) {
+            processGetGamesWithName(null, JSON.parse(data.toString())) //Parses a JSON string, constructing the JavaScript value or object described by the string
+        }
+    })
+}
+
 module.exports = {
-    getGamesById: getGamesById
+    getGamesById: getGamesById,
+    getGamesByName: getGamesByName
 }

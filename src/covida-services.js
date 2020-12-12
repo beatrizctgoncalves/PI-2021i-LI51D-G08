@@ -28,6 +28,20 @@ function getGamesById(game_id) {
         })
 }
 
+ //Implementation of the route to get a specific game which accesses to the api
+ function getGamesByName(game_name, processGetGamesByName) {
+    data.getGamesByName(game_name, cb)
+
+    function cb(err, gameObj) {
+        if(gameObj === "[]") {
+            var errorMessageObj = "The game you inserted doesnt exist.";
+            processGetGamesByName(err, errorMessageObj)
+        } else {
+            processGetGamesByName(err, gameObj);
+        }
+    }
+}
+
 
 //Implementation of the route to create a group which accesses to the database
 function createGroup(group_name, group_desc) {
@@ -211,7 +225,8 @@ function removeGameById(group_id, game_id) {
 
 module.exports = {
     getGamesById: getGamesById,
-
+    getGamesByName: getGamesByName,
+    
     createGroup: createGroup,
     listGroups: listGroups,
     getGroupByID: getGroupByID,
