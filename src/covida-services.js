@@ -10,22 +10,21 @@ const responses = require('./responses');
 function getGamesById(game_id) {
     return data.getGamesById(game_id)
         .then(gamesObj => {
+            console.log(gamesObj)
             if (gamesObj) {
                 return responses.setSuccess(
                     responses.OK,
                     gamesObj
                 )
             } else {
-                console.log("KKKKKKKKKKKKKKKKKKKK")
                 return responses.setError(
                     responses.NOT_FOUND,
                     responses.GAME_NOT_FOUND_MSG
                 )
             }
         })
-        .catch(() => {
-            console.log("JJJJJJJJJJJJJJJJJJJJ")
-            return responses.setError(responses.API_ERROR, responses.API_ERROR_MSG)
+        .catch(err => {
+            return responses.setError(err.status, err.body)
         })
 }
 
@@ -64,8 +63,8 @@ function listGroups() {
                 )
             }
         })
-        .catch(() => {
-            return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
+        .catch(err => {
+            return responses.setError(err.status, err.body)
         })
 }
 

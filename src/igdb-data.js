@@ -31,7 +31,9 @@ function getGamesById(id) {
             if(body[0].status === 400) return undefined;
             else return body;
         })
-        .catch(() => Promise.reject(responses.API_ERROR_MSG));
+        .catch(() => { 
+            return responses.setError(responses.API_ERROR, responses.API_ERROR_MSG)
+        });
 }
 
 module.exports = {

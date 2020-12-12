@@ -8,7 +8,7 @@ function promisesAsyncImplementation(promise, res) {
         .then(result => {
             //Success reponse
             res.statusCode = result.status
-            res.json({result: result.body})
+            res.json(result.body)
         })
         .catch(err => {
             //Error response

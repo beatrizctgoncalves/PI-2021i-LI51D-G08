@@ -21,16 +21,21 @@ function createGroup(name, desc) {
         headers: { //Request headers. format is the identical to that accepted by the Headers constructor (see below)
             "Content-Type": "application/json"
         },
-        body: JSON.parse(JSON.stringify(group)) //Request body
+        body: group //Request body
     })
     .then(response => response.json()) //Expecting a json response
-    .then(body => JSON.parse(JSON.stringify(body)))
-    .catch(() => Promise.reject(responses.DB_ERROR_MSG));
+    .then(body => body)
+    .catch(() => {
+        return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
+    })
 }
 
 function listGroups() {
-    if(Groups_Database.length === 0) return undefined;
-
+    console.log("FIRST")
+    if(Groups_Database.length === 0) {
+        console.log("SECOND")
+        return undefined;
+    }
     return fetch(`${SERVER_URL}/groups`, {
         method: 'GET',
         headers: {
