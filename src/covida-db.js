@@ -15,21 +15,36 @@ function createGroup(name, desc) {
         games: []
     }
     Groups_Database.push(group)
+
     return fetch(`${SERVER_URL}/groups`, {
-        method: 'POST', 
-        headers: { // request headers. format is the identical to that accepted by the Headers constructor (see below)
+        method: 'POST',
+        headers: { //Request headers. format is the identical to that accepted by the Headers constructor (see below)
             "Content-Type": "application/json"
         },
-        body: group // request body
+        body: JSON.parse(JSON.stringify(group)) //Request body
     })
     .then(response => response.json()) //Expecting a json response
-    .then(body => body.response)
+    .then(body => JSON.parse(JSON.stringify(body)))
     .catch(() => Promise.reject(responses.DB_ERROR_MSG));
 }
 
-function listGroups(processListGroups) {
-    if(Groups_Database.length === 0) return processListGroups(error.NOT_FOUND, error.setError({ "error": "There are no groups." }))
-    return processListGroups(200, Groups_Database)
+function listGroups() {
+    if(Groups_Database.length === 0) return undefined;
+
+    return fetch(`${SERVER_URL}/groups`, {
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json()) //Expecting a json response
+    .then(body => {
+        console.log("KKKKKKKKKKKKKK")
+        console.log(body)
+        if(body.length) return body;
+        else return undefined;
+    })
+    .catch(() => Promise.reject(responses.DB_ERROR_MSG));
 }
 
 function getGroupByID(id, processGetGroupByID) {

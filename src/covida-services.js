@@ -16,6 +16,7 @@ function getGamesById(game_id) {
                     gamesObj
                 )
             } else {
+                console.log("KKKKKKKKKKKKKKKKKKKK")
                 return responses.setError(
                     responses.NOT_FOUND,
                     responses.GAME_NOT_FOUND_MSG
@@ -23,6 +24,7 @@ function getGamesById(game_id) {
             }
         })
         .catch(() => {
+            console.log("JJJJJJJJJJJJJJJJJJJJ")
             return responses.setError(responses.API_ERROR, responses.API_ERROR_MSG)
         })
 }
@@ -32,7 +34,7 @@ function getGamesById(game_id) {
 function createGroup(group_name, group_desc) {
     if(group_name && group_desc) {
         return db.createGroup(group_name, group_desc)
-        .then(groupObj => {
+        .then(() => {
             return responses.setSuccess(
                 responses.CREATED,
                 responses.GROUP_CREATED_MSG
@@ -47,12 +49,24 @@ function createGroup(group_name, group_desc) {
 }
 
 //Implementation of the route to get all groups which accesses to the database
-function listGroups(processListGroups) {
-    db.listGroups(cb)
-
-    function cb(err, groupObj) {
-        processListGroups(err, groupObj);
-    }
+function listGroups() {
+    return db.listGroups()
+        .then(groupObj => {
+            if(groupObj) {
+                return responses.setSuccess(
+                    responses.CREATED,
+                    responses.GROUP_CREATED_MSG
+                )
+            } else {
+                return responses.setError(
+                    responses.NOT_FOUND,
+                    responses.GROUPS_0_MSG
+                )
+            }
+        })
+        .catch(() => {
+            return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
+        })
 }
 
 //Implementation of the route to get a specific group which accesses to the database

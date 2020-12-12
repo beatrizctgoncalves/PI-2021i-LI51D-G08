@@ -26,6 +26,7 @@ module.exports = {
     BAD_REQUEST_MSG: "Please insert a valid parameter!",
     GAME_NOT_FOUND_MSG: "Could not find game!",
     GROUP_NOT_FOUND_MSG: "Could not find group!",
+    GROUPS_0_MSG: "Could not find any group!",
     CONFLIT_GROUP_MSG: "This group already exists!",
     DB_ERROR_MSG: "Error in DataBase",
     API_ERROR_MSG: "Error in IGDB API",

@@ -8,12 +8,12 @@ function promisesAsyncImplementation(promise, res) {
         .then(result => {
             //Success reponse
             res.statusCode = result.status
-            res.json(result.body)
+            res.json({result: result.body})
         })
         .catch(err => {
             //Error response
             res.statusCode = err.status
-            res.json(err.body)
+            res.json({error: err.body})
         });
 }
 
@@ -37,7 +37,10 @@ function createGroup(req, res) { //Implementation of the route to create a group
 
 function listGroups(req, res) { //Implementation of the route to get all groups
     console.log("List Groups")
-    serv.listGroups((statusCode, groupObj) => processCb(statusCode, groupObj, res));
+    promisesAsyncImplementation(
+        serv.listGroups(),
+        res
+    );
 }
 
 function getGroupByID(req, res) { //Implementation of the route to get a specific group
