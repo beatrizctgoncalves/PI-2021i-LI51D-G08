@@ -26,13 +26,12 @@ function createGroup(name, desc) {
         headers: { //Request headers. format is the identical to that accepted by the Headers constructor (see below)
             'Content-Type': 'application/json'
         },
-        body: group //Request body
+        body: JSON.stringify(group) //Request body
     })
     .then(response => response.json()) //Expecting a json response
     .then(body => {
         console.log("KKKKKKKKKK")
         return body;
-        
     })
     .catch(() => {
         return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
