@@ -5,49 +5,62 @@ const fetch = require('node-fetch')
 
 const SERVER_URL = 'http://localhost:8080';
 
-const Groups_Database = [] //The repository in memory
+const Groups_Database = [{
+        "id": 1,
+        "name": "name",
+        "desc": "desc",
+        "games": []
+    }] //The repository in memory
 
 function createGroup(name, desc) {
     var group = {
-        id: Groups_Database.length + 1,
-        name: name,
-        desc: desc,
-        games: []
+        "id": Groups_Database.length + 1,
+        "name": name,
+        "desc": desc,
+        "games": []
     }
     Groups_Database.push(group)
 
     return fetch(`${SERVER_URL}/groups`, {
         method: 'POST',
         headers: { //Request headers. format is the identical to that accepted by the Headers constructor (see below)
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json'
         },
         body: group //Request body
     })
     .then(response => response.json()) //Expecting a json response
-    .then(body => body)
+    .then(body => {
+        console.log("KKKKKKKKKK")
+        return body;
+        
+    })
     .catch(() => {
         return responses.setError(responses.DB_ERROR, responses.DB_ERROR_MSG)
     })
 }
 
 function listGroups() {
-    console.log("FIRST")
     if(Groups_Database.length === 0) {
         console.log("SECOND")
-        return undefined;
+        return 0;
     }
     return fetch(`${SERVER_URL}/groups`, {
         method: 'GET',
         headers: {
-            "Content-Type": "application/json"
-        }
+            'Content-Type': 'application/json'
+        },
+        body: null,
+        redirect: 'follow', // set to `manual` to extract redirect headers, `error` to reject redirect
     })
     .then(response => response.json()) //Expecting a json response
     .then(body => {
         console.log("KKKKKKKKKKKKKK")
         console.log(body)
         if(body.length) return body;
-        else return undefined;
+        else {
+            console.log("333333333333333333333")
+            return undefined;
+        }
     })
     .catch(() => Promise.reject(responses.DB_ERROR_MSG));
 }
