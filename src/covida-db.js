@@ -15,7 +15,6 @@ module.exports = {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ //Request body
-                "id": count + 1,
                 "name": name,
                 "desc": desc,
                 "games": []
@@ -36,15 +35,14 @@ module.exports = {
         })
         .then(response => response.json()) //Expecting a json response
         .then(body => {
-            console.log(body)
-            if(body.length) return body.hits.hits.map(hit => hit._source);
+            if(body.hits) return body.hits.hits.map(hit => hit._source);
             else return undefined;
         })
         .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG));
     },
 
     getGroupByID: function(id) {
-        return fetch(`${ES_URL}/groups/${id}/_search?q=id:${id}`, {
+        return fetch(`${ES_URL}/groups/_search?q=id:${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -54,7 +52,6 @@ module.exports = {
         .then(response => response.json())
         .then(body => {
             let hit = body.hits.hits;
-            console.log(hit)
             if (hit.length) return hit[0]._source;
             return undefined;
         })
@@ -64,8 +61,8 @@ module.exports = {
     },
 
     editGroup: function(group_id, new_name, new_desc) {
-        return fetch(`${ES_URL}/groups/_doc/_update_by_query`, {
-            method: 'POST',
+        return fetch(`${ES_URL}/groups/_doc/`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
