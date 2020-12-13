@@ -2,7 +2,7 @@
 
 //const data = require('./igdb-data.js');
 //const db = require('./covida-db.js');
-const responses = require('./responses');
+const covidaResponses = require('./covida-responses');
 
 function services(data, db) {
     const serv = {
@@ -11,19 +11,19 @@ function services(data, db) {
             return data.getGamesById(game_id)
                 .then(gamesObj => {
                     if (gamesObj) {
-                        return responses.setSuccess(
-                            responses.OK,
+                        return covidaResponses.setSuccess(
+                            covidaResponses.OK,
                             gamesObj
-                        )
+                        )                        
                     } else {
-                        return responses.setError(
-                            responses.NOT_FOUND,
-                            responses.GAME_NOT_FOUND_MSG
+                        return covidaResponses.setError(
+                            covidaResponses.NOT_FOUND,
+                            covidaResponses.GAME_NOT_FOUND_MSG
                         )
                     }
                 })
                 .catch(err => {
-                    return responses.setError(err.status, err.body)
+                    return covidaResponses.setError(err.status, err.body)
                 })
         },
 
@@ -32,19 +32,19 @@ function services(data, db) {
             return data.getGamesByName(game_name)
             .then(gamesObj => {
                 if (gamesObj) {
-                    return responses.setSuccess(
-                        responses.OK,
+                    return covidaResponses.setSuccess(
+                        covidaResponses.OK,
                         gamesObj
                     )
                 } else {
-                    return responses.setError(
-                        responses.NOT_FOUND,
-                        responses.GAME_NOT_FOUND_MSG
+                    return covidaResponses.setError(
+                        covidaResponses.NOT_FOUND,
+                        covidaResponses.GAME_NOT_FOUND_MSG
                     )
                 }
             })
             .catch(err => {
-                return responses.setError(err.status, err.body)
+                return covidaResponses.setError(err.status, err.body)
             })
         },
 
@@ -54,16 +54,16 @@ function services(data, db) {
             if(group_name && group_desc) {
                 return db.createGroup(group_name, group_desc)
                 .then(() => {
-                    return responses.setSuccess(
-                        responses.CREATED,
-                        responses.GROUP_CREATED_MSG
+                    return covidaResponses.setSuccess(
+                        covidaResponses.CREATED,
+                        covidaResponses.GROUP_CREATED_MSG
                     )
                 })
                 .catch(err => {
-                    return responses.setError(err.status, err.body)
+                    return covidaResponses.setError(err.status, err.body)
                 })
             } else {
-                return responses.setError(responses.BAD_REQUEST, responses.BAD_REQUEST_MSG)
+                return covidaResponses.setError(covidaResponses.BAD_REQUEST, covidaResponses.BAD_REQUEST_MSG)
             }
         },
 
@@ -72,19 +72,19 @@ function services(data, db) {
             return db.listGroups()
                 .then(groupObj => {
                     if(groupObj) {
-                        return responses.setSuccess(
-                            responses.OK,
+                        return covidaResponses.setSuccess(
+                            covidaResponses.OK,
                             groupObj
                         )
                     } else {
-                        return responses.setError(
-                            responses.NOT_FOUND,
-                            responses.GROUPS_0_MSG
+                        return covidaResponses.setError(
+                            covidaResponses.NOT_FOUND,
+                            covidaResponses.GROUPS_0_MSG
                         )
                     }
                 })
                 .catch(err => {
-                    return responses.setError(err.status, err.body)
+                    return covidaResponses.setError(err.status, err.body)
                 })
         },
 
@@ -93,19 +93,19 @@ function services(data, db) {
             return db.getGroupByID(group_id)
                 .then(groupObj => {
                     if(groupObj) {
-                        return responses.setSuccess(
-                            responses.OK,
+                        return covidaResponses.setSuccess(
+                            covidaResponses.OK,
                             groupObj
                         )
                     } else {
-                        return responses.setError(
-                            responses.NOT_FOUND,
-                            responses.GROUP_NOT_FOUND_MSG
+                        return covidaResponses.setError(
+                            covidaResponses.NOT_FOUND,
+                            covidaResponses.GROUP_NOT_FOUND_MSG
                         )
                     }
                 })
                 .catch(err => {
-                    return responses.setError(err.status, err.body)
+                    return covidaResponses.setError(err.status, err.body)
                 })
         },
 
@@ -114,19 +114,19 @@ function services(data, db) {
             return db.editGroup(group_id, new_name, new_desc)
                 .then(groupObj => {
                     if(groupObj) {
-                        return responses.setSuccess(
-                            responses.OK,
-                            responses.GROUP_EDITED_MSG
+                        return covidaResponses.setSuccess(
+                            covidaResponses.OK,
+                            covidaResponses.GROUP_EDITED_MSG
                         )
                     } else {
-                        return responses.setError(
-                            responses.NOT_FOUND,
-                            responses.GROUP_NOT_FOUND_MSG
+                        return covidaResponses.setError(
+                            covidaResponses.NOT_FOUND,
+                            covidaResponses.GROUP_NOT_FOUND_MSG
                         )
                     }
                 })
                 .catch(err => {
-                    return responses.setError(err.status, err.body)
+                    return covidaResponses.setError(err.status, err.body)
                 })
         },
 
@@ -134,19 +134,19 @@ function services(data, db) {
             return db.removeGroup(group_id)
                 .then(groupObj => {
                     if(groupObj) {
-                        return responses.setSuccess(
-                            responses.OK,
-                            responses.GROUP_REMOVED_MSG
+                        return covidaResponses.setSuccess(
+                            covidaResponses.OK,
+                            covidaResponses.GROUP_REMOVED_MSG
                         )
                     } else {
-                        return responses.setError(
-                            responses.NOT_FOUND,
-                            responses.GROUP_NOT_FOUND_MSG
+                        return covidaResponses.setError(
+                            covidaResponses.NOT_FOUND,
+                            covidaResponses.GROUP_NOT_FOUND_MSG
                         )
                     }
                 })
                 .catch(err => {
-                    return responses.setError(err.status, err.body)
+                    return covidaResponses.setError(err.status, err.body)
                 })
         },
 
@@ -160,51 +160,51 @@ function services(data, db) {
                         db.addGameToGroup(gameObj, group_id)
                         .then(groupObj => {
                             if(groupObj) {
-                                return responses.setSuccess(
-                                    responses.OK,
-                                    responses.GAME_ADD_TO_GROUP_MSG
+                                return covidaResponses.setSuccess(
+                                    covidaResponses.OK,
+                                    covidaResponses.GAME_ADD_TO_GROUP_MSG
                                 )   
                             } else {
-                                return responses.setError(
-                                    responses.NOT_FOUND,
-                                    responses.GROUP_NOT_FOUND_MSG
+                                return covidaResponses.setError(
+                                    covidaResponses.NOT_FOUND,
+                                    covidaResponses.GROUP_NOT_FOUND_MSG
                                 )
                             }
                         })
                         .catch(err => {
-                            return responses.setError(err.status, err.body)
+                            return covidaResponses.setError(err.status, err.body)
                         })
                     } else {
-                        return responses.setError(
-                            responses.NOT_FOUND,
-                            responses.GAME_NOT_FOUND_MSG
+                        return covidaResponses.setError(
+                            covidaResponses.NOT_FOUND,
+                            covidaResponses.GAME_NOT_FOUND_MSG
                         )
                     }
                 })
                 .catch(err => {
-                    return responses.setError(err.status, err.body)
+                    return covidaResponses.setError(err.status, err.body)
                 })
         },
 
         //Implementation of the route to get a game between the given interval of values which accesses to both database and api
         getRatingsFromGames: function(group_id, max, min) {
-            if(max > 100 || min < 0) return responses.setError(responses.BAD_REQUEST, responses.RATINGS_WRONG_MSG)
+            if(max > 100 || min < 0) return covidaResponses.setError(covidaResponses.BAD_REQUEST, covidaResponses.RATINGS_WRONG_MSG)
             return db.getRatingsFromGames(group_id, max, min)
                 .then(groupObj => {
                     if(groupObj) {
-                        return responses.setSuccess(
-                            responses.OK,
-                            responses.GROUP_REMOVED_MSG
+                        return covidaResponses.setSuccess(
+                            covidaResponses.OK,
+                            covidaResponses.GROUP_REMOVED_MSG
                         )
                     } else {
-                        return responses.setError(
-                            responses.NOT_FOUND,
-                            responses.GROUP_NOT_FOUND_MSG
+                        return covidaResponses.setError(
+                            covidaResponses.NOT_FOUND,
+                            covidaResponses.GROUP_NOT_FOUND_MSG
                         )
                     }
                 })
                 .catch(err => {
-                    return responses.setError(err.status, err.body)
+                    return covidaResponses.setError(err.status, err.body)
                 })
         },
 
@@ -213,19 +213,19 @@ function services(data, db) {
             return db.removeGameById(group_id, game_id)
                 .then(groupObj => {
                     if(groupObj) {
-                        return responses.setSuccess(
-                            responses.OK,
-                            responses.GROUP_REMOVED_MSG
+                        return covidaResponses.setSuccess(
+                            covidaResponses.OK,
+                            covidaResponses.GROUP_REMOVED_MSG
                         )
                     } else {
-                        return responses.setError(
-                            responses.NOT_FOUND,
-                            responses.GROUP_NOT_FOUND_MSG
+                        return covidaResponses.setError(
+                            covidaResponses.NOT_FOUND,
+                            covidaResponses.GROUP_NOT_FOUND_MSG
                         )
                     }
                 })
                 .catch(err => {
-                    return responses.setError(err.status, err.body)
+                    return covidaResponses.setError(err.status, err.body)
                 })
         }
     };

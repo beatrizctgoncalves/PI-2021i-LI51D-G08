@@ -1,6 +1,6 @@
 'use strict'
 
-const responses = require('./responses')
+const covidaResponses = require('./covida-responses')
 const fetch = require('node-fetch')
 
 const IGDB_HOST = 'https://api.igdb.com/v4/games' //API IGDB's base URL with a specific endpoint
@@ -27,12 +27,11 @@ function getGamesById(id) {
     return fetch(`${IGDB_HOST}`, requestOptions)
         .then(response =>  response.json()) //Expecting a json response
         .then(body => {
-            //IMPROVE CODE
-            if(body[0].status === 400) return undefined;
+            if(body.length > 1) return undefined;
             else return body;
         })
         .catch(() => { 
-            return responses.setError(responses.API_ERROR, responses.API_ERROR_MSG)
+            return covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG)
         });
 }
 
@@ -58,7 +57,7 @@ function getGamesByName(name) { //Most of the requests to the API IGDB use the P
         })
         .catch((err) => {
             console.log(err)
-            return responses.setError(responses.API_ERROR,responses.API_ERROR_MSG)
+            return covidaResponses.setError(covidaResponses.API_ERROR,covidaResponses.API_ERROR_MSG)
         });
 }
 
