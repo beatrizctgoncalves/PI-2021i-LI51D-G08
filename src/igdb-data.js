@@ -2,7 +2,6 @@
 
 const responses = require('./responses')
 const fetch = require('node-fetch')
-const { response } = require('express')
 
 const IGDB_HOST = 'https://api.igdb.com/v4/games' //API IGDB's base URL with a specific endpoint
 const IGDB_CID = 's4fwgb8isqexk2j87n2xagqfc3hhy6'
@@ -44,8 +43,7 @@ function getGamesByName(name) { //Most of the requests to the API IGDB use the P
     myHeaders.append("Authorization", `${IGDB_KEY}`);
     myHeaders.append("Content-Type", "text/plain");
     
-    var raw  = `fields name,total_rating,summary,url; search "${name}";`;
-    console.log(raw)
+    var raw  = `fields name, total_rating, summary, url; search "${name}";`;
     var requestOptions = {
         method: 'POST',
         headers: myHeaders,
@@ -55,8 +53,7 @@ function getGamesByName(name) { //Most of the requests to the API IGDB use the P
     return fetch(`${IGDB_HOST}`, requestOptions)
         .then(response => response.json())
         .then(body => {
-            console.log(body);
-            if(body[0].status === 400) return undefined;
+            if(!body.length) return undefined;
             else return body;
         })
         .catch((err) => {

@@ -4,23 +4,6 @@
 
 function createWebApi(app, services) {
     const wa = {
-
-        //Handle multiple asynchronous operations easily and provide better error handling than callbacks and events
-        promisesAsyncImplementation: function(promise, res) {
-            promise
-                .then(result => {
-                    //Success reponse
-                    res.statusCode = result.status
-                    res.json(result.body)
-                })
-                .catch(err => {
-                    //Error response
-                    res.statusCode = err.status
-                    res.json({error: err.body})
-                });
-        },
-
-
         getGamesById: function(req, res) { //Implementation of the route to get a specific game by id
             console.log("Get A Specific Game By ID")
             promisesAsyncImplementation(
@@ -31,7 +14,10 @@ function createWebApi(app, services) {
 
         getGamesByName: function(req, res) { //Implementation of the route to get a specific game
             console.log("Get A Specific Game")
-            services.getGamesWithName(req.params.game_name, (err, gameObj) => processCb(err, gameObj, res));
+            promisesAsyncImplementation(
+                services.getGamesByName(req.params.game_name),
+                res
+            );
         },
 
         createGroup: function(req, res) { //Implementation of the route to create a group
@@ -101,7 +87,7 @@ function createWebApi(app, services) {
         }
     }
     app.get('/games/:game_id', wa.getGamesById); //Get a specific game by id
-    app.get('/games/:game_name', wa.getGamesByName); //Get a specific game by name
+    app.get('/games/name/:game_name', wa.getGamesByName); //Get a specific game by name
 
     app.post('/groups', wa.createGroup); //Post a group in the database
     app.get('/groups', wa.listGroups); //Get all groups
@@ -116,6 +102,19 @@ function createWebApi(app, services) {
     return wa;
 }
 
-module.exports = {
-    createWebApi
+ //Handle multiple asynchronous operations easily and provide better error handling than callbacks and events
+ function promisesAsyncImplementation(promise, res) {
+    promise
+        .then(result => {
+            //Success reponse
+            res.statusCode = result.status
+            res.json(result.body)
+        })
+        .catch(err => {
+            //Error response
+            res.statusCode = err.status
+            res.json({error: err.body})
+        });
 }
+
+module.exports = createWebApi

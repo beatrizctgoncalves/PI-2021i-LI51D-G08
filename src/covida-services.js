@@ -10,7 +10,6 @@ function services(data, db) {
         getGamesById: function(game_id) {
             return data.getGamesById(game_id)
                 .then(gamesObj => {
-                    console.log(gamesObj)
                     if (gamesObj) {
                         return responses.setSuccess(
                             responses.OK,
@@ -29,17 +28,24 @@ function services(data, db) {
         },
 
         //Implementation of the route to get a specific game which accesses to the api
-        getGamesByName: function(game_name, processGetGamesByName) {
-            data.getGamesByName(game_name, cb)
-
-            function cb(err, gameObj) {
-                if(gameObj === "[]") {
-                    var errorMessageObj = "The game you inserted doesnt exist.";
-                    processGetGamesByName(err, errorMessageObj)
+        getGamesByName: function(game_name) {
+            return data.getGamesByName(game_name)
+            .then(gamesObj => {
+                if (gamesObj) {
+                    return responses.setSuccess(
+                        responses.OK,
+                        gamesObj
+                    )
                 } else {
-                    processGetGamesByName(err, gameObj);
+                    return responses.setError(
+                        responses.NOT_FOUND,
+                        responses.GAME_NOT_FOUND_MSG
+                    )
                 }
-            }
+            })
+            .catch(err => {
+                return responses.setError(err.status, err.body)
+            })
         },
 
 
