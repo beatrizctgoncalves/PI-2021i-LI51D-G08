@@ -15,13 +15,16 @@ module.exports = {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ //Request body
+                "id": count+1,
                 "name": name,
                 "desc": desc,
                 "games": []
             })
         })
             .then(response => response.json())
-            .then(body => body.result)
+            .then(body => {
+                console.log(body._id)
+                body.result})
             .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
@@ -61,8 +64,8 @@ module.exports = {
     },
 
     editGroup: function(group_id, new_name, new_desc) {
-        return fetch(`${ES_URL}/groups/_doc/`, {
-            method: 'PUT',
+        return fetch(`${ES_URL}/groups/_update_by_query`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -83,7 +86,6 @@ module.exports = {
         })
         .then(response => response.json())
         .then(body => {
-            console.log(body)
             if(body) return body.updated;
             return undefined;
         })
@@ -93,7 +95,7 @@ module.exports = {
     },
 
     removeGroup: function(group_id) {
-        return fetch(`${ES_URL}/groups/_doc/_delete_by_query`, {
+        return fetch(`${ES_URL}/groups/_delete_by_query`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -113,7 +115,7 @@ module.exports = {
 
 
     addGameToGroup: function(game, group_id){
-        return fetch(`${ES_URL}/groups/_doc/_update_by_query`, {
+        return fetch(`${ES_URL}/groups/_update_by_query`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -160,7 +162,7 @@ module.exports = {
     },
 
     removeGameById: function(group_id, game_id) {
-        return fetch(`${ES_URL}/groups/_doc/_update_by_query`, {
+        return fetch(`${ES_URL}/groups/_update_by_query`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -178,8 +180,7 @@ module.exports = {
                             "removeGame": game_id
                         }
                     }
-                }
-            )
+                })
         })
         .then(response => response.json())
         .then(body => body.updated)
