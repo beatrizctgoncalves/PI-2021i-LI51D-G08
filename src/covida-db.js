@@ -34,7 +34,7 @@ module.exports = {
         })
         .then(response => response.json()) //Expecting a json response
         .then(body => {
-            if(body.hits) return body.hits.hits.map(hit => hit._source);
+            if(body.hits.hits.length) return body.hits.hits.map(hit => hit._source);
             else return undefined;
         })
         .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG));
@@ -112,7 +112,6 @@ module.exports = {
     addGameToGroup: function(game, group_name){
         var total_rating = null;
         if("total_rating" in game[0]) total_rating = game[0].total_rating
-        console.log(game)
         return fetch(`${ES_URL}/groups/_update_by_query`, {
             method: 'POST',
             headers: {

@@ -159,7 +159,7 @@ function services(data, db) {
                     return db.getGroupByName(group_name) //check if the group exists
                     .then(groupObj => {
                         if(groupObj) {
-                            if(groupObj.games.filter(g => g.name == game_name) === -1) { //check if the game already exists in the group
+                            if(groupObj.games.findIndex(g => g.name == game_name) != -1) { //check if the game already exists in the group
                                 return covidaResponses.setError(
                                     covidaResponses.CONFLIT_GAME,
                                     covidaResponses.CONFLIT_GAME_MSG
