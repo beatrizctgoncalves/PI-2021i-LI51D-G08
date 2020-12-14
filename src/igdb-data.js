@@ -9,8 +9,8 @@ const IGDB_KEY = 'Bearer 5tfgildk5un7ie5tz6fzywdd1dcryr'
 
 module.exports = {
     
-    //This method acesses to the API IGDB and make a request to get a specific game by id
-    getGamesById: function(name) { 
+    //This method acesses to the API IGDB and make a request to get a specific game by name
+    getSpecificGame: function(name) { 
         var myHeaders = new fetch.Headers();
         myHeaders.append("Client-ID", `${IGDB_CID}`);
         myHeaders.append("Authorization", `${IGDB_KEY}`);
@@ -28,14 +28,14 @@ module.exports = {
         return fetch(`${IGDB_HOST}`, requestOptions)
         .then(response =>  response.json()) //Expecting a json response
         .then(body => {
-            if(body.length > 1) return undefined;
+            if(!body.length) return undefined;
             else return body;
         })
         .catch(() => covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG));
     },
 
-    //This method acesses to the API IGDB and make a request to get a specific game
-    getGamesByName: function(name) { //Most of the requests to the API IGDB use the POST method
+    //This method acesses to the API IGDB and make a request to get a game by name
+    searchGamesByName: function(name) { //Most of the requests to the API IGDB use the POST method
         var myHeaders = new fetch.Headers();
         myHeaders.append("Client-ID", `${IGDB_CID}`);
         myHeaders.append("Authorization", `${IGDB_KEY}`);

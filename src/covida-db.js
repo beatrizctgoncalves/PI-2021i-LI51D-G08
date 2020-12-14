@@ -168,7 +168,7 @@ module.exports = {
         });
     },
 
-    removeGameById: function(group_name, game_id) {
+    removeGame: function(group_name, game_name) {
         return fetch(`${ES_URL}/groups/_update_by_query`, {
             method: 'POST',
             headers: {
@@ -182,9 +182,9 @@ module.exports = {
                     },
                     "script": {
                         "lang": "painless",
-                        "inline": "ctx._source.games.remove(params.game_id)",
+                        "inline": "ctx._source.games.remove(params.game_name)",
                         "params": {
-                            "removeGame": game_id
+                            "game_name": game_name
                         }
                     }
                 })
