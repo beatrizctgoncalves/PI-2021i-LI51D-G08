@@ -220,27 +220,37 @@ function services(data, db) {
             return db.getGroupByName(group_name) //check if the group exists
             .then(groupObj => {
                 if(groupObj) {
-                    if(groupObj.games.filter(g => g.name == game_name) === -1) { //check if the game already exists in the group
+                    if(groupObj.games.filter(g => g.name == game_name) === -1) { 
                         return covidaResponses.setError(
                             covidaResponses.NOT_FOUND,
                             covidaResponses.GAME_NOT_FOUND_MSG
                         )
                     } else {
-                        return db.removeGame(group_name, game_name)
-                        .then(groupObj => {
-                            if(groupObj) {
-                                return covidaResponses.setSuccess(
-                                    covidaResponses.OK,
-                                    covidaResponses.GAME_REMOVED_FROM_GROUP_MSG
-                                )     
+                        return db.getGamesIndex(group_name, game_name)  //get the games' index
+                        .then(game_index => {
+                            if(game_index === covidaResponses.GROUP_NOT_FOUND_MSG) { //group doesnt exist
+                                return covidaResponses.setError(
+                                    covidaResponses.NOT_FOUND,
+                                    covidaResponses.GROUP_NOT_FOUND_MSG
+                                )
+                            } else if(game_index === covidaResponses.GAME_NOT_FOUND_MSG) { //check if the game exists in the group
+                                return covidaResponses.setError(
+                                    covidaResponses.NOT_FOUND,
+                                    covidaResponses.GAME_NOT_FOUND_MSG
+                                )
+                            } else {
+                                return db.removeGame(group_name, game_index) //remove the game by index
+                                .then(groupObj => {
+                                    if(groupObj) {
+                                        return covidaResponses.setSuccess(
+                                            covidaResponses.OK,
+                                            covidaResponses.GAME_REMOVED_FROM_GROUP_MSG
+                                        )     
+                                    }
+                                })
                             }
                         })
-                    } 
-                } else {
-                    return covidaResponses.setError(
-                        covidaResponses.NOT_FOUND,
-                        covidaResponses.GROUP_NOT_FOUND_MSG
-                    )
+                    }
                 }
             })
             .catch(err => {

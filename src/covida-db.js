@@ -168,7 +168,26 @@ module.exports = {
         });
     },
 
-    removeGame: function(group_name, game_name) {
+    getGamesIndex: function(group_name, game_name) {
+        return fetch(`${ES_URL}/groups/_search?q=name:${group_name}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(body => {
+                let hit = body.hits.hits[0]._source.games;
+                if (hit.length) {
+                    const game_index = hit.findIndex(g => g.name === game_name)
+                    if(game_index != -1) {
+                        return game_index;
+                    } else return covidaResponses.GAME_NOT_FOUND_MSG;
+                } else return covidaResponses.GROUP_NOT_FOUND_MSG;
+            })
+            .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
+    },
+
+    removeGame: function(group_name, game_index) {
         return fetch(`${ES_URL}/groups/_update_by_query`, {
             method: 'POST',
             headers: {
@@ -182,9 +201,9 @@ module.exports = {
                     },
                     "script": {
                         "lang": "painless",
-                        "inline": "ctx._source.games.remove(params.game_name)",
+                        "inline": "ctx._source.games.remove(params.game_index)",
                         "params": {
-                            "game_name": game_name
+                            "game_index": game_index
                         }
                     }
                 })
