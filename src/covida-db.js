@@ -1,7 +1,8 @@
 'use strict'
 
 const covidaResponses = require('./covida-responses')
-const fetch = require('node-fetch')
+const fetch = require('node-fetch');
+const { API_ERROR_MSG } = require('./covida-responses');
 
 const ES_URL = 'http://localhost:9200';
 
@@ -144,7 +145,7 @@ module.exports = {
     },
 
     
-    //TODO
+   
     getRatingsFromGames: function(group_name, max, min) {
         return fetch(`${ES_URL}/groups/_search?q=id:${group_name}/games/_search`, {
             method: 'GET',
@@ -157,8 +158,7 @@ module.exports = {
         .then(body => {
             let hit = body.hits.hits;
             if (hit.length) {   //NOT SURE YET
-                var games = hit[0]._source.filter(g => g.total_rating > min && g.total_rating < max)
-                console.log(games)
+                var games = hit[0]._source.games.filter(g => g.total_rating > min && g.total_rating < max)
                 return games;
             }
             else return undefined;

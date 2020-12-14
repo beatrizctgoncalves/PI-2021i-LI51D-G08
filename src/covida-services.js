@@ -198,15 +198,15 @@ function services(data, db) {
             
             return db.getRatingsFromGames(group_name, max, min)
                 .then(groupObj => {
-                    if(groupObj) {
+                    if(groupObj.length) {
                         return covidaResponses.setSuccess(
                             covidaResponses.OK,
-                            covidaResponses.GROUP_REMOVED_MSG
+                            covidaResponses.GAMES_WITH_RATING
                         )
                     } else {
                         return covidaResponses.setError(
                             covidaResponses.NOT_FOUND,
-                            covidaResponses.GROUP_NOT_FOUND_MSG
+                            covidaResponses.GAME_NOT_FOUND_MSG
                         )
                     }
                 })

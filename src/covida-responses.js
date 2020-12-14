@@ -3,6 +3,7 @@ module.exports = {
     OK: 200,
     CREATED: 201,
 
+    GAMES_WITH_RATING: "Games with rating gotten successfully",
     GROUP_CREATED_MSG: "Group successfully created!",
     GROUP_EDITED_MSG: "Group successfully edited!",
     GROUP_REMOVED_MSG: "Group successfully deleted!",
