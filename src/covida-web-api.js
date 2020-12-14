@@ -36,10 +36,10 @@ function createWebApi(app, services) {
             );
         },
 
-        getGroupByID: function(req, res) { //Implementation of the route to get a specific group
+        getGroupByName: function(req, res) { //Implementation of the route to get a specific group
             console.log("Get A Specific Group")
             promisesAsyncImplementation(
-                services.getGroupByID(req.params.group_id),
+                services.getGroupByName(req.params.group_name),
                 res
             );
         },
@@ -61,10 +61,10 @@ function createWebApi(app, services) {
         },
 
 
-        addGameByIdToGroup: function(req, res) { //Implementation of the route to add a game by id to a specific group
+        addGameToGroup: function(req, res) { //Implementation of the route to add a game by id to a specific group
             console.log("Add Game to Group")        
             promisesAsyncImplementation(
-                services.addGameByIdToGroup(req.params.game_id, req.params.group_id),
+                services.addGameToGroup(req.params.game_id, req.params.group_id),
                 res
             );
         },
@@ -91,12 +91,12 @@ function createWebApi(app, services) {
 
     app.post('/groups', wa.createGroup); //Post a group in the database
     app.get('/groups', wa.listGroups); //Get all groups
-    app.get('/groups/:group_id', wa.getGroupByID); //Get a specific group
+    app.get('/groups/:group_name', wa.getGroupByName); //Get a specific group
     app.put('/groups/:group_id', wa.editGroup); //Update a specific group
     app.delete('/groups/:group_id', wa.removeGroup); //Remove a specific group by id
 
     app.get('/groups/:group_id/games/:min&:max', wa.getRatingsFromGames); //Get a game between the given interval of values
-    app.put(`/groups/:group_id/games/:game_id`, wa.addGameByIdToGroup); //Add a specific game by id to a group
+    app.put(`/groups/:group_id/games/:game_id`, wa.addGameToGroup); //Add a specific game by id to a group
     app.delete('/groups/:group_id/games/:game_id', wa.removeGameById); //Remove a specific game by id from a group
 
     return wa;
@@ -105,16 +105,16 @@ function createWebApi(app, services) {
  //Handle multiple asynchronous operations easily and provide better error handling than callbacks and events
  function promisesAsyncImplementation(promise, res) {
     promise
-        .then(result => {
-            //Success reponse
-            res.statusCode = result.status
-            res.json(result.body)
-        })
-        .catch(err => {
-            //Error response
-            res.statusCode = err.status
-            res.json({error: err.body})
-        });
+    .then(result => {
+        //Success reponse
+        res.statusCode = result.status
+        res.json(result.body)
+    })
+    .catch(err => {
+        //Error response
+        res.statusCode = err.status
+        res.json({error: err.body})
+    });
 }
 
 module.exports = createWebApi

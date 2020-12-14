@@ -7,8 +7,8 @@ const covidaResponses = require('./covida-responses');
 function services(data, db) {
     const serv = {
         //Implementation of the route to get a specific game by id which accesses to the api
-        getGamesById: function(game_id) {
-            return data.getGamesById(game_id)
+        getGamesById: function(game_name) {
+            return data.getGamesById(game_name)
                 .then(gamesObj => {
                     if (gamesObj) {
                         return covidaResponses.setSuccess(
@@ -89,8 +89,8 @@ function services(data, db) {
         },
 
         //Implementation of the route to get a specific group which accesses to the database
-        getGroupByID: function(group_id) {
-            return db.getGroupByID(group_id)
+        getGroupByName: function(group_name) {
+            return db.getGroupByName(group_name)
                 .then(groupObj => {
                     if(groupObj) {
                         return covidaResponses.setSuccess(
@@ -152,38 +152,42 @@ function services(data, db) {
 
 
         //Implementation of the route to add a game by name to a specific group which accesses to the database
-        addGameByIdToGroup: function(game_id, group_id){
-            return data.getGamesById(game_id)
-                .then(gamesObj => {
-                    console.log(gamesObj)
-                    if (gamesObj) {
-                        db.addGameToGroup(gameObj, group_id)
-                        .then(groupObj => {
-                            if(groupObj) {
-                                return covidaResponses.setSuccess(
-                                    covidaResponses.OK,
-                                    covidaResponses.GAME_ADD_TO_GROUP_MSG
-                                )   
-                            } else {
+        addGameToGroup: function(game_name, group_name) {
+            return data.getGamesById(game_name) //check if the game exists
+            .then(gamesObj => {
+                if (gamesObj) {
+                    return db.getGroupByName(group_name) //check if the group exists
+                    .then(groupObj => {
+                        if(groupObj) {
+                            if(groupObj.games.filter(g => g.name == game_name) === -1) { //check if the game already exists in the group
                                 return covidaResponses.setError(
-                                    covidaResponses.NOT_FOUND,
-                                    covidaResponses.GROUP_NOT_FOUND_MSG
+                                    covidaResponses.CONFLIT_GAME,
+                                    covidaResponses.CONFLIT_GAME_MSG
                                 )
+                            } else {
+                                return db.addGameToGroup(gamesObj, group_name) //add game
+                                .then(() => {
+                                    return covidaResponses.setSuccess(
+                                        covidaResponses.OK,
+                                        covidaResponses.GAME_ADD_TO_GROUP_MSG
+                                    )   
+                                })
                             }
-                        })
-                        .catch(err => {
-                            return covidaResponses.setError(err.status, err.body)
-                        })
-                    } else {
-                        return covidaResponses.setError(
-                            covidaResponses.NOT_FOUND,
-                            covidaResponses.GAME_NOT_FOUND_MSG
-                        )
-                    }
-                })
-                .catch(err => {
-                    return covidaResponses.setError(err.status, err.body)
-                })
+                        } else {
+                            return covidaResponses.setError(
+                                covidaResponses.NOT_FOUND,
+                                covidaResponses.GROUP_NOT_FOUND_MSG
+                            )
+                        }
+                    })
+                } else {
+                    return covidaResponses.setError(
+                        covidaResponses.NOT_FOUND,
+                        covidaResponses.GAME_NOT_FOUND_MSG
+                    )
+                }
+            })
+            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to get a game between the given interval of values which accesses to both database and api

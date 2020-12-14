@@ -20,7 +20,7 @@ module.exports = {
     //ERROR
     BAD_REQUEST: 400,
     NOT_FOUND: 404,
-    CONFLIT_GROUP: 409,
+    CONFLIT_GAME: 409,
     DB_ERROR: 500,
     API_ERROR: 503,
 
@@ -28,7 +28,7 @@ module.exports = {
     GAME_NOT_FOUND_MSG: "Could not find game!",
     GROUP_NOT_FOUND_MSG: "Could not find group!",
     GROUPS_0_MSG: "Could not find any group!",
-    CONFLIT_GROUP_MSG: "This group already exists!",
+    CONFLIT_GAME_MSG: "This game already exists in this group!",
     DB_ERROR_MSG: "Error in DataBase",
     API_ERROR_MSG: "Error in IGDB API",
 
