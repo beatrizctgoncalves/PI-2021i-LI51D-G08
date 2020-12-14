@@ -156,15 +156,14 @@ module.exports = {
         .then(response => response.json())
         .then(body => {
             let hit = body.hits.hits;
-            if (hit.length) {   //NOT SURE YET
+            if (hit.length) {
                 var games = hit[0]._source.games.filter(g => g.total_rating > min && g.total_rating < max)
-                return games;
+                if(games == -1) return covidaResponses.GAME_NOT_FOUND_MSG;
+                else return games;
             }
-            else return undefined;
+            else return covidaResponses.GROUP_NOT_FOUND_MSG;
         })
-        .catch(() => {
-            return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG)
-        });
+        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG));
     },
 
     getGamesIndex: function(group_name, game_name) {

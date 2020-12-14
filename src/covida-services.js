@@ -197,22 +197,25 @@ function services(data, db) {
             }
             
             return db.getRatingsFromGames(group_name, max, min)
-                .then(groupObj => {
-                    if(groupObj.length) {
-                        return covidaResponses.setSuccess(
-                            covidaResponses.OK,
-                            covidaResponses.GAMES_WITH_RATING
-                        )
-                    } else {
-                        return covidaResponses.setError(
-                            covidaResponses.NOT_FOUND,
-                            covidaResponses.GAME_NOT_FOUND_MSG
-                        )
-                    }
-                })
-                .catch(err => {
-                    return covidaResponses.setError(err.status, err.body)
-                })
+            .then(groupObj => {
+                if(groupObj === covidaResponses.GROUP_NOT_FOUND_MSG) { //group doesnt exist
+                    return covidaResponses.setError(
+                        covidaResponses.NOT_FOUND,
+                        covidaResponses.GROUP_NOT_FOUND_MSG
+                    )
+                } else if(groupObj === covidaResponses.GAME_NOT_FOUND_MSG) { //check if the game exists in the group
+                    return covidaResponses.setError(
+                        covidaResponses.NOT_FOUND,
+                        covidaResponses.GAME_NOT_FOUND_MSG
+                    )
+                } else {
+                    return covidaResponses.setSuccess(
+                        covidaResponses.OK,
+                        covidaResponses.GAME_REMOVED_FROM_GROUP_MSG
+                    )     
+                }
+            })
+            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to delete a specific game which accesses to the database
