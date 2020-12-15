@@ -86,8 +86,8 @@ function services(data, db) {
         },
 
        //Implementation of the route to remove a specific group which accesses to the database
-       removeGroup: function(group_name){
-            return db.removeGroup(group_name)
+       removeGroup: function(group_id){
+            return db.removeGroup(group_id)
             .then(groupObj => {
                 return covidaResponses.setSuccessToUri(
                     covidaResponses.OK,
@@ -117,16 +117,21 @@ function services(data, db) {
         },
 
         //Implementation of the route to get a game between the given interval of values which accesses to both database and api
-        getRatingsFromGames: function(group_name, max, min) {
+        getRatingsFromGames: function(group_id, max, min) {
             if(max > 100 || min < 0) {  //Check if the values are acceptable
                 return covidaResponses.setError(covidaResponses.BAD_REQUEST, covidaResponses.RATINGS_WRONG_MSG);
             }
-            return db.getRatingsFromGames(group_name, max, min)
+            return db.getGroupById(group_id)
             .then(groupObj => {
-                return covidaResponses.setSuccessToList(
-                    covidaResponses.OK,
-                    groupObj
-                )            
+                var games = groupObj.games.filter(g => g.total_rating > min && g.total_rating < max);
+                if(games == -1) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
+                else {
+                    games.sort((a, b) => b.total_rating - a.total_rating); //sort the array games so that games can appear decreasingly
+                    return covidaResponses.setSuccessToList(
+                        covidaResponses.OK,
+                        games
+                    )
+                }        
             })
             .catch(err => covidaResponses.setError(err.status, err.body))
         },

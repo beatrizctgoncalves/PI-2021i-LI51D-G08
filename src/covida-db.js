@@ -78,7 +78,11 @@ module.exports = {
             })
         })
         .then(response => response.json())
-        .then(body => body._id)
+        .then(body => {
+            if(body.result == 'updated') {
+                return body._id;
+            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG);
+        })
         .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG))
     },
 
@@ -132,7 +136,7 @@ module.exports = {
     },
 
     getRatingsFromGames: function(group_id, max, min) {
-        return fetch(`${ES_URL}/groups/_search?q=id:${group_id}/games/_search`, {
+        return fetch(`${ES_URL}/groups/_doc/${group_id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
