@@ -88,26 +88,27 @@ function services(data, db) {
                 .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
-        //Implementation of the route to remove a specific group which accesses to the database
-        removeGroup: function(group_id){
-            return db.removeGroup(group_id)
-                .then(groupObj => {
-                    if(groupObj) {
-                        return covidaResponses.setSuccess(
-                            covidaResponses.OK,
-                            covidaResponses.GROUP_REMOVED_MSG
-                        )
-                    } else {
-                        return covidaResponses.setError(
-                            covidaResponses.NOT_FOUND,
-                            covidaResponses.GROUP_NOT_FOUND_MSG
-                        )
-                    }
-                })
-                .catch(err => {
-                    return covidaResponses.setError(err.status, err.body)
-                })
-        },
+       //Implementation of the route to remove a specific group which accesses to the database
+       removeGroup: function(group_name){
+        return db.removeGroup(group_name)
+            .then(groupObj => {
+                if(groupObj) {
+                    return covidaResponses.setSuccessToUri(
+                        covidaResponses.OK,
+                        groupObj
+                        
+                    )
+                } else {
+                    return covidaResponses.setError(
+                        covidaResponses.NOT_FOUND,
+                        covidaResponses.GROUP_NOT_FOUND_MSG
+                    )
+                }
+            })
+            .catch(err => {
+                return covidaResponses.setError(err.status, err.body)
+            })
+    },
 
 
         //Implementation of the route to add a game by name to a specific group which accesses to the database
