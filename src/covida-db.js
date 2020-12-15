@@ -65,7 +65,7 @@ module.exports = {
         })
     },
 
-    editGroup: function(group_id, new_name, new_desc) {
+    editGroup: function(group_id, new_name, new_desc) {  //DONE
         return fetch(`${ES_URL}/groups/_update/${group_id}`, {
             method: 'POST',
             headers: {
@@ -83,7 +83,7 @@ module.exports = {
         })
         .then(response => response.json())
         .then(body => body._id)
-        .catch(() => covidaResponses.setError(covidaResponses.BAD_REQUEST, covidaResponses.BAD_REQUEST_MSG))
+        .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG))
     },
 
     removeGroup: function(group_id) {
@@ -112,18 +112,13 @@ module.exports = {
     addGameToGroup: function(game, group_id){
         var total_rating;
         "total_rating" in game[0] ? total_rating = game[0].total_rating : total_rating = null
-
-        return fetch(`${ES_URL}/groups/_update_by_query`, {
+        console.log("DB STARTED")
+        return fetch(`${ES_URL}/groups/_update/${group_id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "query": {
-                    "match": {
-                        "id": `${group_id}`
-                    }
-                },
                 "script": {
                     "lang": "painless",
                     "inline": "ctx._source.games.add(params.games)",
@@ -131,7 +126,7 @@ module.exports = {
                         "games": {
                             "id": game[0].id,
                             "name": game[0].name,
-                            "total_rating": total_rating,
+                            "total_rating": game[0].total_rating,
                             "summary": game[0].summary,
                             "url": game[0].url
                         }
@@ -140,11 +135,8 @@ module.exports = {
             })
         })
         .then(response => response.json())
-        .then(body => {
-            if(body.updated) {
-                return body._id;
-            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
-        })
+        .then(body => body._id)
+        .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG))
     },
 
     getRatingsFromGames: function(group_id, max, min) {

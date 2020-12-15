@@ -17,49 +17,31 @@ function services(data, db) {
                 )
             }
             return data.getSpecificGame(game_id)
-                .then(gamesObj => {
-                    if (gamesObj) {
-                        return covidaResponses.setSuccessToList(
-                            covidaResponses.OK,
-                            gamesObj
-                        )                        
-                    } else {
-                        return covidaResponses.setError(
-                            covidaResponses.NOT_FOUND,
-                            covidaResponses.GAME_NOT_FOUND_MSG
-                        )
-                    }
-                })
-                .catch(err => {
-                    return covidaResponses.setError(err.status, err.body)
-                })
+            .then(gamesObj => {
+                return covidaResponses.setSuccessToList(
+                    covidaResponses.OK,
+                    gamesObj
+                )                            
+            })
+            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to search for a game which accesses to the api
         searchGamesByName: function(game_name) {
             return data.searchGamesByName(game_name)
             .then(gamesObj => {
-                if (gamesObj) {
-                    return covidaResponses.setSuccessToList(
-                        covidaResponses.OK,
-                        gamesObj
-                    )
-                } else {
-                    return covidaResponses.setError(
-                        covidaResponses.NOT_FOUND,
-                        covidaResponses.GAME_NOT_FOUND_MSG
-                    )
-                }
+                return covidaResponses.setSuccessToList(
+                    covidaResponses.OK,
+                    gamesObj
+                )
             })
-            .catch(err => {
-                return covidaResponses.setError(err.status, err.body)
-            })
+            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
 
         //Implementation of the route to create a group which accesses to the database
-        createGroup: function(group_name, group_desc) {
-            return db.createGroup(group_name, group_desc)
+        createGroup: function(group_id, group_desc) {
+            return db.createGroup(group_id, group_desc)
             .then(obj => {
                 return covidaResponses.setSuccessToUri(
                     covidaResponses.CREATED,
@@ -95,8 +77,8 @@ function services(data, db) {
         },
 
         //Implementation of the route to update a specific group which accesses to the database
-        editGroup: function(group_name, new_name, new_desc) {
-            return db.editGroup(group_name, new_name, new_desc)
+        editGroup: function(group_id, new_name, new_desc) {
+            return db.editGroup(group_id, new_name, new_desc)
                 .then(groupObj => {
                     return covidaResponses.setSuccessToUri(
                         covidaResponses.OK,
@@ -107,8 +89,8 @@ function services(data, db) {
         },
 
         //Implementation of the route to remove a specific group which accesses to the database
-        removeGroup: function(group_name){
-            return db.removeGroup(group_name)
+        removeGroup: function(group_id){
+            return db.removeGroup(group_id)
                 .then(groupObj => {
                     if(groupObj) {
                         return covidaResponses.setSuccess(
@@ -129,51 +111,31 @@ function services(data, db) {
 
 
         //Implementation of the route to add a game by name to a specific group which accesses to the database
-        addGameToGroup: function(game_name, group_name) {
+        addGameToGroup: function(game_name, group_id) {
             return data.getSpecificGame(game_name) //check if the game exists
             .then(gamesObj => {
-                if (gamesObj) {
-                    return db.getGroupByName(group_name) //check if the group exists
-                    .then(groupObj => {
-                        if(groupObj) {
-                            if(groupObj.games.findIndex(g => g.name == game_name) != -1) { //check if the game already exists in the group
-                                return covidaResponses.setError(
-                                    covidaResponses.CONFLIT_GAME,
-                                    covidaResponses.CONFLIT_GAME_MSG
-                                )
-                            } else {
-                                return db.addGameToGroup(gamesObj, group_name) //add game
-                                .then(() => {
-                                    return covidaResponses.setSuccess(
-                                        covidaResponses.OK,
-                                        covidaResponses.GAME_ADD_TO_GROUP_MSG
-                                    )   
-                                })
-                            }
-                        } else {
-                            return covidaResponses.setError(
-                                covidaResponses.NOT_FOUND,
-                                covidaResponses.GROUP_NOT_FOUND_MSG
-                            )
-                        }
+                return db.getGroupByName(group_id) //check if the group exists
+                .then(() => {
+                    console.log(gamesObj)
+                    return db.addGameToGroup(gamesObj, group_id) //add game
+                    .then(finalObj => {
+                        return covidaResponses.setSuccessToUri(
+                            covidaResponses.OK,
+                            finalObj
+                        )   
                     })
-                } else {
-                    return covidaResponses.setError( //group doesnt exist
-                        covidaResponses.NOT_FOUND,
-                        covidaResponses.GAME_NOT_FOUND_MSG
-                    )
-                }
+                })
             })
             .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to get a game between the given interval of values which accesses to both database and api
-        getRatingsFromGames: function(group_name, max, min) {
+        getRatingsFromGames: function(group_id, max, min) {
             if(max > 100 || min < 0) {  //Check if the values are acceptable
                 return covidaResponses.setError(covidaResponses.BAD_REQUEST, covidaResponses.RATINGS_WRONG_MSG);
             }
             
-            return db.getRatingsFromGames(group_name, max, min)
+            return db.getRatingsFromGames(group_id, max, min)
             .then(groupObj => {
                 if(groupObj === covidaResponses.GROUP_NOT_FOUND_MSG) { //group doesnt exist
                     return covidaResponses.setError(
@@ -196,8 +158,8 @@ function services(data, db) {
         },
 
         //Implementation of the route to delete a specific game which accesses to the database
-        removeGame: function(group_name, game_name) {
-            return db.getGroupByName(group_name) //check if the group exists
+        removeGame: function(group_id, game_name) {
+            return db.getGroupByName(group_id) //check if the group exists
             .then(groupObj => {
                 if(groupObj) {
                     const game_index = groupObj.games.findIndex(g => g.name === game_name)  //get the games' index
@@ -207,7 +169,7 @@ function services(data, db) {
                             covidaResponses.GAME_NOT_FOUND_MSG
                         );
                     } else {
-                        return db.removeGame(group_name, game_index) //remove the game by index
+                        return db.removeGame(group_id, game_index) //remove the game by index
                         .then(() => {
                             return covidaResponses.setSuccess(
                                 covidaResponses.OK,
