@@ -6,12 +6,18 @@ const covidaResponses = require('./covida-responses');
 
 function services(data, db) {
     const serv = {
+        
+        //DONE
         //Implementation of the route to get a specific game by name which accesses to the api
-        getSpecificGame: function(game_name) {
-            return data.getSpecificGame(game_name)
+        getSpecificGame: function(game_id) {
+            if(!/^\d+$/.test(game_id)) return covidaResponses.setError(
+                covidaResponses.BAD_REQUEST,
+                covidaResponses.BAD_REQUEST_MSG
+                )
+            return data.getSpecificGame(game_id)
                 .then(gamesObj => {
                     if (gamesObj) {
-                        return covidaResponses.setSuccess(
+                        return covidaResponses.setSuccessToList(
                             covidaResponses.OK,
                             gamesObj
                         )                        
@@ -32,7 +38,7 @@ function services(data, db) {
             return data.searchGamesByName(game_name)
             .then(gamesObj => {
                 if (gamesObj) {
-                    return covidaResponses.setSuccess(
+                    return covidaResponses.setSuccessToList(
                         covidaResponses.OK,
                         gamesObj
                     )
