@@ -7,7 +7,7 @@ const ES_URL = 'http://localhost:9200';
 
 module.exports = {
     createGroup: function(name, desc) {
-        return fetch(`${ES_URL}/groups/_doc/`, {  //DONE
+        return fetch(`${ES_URL}/groups/_doc`, {  //DONE
             method: 'POST',
             headers: { //Request headers. format is the identical to that accepted by the Headers constructor (see below)
                 'Content-Type': 'application/json'
@@ -19,13 +19,8 @@ module.exports = {
             })
         })
         .then(response => response.json())
-        .then(body => {
-            if(body.result){
-                console.log("id:", body._id)
-                return body._id
-            }
-            else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG)   
-        })
+        .then(body => body._id)
+        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
     listGroups: function() {
@@ -46,6 +41,7 @@ module.exports = {
             }
             else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG);
         })
+        .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG))
     },
 
     getGroupById: function(id) { //DONE
@@ -102,9 +98,8 @@ module.exports = {
         })
         .then(response => response.json())
         .then(body => {
-            if(body.result == 'deleted') {
-                return body._id;
-            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
+            if(body.result === 'deleted') return body._id
+            else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
         })
     },
 

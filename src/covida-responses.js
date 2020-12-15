@@ -5,15 +5,14 @@ module.exports = {
 
     URI_MSG: "http://localhost:8080/groups/",
 
-    setSuccessToUri: function (status, obj) {
+    setSuccessToUri: function (status, id) { //Send the uri with id
         return {
             status: status,
-            body: this.URI_MSG.concat(obj.toString())
+            body: this.URI_MSG.concat(id.toString())
         }
     },
-
     
-    setSuccessToList: function (status, obj) {
+    setSuccessToList: function (status, obj) { //Lists objects
         return {
             status: status,
             body: obj

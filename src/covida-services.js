@@ -47,9 +47,7 @@ function services(data, db) {
                     covidaResponses.CREATED,
                     obj
                 )})
-            .catch(err => {
-                return covidaResponses.setError(err.status, err.body)
-            })
+            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to get all groups which accesses to the database
