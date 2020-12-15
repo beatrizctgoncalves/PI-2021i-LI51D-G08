@@ -96,14 +96,7 @@ function services(data, db) {
                     return covidaResponses.setSuccessToUri(
                         covidaResponses.OK,
                         groupObj
-                        
                     )
-                } else {
-                    return covidaResponses.setError(
-                        covidaResponses.NOT_FOUND,
-                        covidaResponses.GROUP_NOT_FOUND_MSG
-                    )
-                }
             })
             .catch(err => {
                 return covidaResponses.setError(err.status, err.body)
