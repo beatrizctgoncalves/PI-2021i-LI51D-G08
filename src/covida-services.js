@@ -10,10 +10,12 @@ function services(data, db) {
         //DONE
         //Implementation of the route to get a specific game by name which accesses to the api
         getSpecificGame: function(game_id) {
-            if(!/^\d+$/.test(game_id)) return covidaResponses.setError(
-                covidaResponses.BAD_REQUEST,
-                covidaResponses.BAD_REQUEST_MSG
+            if(!/^\d+$/.test(game_id)) {
+                return covidaResponses.setError(
+                    covidaResponses.BAD_REQUEST,
+                    covidaResponses.BAD_REQUEST_MSG
                 )
+            }
             return data.getSpecificGame(game_id)
                 .then(gamesObj => {
                     if (gamesObj) {
