@@ -15,9 +15,7 @@ module.exports = {
         myHeaders.append("Client-ID", `${IGDB_CID}`);
         myHeaders.append("Authorization", `${IGDB_KEY}`);
         myHeaders.append("Content-Type", "text/plain");
-        console.log(id)
         var raw = `fields name, total_rating, summary, url; where id = ${id};`;
-        console.log(raw)
         //These properties are part of the Fetch Standard
         var requestOptions = {
             method: 'POST', // most of the requests to the API IGDB use the POST method

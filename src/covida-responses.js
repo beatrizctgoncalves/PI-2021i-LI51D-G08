@@ -12,6 +12,7 @@ module.exports = {
         }
     },
 
+    
     setSuccessToList: function (status, obj) {
         return {
             status: status,
