@@ -114,9 +114,8 @@ function services(data, db) {
         addGameToGroup: function(game_name, group_id) {
             return data.getSpecificGame(game_name) //check if the game exists
             .then(gamesObj => {
-                return db.getGroupByName(group_id) //check if the group exists
+                return db.getGroupById(group_id) //check if the group exists
                 .then(() => {
-                    console.log(gamesObj)
                     return db.addGameToGroup(gamesObj, group_id) //add game
                     .then(finalObj => {
                         return covidaResponses.setSuccessToUri(
@@ -159,29 +158,22 @@ function services(data, db) {
 
         //Implementation of the route to delete a specific game which accesses to the database
         removeGame: function(group_id, game_name) {
-            return db.getGroupByName(group_id) //check if the group exists
+            return db.getGroupById(group_id) //check if the group exists
             .then(groupObj => {
-                if(groupObj) {
-                    const game_index = groupObj.games.findIndex(g => g.name === game_name)  //get the games' index
-                    if(game_index === -1) { //the game doesnt exist in the group
-                        return covidaResponses.setError(
-                            covidaResponses.NOT_FOUND,
-                            covidaResponses.GAME_NOT_FOUND_MSG
-                        );
-                    } else {
-                        return db.removeGame(group_id, game_index) //remove the game by index
-                        .then(() => {
-                            return covidaResponses.setSuccess(
-                                covidaResponses.OK,
-                                covidaResponses.GAME_REMOVED_FROM_GROUP_MSG
-                            )
-                        })
-                    }
-                } else {
+                const game_index = groupObj.games.findIndex(g => g.name === game_name)  //get the games' index
+                if(game_index === -1) { //the game doesnt exist in the group
                     return covidaResponses.setError(
                         covidaResponses.NOT_FOUND,
-                        covidaResponses.GROUP_NOT_FOUND_MSG
-                    )
+                        covidaResponses.GAME_NOT_FOUND_MSG
+                    );
+                } else {
+                    return db.removeGame(group_id, game_index) //remove the game by index
+                    .then(finalObj => {
+                        return covidaResponses.setSuccessToUri(
+                            covidaResponses.OK,
+                            finalObj
+                        )
+                    })
                 }
             })
             .catch(err => covidaResponses.setError(err.status, err.body))
