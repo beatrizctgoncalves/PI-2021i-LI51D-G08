@@ -6,7 +6,7 @@ const covidaResponses = require('./covida-responses');
 
 function services(data, db) {
     const serv = {
-        //Implementation of the route to get a specific game by id which accesses to the api
+        //Implementation of the route to get a specific game by name which accesses to the api
         getSpecificGame: function(game_name) {
             return data.getSpecificGame(game_name)
                 .then(gamesObj => {
@@ -27,7 +27,7 @@ function services(data, db) {
                 })
         },
 
-        //Implementation of the route to get a specific game which accesses to the api
+        //Implementation of the route to search for a game which accesses to the api
         searchGamesByName: function(game_name) {
             return data.searchGamesByName(game_name)
             .then(gamesObj => {
@@ -130,6 +130,7 @@ function services(data, db) {
                 })
         },
 
+        //Implementation of the route to remove a specific group which accesses to the database
         removeGroup: function(group_name){
             return db.removeGroup(group_name)
                 .then(groupObj => {
@@ -181,7 +182,7 @@ function services(data, db) {
                         }
                     })
                 } else {
-                    return covidaResponses.setError(
+                    return covidaResponses.setError( //group doesnt exist
                         covidaResponses.NOT_FOUND,
                         covidaResponses.GAME_NOT_FOUND_MSG
                     )

@@ -4,7 +4,7 @@
 
 function createWebApi(app, services) {
     const wa = {
-        getSpecificGame: function(req, res) { //Implementation of the route to get a specific game by id
+        getSpecificGame: function(req, res) { //Implementation of the route to get a specific game by name
             console.log("Get A Specific Game By ID")
             promisesAsyncImplementation(
                 services.getSpecificGame(req.params.game_name),
@@ -12,7 +12,7 @@ function createWebApi(app, services) {
             );
         },
 
-        searchGamesByName: function(req, res) { //Implementation of the route to get a specific game
+        searchGamesByName: function(req, res) { //Implementation of the route to get a specificsearch for a game by name
             console.log("Get A Specific Game")
             promisesAsyncImplementation(
                 services.searchGamesByName(req.params.game_name),
