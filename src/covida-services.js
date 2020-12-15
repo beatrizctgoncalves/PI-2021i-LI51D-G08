@@ -201,12 +201,12 @@ function services(data, db) {
                 if(groupObj === covidaResponses.GROUP_NOT_FOUND_MSG) { //group doesnt exist
                     return covidaResponses.setError(
                         covidaResponses.NOT_FOUND,
-                        covidaResponses.GROUP_NOT_FOUND_MSG
+                        groupObj
                     )
                 } else if(groupObj === covidaResponses.GAME_NOT_FOUND_MSG) { //check if the game exists in the group
                     return covidaResponses.setError(
                         covidaResponses.NOT_FOUND,
-                        covidaResponses.GAME_NOT_FOUND_MSG
+                        groupObj
                     )
                 } else {
                     return covidaResponses.setSuccess(
@@ -223,42 +223,29 @@ function services(data, db) {
             return db.getGroupByName(group_name) //check if the group exists
             .then(groupObj => {
                 if(groupObj) {
-                    if(groupObj.games.filter(g => g.name == game_name) === -1) { 
+                    const game_index = groupObj.games.findIndex(g => g.name === game_name)  //get the games' index
+                    if(game_index === -1) { //the game doesnt exist in the group
                         return covidaResponses.setError(
                             covidaResponses.NOT_FOUND,
                             covidaResponses.GAME_NOT_FOUND_MSG
-                        )
+                        );
                     } else {
-                        return db.getGamesIndex(group_name, game_name)  //get the games' index
-                        .then(game_index => {
-                            if(game_index === covidaResponses.GROUP_NOT_FOUND_MSG) { //group doesnt exist
-                                return covidaResponses.setError(
-                                    covidaResponses.NOT_FOUND,
-                                    covidaResponses.GROUP_NOT_FOUND_MSG
-                                )
-                            } else if(game_index === covidaResponses.GAME_NOT_FOUND_MSG) { //check if the game exists in the group
-                                return covidaResponses.setError(
-                                    covidaResponses.NOT_FOUND,
-                                    covidaResponses.GAME_NOT_FOUND_MSG
-                                )
-                            } else {
-                                return db.removeGame(group_name, game_index) //remove the game by index
-                                .then(groupObj => {
-                                    if(groupObj) {
-                                        return covidaResponses.setSuccess(
-                                            covidaResponses.OK,
-                                            covidaResponses.GAME_REMOVED_FROM_GROUP_MSG
-                                        )     
-                                    }
-                                })
-                            }
+                        return db.removeGame(group_name, game_index) //remove the game by index
+                        .then(() => {
+                            return covidaResponses.setSuccess(
+                                covidaResponses.OK,
+                                covidaResponses.GAME_REMOVED_FROM_GROUP_MSG
+                            )
                         })
                     }
+                } else {
+                    return covidaResponses.setError(
+                        covidaResponses.NOT_FOUND,
+                        covidaResponses.GROUP_NOT_FOUND_MSG
+                    )
                 }
             })
-            .catch(err => {
-                return covidaResponses.setError(err.status, err.body)
-            })
+            .catch(err => covidaResponses.setError(err.status, err.body))
         }
     };
     return serv;

@@ -79,9 +79,7 @@ module.exports = {
             })
         })
         .then(response => response.json())
-        .then(body => {
-            return body.updated != 0 ? body.updated : undefined
-        })
+        .then(body => body.updated)
         .catch(() => {
             return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG)
         });
@@ -102,9 +100,7 @@ module.exports = {
             })
         })
         .then(response => response.json())
-        .then(body => {
-            return body.deleted != 0 ? body.deleted : undefined
-        })
+        .then(body => body.deleted)
         .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
@@ -164,25 +160,6 @@ module.exports = {
             else return covidaResponses.GROUP_NOT_FOUND_MSG;
         })
         .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG));
-    },
-
-    getGamesIndex: function(group_name, game_name) {
-        return fetch(`${ES_URL}/groups/_search?q=name:${group_name}`, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => response.json())
-            .then(body => {
-                let hit = body.hits.hits[0]._source.games;
-                if (hit.length) {
-                    const game_index = hit.findIndex(g => g.name === game_name)
-                    if(game_index != -1) {
-                        return game_index;
-                    } else return covidaResponses.GAME_NOT_FOUND_MSG;
-                } else return covidaResponses.GROUP_NOT_FOUND_MSG;
-            })
-            .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
     removeGame: function(group_name, game_index) {

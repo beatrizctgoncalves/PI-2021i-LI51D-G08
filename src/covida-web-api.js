@@ -7,7 +7,7 @@ function createWebApi(app, services) {
         getSpecificGame: function(req, res) { //Implementation of the route to get a specific game by id
             console.log("Get A Specific Game By ID")
             promisesAsyncImplementation(
-                services.getSpecificGame(req.params.game_id),
+                services.getSpecificGame(req.params.game_name),
                 res
             );
         },
@@ -64,7 +64,7 @@ function createWebApi(app, services) {
         addGameToGroup: function(req, res) { //Implementation of the route to add a game by id to a specific group
             console.log("Add Game to Group")        
             promisesAsyncImplementation(
-                services.addGameToGroup(req.params.game_id, req.params.group_name),
+                services.addGameToGroup(req.params.game_name, req.params.group_name),
                 res
             );
         },
@@ -81,13 +81,13 @@ function createWebApi(app, services) {
         removeGame: function(req, res) { //Implementation of the route to delete a specific game from a group
             console.log("Remove Game By ID")
             promisesAsyncImplementation(
-                services.removeGame(req.params.group_name, req.params.game_id),
+                services.removeGame(req.params.group_name, req.params.game_name),
                 res
             );
         }
     }
-    app.get('/games/:game_id', wa.getSpecificGame); //Get a specific game by id
-    app.get('/games/name/:game_name', wa.searchGamesByName); //Get a specific game by name
+    app.get('/games/:game_name', wa.getSpecificGame); //Get a specific game by id
+    app.get('/games/name/:game_name', wa.searchGamesByName); //Search game by name
 
     app.post('/groups', wa.createGroup); //Post a group in the database
     app.get('/groups', wa.listGroups); //Get all groups
@@ -96,8 +96,8 @@ function createWebApi(app, services) {
     app.delete('/groups/:group_name', wa.removeGroup); //Remove a specific group by id
 
     app.get('/groups/:group_name/games/:min&:max', wa.getRatingsFromGames); //Get a game between the given interval of values
-    app.put(`/groups/:group_name/games/:game_id`, wa.addGameToGroup); //Add a specific game by id to a group
-    app.delete('/groups/:group_name/games/:game_id', wa.removeGame); //Remove a specific game by id from a group
+    app.put(`/groups/:group_name/games/:game_name`, wa.addGameToGroup); //Add a specific game by id to a group
+    app.delete('/groups/:group_name/games/:game_name', wa.removeGame); //Remove a specific game by id from a group
 
     return wa;
 }
