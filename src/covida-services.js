@@ -51,20 +51,15 @@ function services(data, db) {
 
         //Implementation of the route to create a group which accesses to the database
         createGroup: function(group_name, group_desc) {
-            if(group_name && group_desc) {
-                return db.createGroup(group_name, group_desc)
-                .then(() => {
-                    return covidaResponses.setSuccess(
-                        covidaResponses.CREATED,
-                        covidaResponses.GROUP_CREATED_MSG
-                    )
-                })
-                .catch(err => {
-                    return covidaResponses.setError(err.status, err.body)
-                })
-            } else {
-                return covidaResponses.setError(covidaResponses.BAD_REQUEST, covidaResponses.BAD_REQUEST_MSG)
-            }
+            return db.createGroup(group_name, group_desc)
+            .then(obj => {
+                return covidaResponses.setSuccess(
+                    covidaResponses.CREATED,
+                    obj
+                )})
+            .catch(err => {
+                return covidaResponses.setError(err.status, err.body)
+            })
         },
 
         //Implementation of the route to get all groups which accesses to the database

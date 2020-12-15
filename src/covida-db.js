@@ -20,8 +20,15 @@ module.exports = {
             })
         })
         .then(response => response.json())
-        .then(body => body.result) //send id, return uri with id
-        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
+        .then(body => {
+            if(body.result){
+                console.log("id:",body._id)
+                return body._id
+            }
+            else
+                return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG)   
+        })//return id e uri http://localhost:groups/id
+        
     },
 
     listGroups: function() {
