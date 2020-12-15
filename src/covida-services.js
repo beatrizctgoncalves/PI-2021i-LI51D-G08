@@ -90,18 +90,15 @@ function services(data, db) {
 
        //Implementation of the route to remove a specific group which accesses to the database
        removeGroup: function(group_name){
-        return db.removeGroup(group_name)
+            return db.removeGroup(group_name)
             .then(groupObj => {
-                if(groupObj) {
-                    return covidaResponses.setSuccessToUri(
-                        covidaResponses.OK,
-                        groupObj
-                    )
+                return covidaResponses.setSuccessToUri(
+                    covidaResponses.OK,
+                    groupObj
+                )
             })
-            .catch(err => {
-                return covidaResponses.setError(err.status, err.body)
-            })
-    },
+            .catch(err => covidaResponses.setError(err.status, err.body))
+        },
 
 
         //Implementation of the route to add a game by name to a specific group which accesses to the database
@@ -132,8 +129,7 @@ function services(data, db) {
                 return covidaResponses.setSuccessToList(
                     covidaResponses.OK,
                     groupObj
-                )    
-                
+                )            
             })
             .catch(err => covidaResponses.setError(err.status, err.body))
         },
