@@ -20,7 +20,7 @@ module.exports = {
             })
         })
         .then(response => response.json())
-        .then(body => body.result)
+        .then(body => body.result) //send id, return uri with id
         .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
@@ -34,14 +34,18 @@ module.exports = {
         })
         .then(response => response.json()) //Expecting a json response
         .then(body => {
-            if(body.hits.hits.length) return body.hits.hits.map(hit => hit._source);
-            else return undefined;
+            if(body.hits.hits.length) {
+                return body.hits.hits.map(hit => {
+                    hit._source.id = hit._id;
+                    return hit._source;
+                });
+            }
+            else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG);
         })
-        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG));
     },
 
-    getGroupByName: function(name) {
-        return fetch(`${ES_URL}/groups/_search?q=name:${name}`, {
+    getGroupById: function(id) {
+        return fetch(`${ES_URL}/groups/_search?q=name:${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -52,12 +56,11 @@ module.exports = {
         .then(body => {
             let hit = body.hits.hits;
             if(hit.length) return hit[0]._source;
-            else return undefined;
+            else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
         })
-        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG));
     },
 
-    editGroup: function(group_name, new_name, new_desc) {
+    editGroup: function(group_id, new_name, new_desc) {
         return fetch(`${ES_URL}/groups/_update_by_query`, {
             method: 'POST',
             headers: {
@@ -66,7 +69,7 @@ module.exports = {
             body: JSON.stringify({
                 "query": {
                     "match": {
-                        "name": `${group_name}`
+                        "id": `${group_id}`
                     }
                 },
                 "script": {
@@ -79,13 +82,14 @@ module.exports = {
             })
         })
         .then(response => response.json())
-        .then(body => body.updated)
-        .catch(() => {
-            return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG)
-        });
+        .then(body => {
+            if(body.updated) {
+                return body._id;
+            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
+        })
     },
 
-    removeGroup: function(group_name) {
+    removeGroup: function(group_id) {
         return fetch(`${ES_URL}/groups/_delete_by_query`, {
             method: 'POST',
             headers: {
@@ -94,20 +98,24 @@ module.exports = {
             body: JSON.stringify({
                 "query": {
                     "match": {
-                        "name": `${group_name}`
+                        "id": `${group_id}`
                     }
                 }
             })
         })
         .then(response => response.json())
-        .then(body => body.deleted)
-        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
+        .then(body => {
+            if(body.deleted) {
+                return body._id;
+            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
+        })
     },
 
 
-    addGameToGroup: function(game, group_name){
-        var total_rating = null;
-        if("total_rating" in game[0]) total_rating = game[0].total_rating
+    addGameToGroup: function(game, group_id){
+        var total_rating;
+        "total_rating" in game[0] ? total_rating = game[0].total_rating : total_rating = null
+
         return fetch(`${ES_URL}/groups/_update_by_query`, {
             method: 'POST',
             headers: {
@@ -116,7 +124,7 @@ module.exports = {
             body: JSON.stringify({
                 "query": {
                     "match": {
-                        "name": `${group_name}`
+                        "id": `${group_id}`
                     }
                 },
                 "script": {
@@ -135,14 +143,15 @@ module.exports = {
             })
         })
         .then(response => response.json())
-        .then(body => body.updated)
-        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
+        .then(body => {
+            if(body.updated) {
+                return body._id;
+            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
+        })
     },
 
-    
-   
-    getRatingsFromGames: function(group_name, max, min) {
-        return fetch(`${ES_URL}/groups/_search?q=id:${group_name}/games/_search`, {
+    getRatingsFromGames: function(group_id, max, min) {
+        return fetch(`${ES_URL}/groups/_search?q=id:${group_id}/games/_search`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -154,15 +163,14 @@ module.exports = {
             let hit = body.hits.hits;
             if (hit.length) {
                 var games = hit[0]._source.games.filter(g => g.total_rating > min && g.total_rating < max)
-                if(games == -1) return covidaResponses.GAME_NOT_FOUND_MSG;
+                if(games == -1) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
                 else return games;
             }
-            else return covidaResponses.GROUP_NOT_FOUND_MSG;
+            else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
         })
-        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG));
     },
 
-    removeGame: function(group_name, game_index) {
+    removeGame: function(group_id, game_index) {
         return fetch(`${ES_URL}/groups/_update_by_query`, {
             method: 'POST',
             headers: {
@@ -171,7 +179,7 @@ module.exports = {
             body: JSON.stringify({
                     "query": {
                         "match": {
-                            "name": `${group_name}`
+                            "id": `${group_id}`
                         }
                     },
                     "script": {
@@ -184,7 +192,10 @@ module.exports = {
                 })
         })
         .then(response => response.json())
-        .then(body => body.updated)
-        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
+        .then(body => {
+            if(body.updated) {
+                return body._id;
+            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
+        })
     }
 }

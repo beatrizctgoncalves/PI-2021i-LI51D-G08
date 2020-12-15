@@ -7,9 +7,8 @@ const covidaResponses = require('./covida-responses');
 function services(data, db) {
     const serv = {
         //Implementation of the route to get a specific game by name which accesses to the api
-        getSpecificGame: function(id) {
-            if(!/^\d*$/.test(id)) return covidaResponses.setError(covidaResponses.BAD_REQUEST,covidaResponses.BAD_REQUEST_MSG)
-            return data.getSpecificGame(id)
+        getSpecificGame: function(game_name) {
+            return data.getSpecificGame(game_name)
                 .then(gamesObj => {
                     if (gamesObj) {
                         return covidaResponses.setSuccess(
@@ -71,43 +70,29 @@ function services(data, db) {
         //Implementation of the route to get all groups which accesses to the database
         listGroups: function() {
             return db.listGroups()
-                .then(groupObj => {
-                    if(groupObj) {
-                        return covidaResponses.setSuccess(
-                            covidaResponses.OK,
-                            groupObj
-                        )
-                    } else {
-                        return covidaResponses.setError(
-                            covidaResponses.NOT_FOUND,
-                            covidaResponses.GROUPS_0_MSG
-                        )
-                    }
-                })
-                .catch(err => {
-                    return covidaResponses.setError(err.status, err.body)
-                })
+            .then(groupObj => {
+                return covidaResponses.setSuccessToList(
+                    covidaResponses.OK,
+                    groupObj
+                )
+            })
+            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to get a specific group which accesses to the database
-        getGroupByName: function(group_name) {
-            return db.getGroupByName(group_name)
-                .then(groupObj => {
-                    if(groupObj) {
-                        return covidaResponses.setSuccess(
-                            covidaResponses.OK,
-                            groupObj
-                        )
-                    } else {
-                        return covidaResponses.setError(
-                            covidaResponses.NOT_FOUND,
-                            covidaResponses.GROUP_NOT_FOUND_MSG
-                        )
-                    }
-                })
-                .catch(err => {
-                    return covidaResponses.setError(err.status, err.body)
-                })
+        getGroupById: function(group_id) {
+            return db.getGroupById(group_id)
+            .then(groupObj => {
+                return covidaResponses.setSuccess(
+                    covidaResponses.OK,
+                    groupObj
+                )
+                return covidaResponses.setError(
+                    covidaResponses.NOT_FOUND,
+                    covidaResponses.GROUP_NOT_FOUND_MSG
+                )
+            })
+            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to update a specific group which accesses to the database

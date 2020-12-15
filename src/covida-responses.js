@@ -3,20 +3,22 @@ module.exports = {
     OK: 200,
     CREATED: 201,
 
-    GAMES_WITH_RATING: "Games with rating gotten successfully",
-    GROUP_CREATED_MSG: "Group successfully created!",
-    GROUP_EDITED_MSG: "Group successfully edited!",
-    GROUP_REMOVED_MSG: "Group successfully deleted!",
-    GAME_REMOVED_FROM_GROUP_MSG: "Game successfully deleted!",
-    GAME_ADD_TO_GROUP_MSG: "Game successfully added to the group!",
-    RATINGS_WRONG_MSG: "Please insert valid numbers for ratings between 0 and 100!",
+    URI_MSG: "http://localhost:8080/groups/",
 
-    setSuccess: function (status, obj) {
+    setSuccessToUri: function (status, obj) {
         return {
             status: status,
-            body: obj,
+            body: this.URI_MSG.concat(obj.toString())
         }
     },
+
+    setSuccessToList: function (status, obj) {
+        return {
+            status: status,
+            body: obj
+        }
+    },
+
 
     //ERROR
     BAD_REQUEST: 400,
