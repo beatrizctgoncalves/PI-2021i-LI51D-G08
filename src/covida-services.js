@@ -7,8 +7,7 @@ const covidaResponses = require('./covida-responses');
 function services(data, db) {
     const serv = {
         
-        //DONE
-        //Implementation of the route to get a specific game by name which accesses to the api
+        //Implementation of the route to get a specific game by id which accesses to the api
         getSpecificGame: function(game_id) {
             if(!/^\d+$/.test(game_id)) {
                 return covidaResponses.setError(
@@ -43,7 +42,7 @@ function services(data, db) {
         createGroup: function(group_id, group_desc) {
             return db.createGroup(group_id, group_desc)
             .then(obj => {
-                return covidaResponses.setSuccessToUri(
+                return covidaResponses.setSuccessToUri( //send the uri with id
                     covidaResponses.CREATED,
                     obj
                 )})

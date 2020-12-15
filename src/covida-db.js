@@ -7,7 +7,7 @@ const ES_URL = 'http://localhost:9200';
 
 module.exports = {
     createGroup: function(name, desc) {
-        return fetch(`${ES_URL}/groups/_doc`, {  //DONE
+        return fetch(`${ES_URL}/groups/_doc`, {  
             method: 'POST',
             headers: { //Request headers. format is the identical to that accepted by the Headers constructor (see below)
                 'Content-Type': 'application/json'
@@ -24,7 +24,7 @@ module.exports = {
     },
 
     listGroups: function() {
-        return fetch(`${ES_URL}/groups/_search`, {  //DONE
+        return fetch(`${ES_URL}/groups/_search`, {  
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -44,7 +44,7 @@ module.exports = {
         .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG))
     },
 
-    getGroupById: function(id) { //DONE
+    getGroupById: function(id) {
         return fetch(`${ES_URL}/groups/_doc/${id}`, {
             method: 'GET',
             headers: {
@@ -61,7 +61,7 @@ module.exports = {
         })
     },
 
-    editGroup: function(group_id, new_name, new_desc) {  //DONE
+    editGroup: function(group_id, new_name, new_desc) {  
         return fetch(`${ES_URL}/groups/_update/${group_id}`, {
             method: 'POST',
             headers: {

@@ -9,13 +9,14 @@ const IGDB_KEY = 'Bearer 5tfgildk5un7ie5tz6fzywdd1dcryr'
 
 module.exports = {
     
-    //This method acesses to the API IGDB and make a request to get a specific game by name
+    //This method acesses to the API IGDB and make a request to get a specific game by id
     getSpecificGame: function(id) { 
         var myHeaders = new fetch.Headers();
         myHeaders.append("Client-ID", `${IGDB_CID}`);
         myHeaders.append("Authorization", `${IGDB_KEY}`);
         myHeaders.append("Content-Type", "text/plain");
         var raw = `fields name, total_rating, summary, url; where id = ${id};`;
+        
         //These properties are part of the Fetch Standard
         var requestOptions = {
             method: 'POST', // most of the requests to the API IGDB use the POST method

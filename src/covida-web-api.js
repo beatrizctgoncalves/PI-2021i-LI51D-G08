@@ -4,7 +4,7 @@
 
 function createWebApi(app, services) {
     const wa = {
-        getSpecificGame: function(req, res) { //Implementation of the route to get a specific game by name
+        getSpecificGame: function(req, res) { //Implementation of the route to get a specific game by id
             console.log("Get A Specific Game By ID")
             promisesAsyncImplementation(
                 services.getSpecificGame(req.params.game_id),
@@ -52,7 +52,7 @@ function createWebApi(app, services) {
             );
         },
 
-        removeGroup: function(req,res){
+        removeGroup: function(req,res) {    //Implementation of the route to remove a group by id
             console.log("Remove Group by ID")
             promisesAsyncImplementation(
                 services.removeGroup(req.params.group_id),
