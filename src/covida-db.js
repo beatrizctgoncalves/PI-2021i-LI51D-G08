@@ -87,8 +87,8 @@ module.exports = {
     },
 
     removeGroup: function(group_id) {
-        return fetch(`${ES_URL}/groups/_delete_by_query`, {
-            method: 'POST',
+        return fetch(`${ES_URL}/groups/_doc/${group_id}`, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -102,7 +102,7 @@ module.exports = {
         })
         .then(response => response.json())
         .then(body => {
-            if(body.deleted) {
+            if(body.result == 'deleted') {
                 return body._id;
             } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
         })
