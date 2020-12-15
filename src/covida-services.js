@@ -53,7 +53,7 @@ function services(data, db) {
         createGroup: function(group_name, group_desc) {
             return db.createGroup(group_name, group_desc)
             .then(obj => {
-                return covidaResponses.setSuccess(
+                return covidaResponses.setSuccessToUri(
                     covidaResponses.CREATED,
                     obj
                 )})
@@ -78,13 +78,9 @@ function services(data, db) {
         getGroupById: function(group_id) {
             return db.getGroupById(group_id)
             .then(groupObj => {
-                return covidaResponses.setSuccess(
+                return covidaResponses.setSuccessToList(
                     covidaResponses.OK,
                     groupObj
-                )
-                return covidaResponses.setError(
-                    covidaResponses.NOT_FOUND,
-                    covidaResponses.GROUP_NOT_FOUND_MSG
                 )
             })
             .catch(err => covidaResponses.setError(err.status, err.body))
@@ -94,21 +90,12 @@ function services(data, db) {
         editGroup: function(group_name, new_name, new_desc) {
             return db.editGroup(group_name, new_name, new_desc)
                 .then(groupObj => {
-                    if(groupObj) {
-                        return covidaResponses.setSuccess(
-                            covidaResponses.OK,
-                            covidaResponses.GROUP_EDITED_MSG
-                        )
-                    } else {
-                        return covidaResponses.setError(
-                            covidaResponses.NOT_FOUND,
-                            covidaResponses.GROUP_NOT_FOUND_MSG
-                        )
-                    }
+                    return covidaResponses.setSuccessToUri(
+                        covidaResponses.OK,
+                        groupObj
+                    )
                 })
-                .catch(err => {
-                    return covidaResponses.setError(err.status, err.body)
-                })
+                .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to remove a specific group which accesses to the database

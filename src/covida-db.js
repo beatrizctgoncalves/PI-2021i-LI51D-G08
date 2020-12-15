@@ -2,13 +2,12 @@
 
 const covidaResponses = require('./covida-responses')
 const fetch = require('node-fetch');
-const { API_ERROR_MSG } = require('./covida-responses');
 
 const ES_URL = 'http://localhost:9200';
 
 module.exports = {
     createGroup: function(name, desc) {
-        return fetch(`${ES_URL}/groups/_doc/`, {
+        return fetch(`${ES_URL}/groups/_doc/`, {  //DONE
             method: 'POST',
             headers: { //Request headers. format is the identical to that accepted by the Headers constructor (see below)
                 'Content-Type': 'application/json'
@@ -22,17 +21,15 @@ module.exports = {
         .then(response => response.json())
         .then(body => {
             if(body.result){
-                console.log("id:",body._id)
+                console.log("id:", body._id)
                 return body._id
             }
-            else
-                return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG)   
-        })//return id e uri http://localhost:groups/id
-        
+            else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG)   
+        })
     },
 
     listGroups: function() {
-        return fetch(`${ES_URL}/groups/_search`, {
+        return fetch(`${ES_URL}/groups/_search`, {  //DONE
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -51,8 +48,8 @@ module.exports = {
         })
     },
 
-    getGroupById: function(id) {
-        return fetch(`${ES_URL}/groups/_search?q=name:${id}`, {
+    getGroupById: function(id) { //DONE
+        return fetch(`${ES_URL}/groups/_doc/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -61,24 +58,20 @@ module.exports = {
         })
         .then(response => response.json())
         .then(body => {
-            let hit = body.hits.hits;
-            if(hit.length) return hit[0]._source;
-            else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
+            if(body.found) {
+                body._source.id = body._id;
+                return body._source;
+           } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
         })
     },
 
     editGroup: function(group_id, new_name, new_desc) {
-        return fetch(`${ES_URL}/groups/_update_by_query`, {
+        return fetch(`${ES_URL}/groups/_update/${group_id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "query": {
-                    "match": {
-                        "id": `${group_id}`
-                    }
-                },
                 "script": {
                     "source": "ctx._source.name = params.name; ctx._source.desc = params.desc",
                     "params": {
@@ -89,11 +82,8 @@ module.exports = {
             })
         })
         .then(response => response.json())
-        .then(body => {
-            if(body.updated) {
-                return body._id;
-            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
-        })
+        .then(body => body._id)
+        .catch(() => covidaResponses.setError(covidaResponses.BAD_REQUEST, covidaResponses.BAD_REQUEST_MSG))
     },
 
     removeGroup: function(group_id) {
