@@ -131,29 +131,17 @@ function services(data, db) {
         },
 
         //Implementation of the route to get a game between the given interval of values which accesses to both database and api
-        getRatingsFromGames: function(group_id, max, min) {
+        getRatingsFromGames: function(group_name, max, min) {
             if(max > 100 || min < 0) {  //Check if the values are acceptable
                 return covidaResponses.setError(covidaResponses.BAD_REQUEST, covidaResponses.RATINGS_WRONG_MSG);
             }
-            
-            return db.getRatingsFromGames(group_id, max, min)
+            return db.getRatingsFromGames(group_name, max, min)
             .then(groupObj => {
-                if(groupObj === covidaResponses.GROUP_NOT_FOUND_MSG) { //group doesnt exist
-                    return covidaResponses.setError(
-                        covidaResponses.NOT_FOUND,
-                        groupObj
-                    )
-                } else if(groupObj === covidaResponses.GAME_NOT_FOUND_MSG) { //check if the game exists in the group
-                    return covidaResponses.setError(
-                        covidaResponses.NOT_FOUND,
-                        groupObj
-                    )
-                } else {
-                    return covidaResponses.setSuccess(
-                        covidaResponses.OK,
-                        covidaResponses.GAME_REMOVED_FROM_GROUP_MSG
-                    )     
-                }
+                return covidaResponses.setSuccessToList(
+                    covidaResponses.OK,
+                    groupObj
+                )    
+                
             })
             .catch(err => covidaResponses.setError(err.status, err.body))
         },
