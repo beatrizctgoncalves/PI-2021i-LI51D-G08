@@ -7,7 +7,7 @@ function createWebApi(app, services) {
         getSpecificGame: function(req, res) { //Implementation of the route to get a specific game by name
             console.log("Get A Specific Game By ID")
             promisesAsyncImplementation(
-                services.getSpecificGame(req.params.game_name),
+                services.getSpecificGame(req.params.game_id),
                 res
             );
         },
@@ -86,7 +86,7 @@ function createWebApi(app, services) {
             );
         }
     }
-    app.get('/games/:game_name', wa.getSpecificGame); //Get a specific game by id
+    app.get('/games/id/:game_id', wa.getSpecificGame); //Get a specific game by id
     app.get('/games/name/:game_name', wa.searchGamesByName); //Search game by name
 
     app.post('/groups', wa.createGroup); //Post a group in the database

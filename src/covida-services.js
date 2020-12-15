@@ -7,8 +7,9 @@ const covidaResponses = require('./covida-responses');
 function services(data, db) {
     const serv = {
         //Implementation of the route to get a specific game by name which accesses to the api
-        getSpecificGame: function(game_name) {
-            return data.getSpecificGame(game_name)
+        getSpecificGame: function(id) {
+            if(!/^\d*$/.test(id)) return covidaResponses.setError(covidaResponses.BAD_REQUEST,covidaResponses.BAD_REQUEST_MSG)
+            return data.getSpecificGame(id)
                 .then(gamesObj => {
                     if (gamesObj) {
                         return covidaResponses.setSuccess(
