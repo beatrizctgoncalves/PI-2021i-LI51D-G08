@@ -102,8 +102,8 @@ function services(data, db) {
 
 
         //Implementation of the route to add a game by name to a specific group which accesses to the database
-        addGameToGroup: function(game_name, group_id) {
-            return data.getSpecificGame(game_name) //check if the game exists
+        addGameToGroup: function(game_id, group_id) {
+            return data.getSpecificGame(game_id) //check if the game exists
             .then(gamesObj => {
                 return db.getGroupById(group_id) //check if the group exists
                 .then(() => {
@@ -135,10 +135,10 @@ function services(data, db) {
         },
 
         //Implementation of the route to delete a specific game which accesses to the database
-        removeGame: function(group_id, game_name) {
+        removeGame: function(group_id, game_id) {
             return db.getGroupById(group_id) //check if the group exists
             .then(groupObj => {
-                const game_index = groupObj.games.findIndex(g => g.name === game_name)  //get the games' index
+                const game_index = groupObj.games.findIndex(g => g.id === parseInt(game_id))  //get the games' index
                 if(game_index === -1) { //the game doesnt exist in the group
                     return covidaResponses.setError(
                         covidaResponses.NOT_FOUND,
