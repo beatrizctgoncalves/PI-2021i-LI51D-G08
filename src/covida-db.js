@@ -80,6 +80,7 @@ module.exports = {
     },
 
     removeGroup: function(group_id) {
+        console.log("OLA")
         var requestBody = JSON.stringify({
             "query": {
                 "match": {
@@ -88,7 +89,7 @@ module.exports = {
             }
         })
         return fetch(`${ES_URL}/groups/_doc/${group_id}`, arrayMethods.DELETE, requestBody)
-        .then(body => {
+        .then(body => { console.log("AAAAAA",body);
             if(body.result === 'deleted') return body._id
             else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
         })
@@ -97,49 +98,38 @@ module.exports = {
 
 
     addGameToGroup: function(game, group_id){
-        return fetch(`${ES_URL}/groups/_update/${group_id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "script": {
-                    "lang": "painless",
-                    "inline": "ctx._source.games.add(params.games)",
-                    "params": {
-                        "games": {
-                            "id": game[0].id,
-                            "name": game[0].name,
-                            "total_rating": game[0].total_rating,
-                            "summary": game[0].summary,
-                            "url": game[0].url
-                        }
+        
+        var requestBody = JSON.stringify({
+            "script": {
+                "lang": "painless",
+                "inline": "ctx._source.games.add(params.games)",
+                "params": {
+                    "games": {
+                        "id": game[0].id,
+                        "name": game[0].name,
+                        "total_rating": game[0].total_rating,
+                        "summary": game[0].summary,
+                        "url": game[0].url
                     }
                 }
-            })
+            }
         })
-        .then(response => response.json())
+        return makeFetch(`${ES_URL}/groups/_update/${group_id}`,arrayMethods.POST,requestBody)
         .then(body => body._id)
         .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG))
     },
 
     removeGame: function(group_id, game_index) {
-        return fetch(`${ES_URL}/groups/_update/${group_id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                    "script": {
-                        "lang": "painless",
-                        "inline": "ctx._source.games.remove(params.game)",
-                        "params": {
-                            "game": game_index
-                        }
-                    }
-                })
+        var requestBody =  JSON.stringify({
+            "script": {
+                "lang": "painless",
+                "inline": "ctx._source.games.remove(params.game)",
+                "params": {
+                    "game": game_index
+                }
+            }
         })
-        .then(response => response.json())
+        return makeFetch(`${ES_URL}/groups/_update/${group_id}`,arrayMethods.POST,requestBody)
         .then(body => body._id)
         .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     }
