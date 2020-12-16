@@ -28,9 +28,11 @@ module.exports = {
     API_ERROR: 503,
 
     BAD_REQUEST_MSG: "Please insert a valid parameter!",
+    RATINGS_WRONG_MSG: "Please insert a valid interval for ratings! It needs to be between 0 and 100 inclusive.",
     GAME_NOT_FOUND_MSG: "Could not find game!",
+    GAMES_0_MSG: "Could not find any game with ratings between the given interval!", //When ratings aren't between the given interval
     GROUP_NOT_FOUND_MSG: "Could not find group!",
-    GROUPS_0_MSG: "Could not find any group!",
+    GROUPS_0_MSG: "Could not find any group!", //When listGroups 
     CONFLIT_GAME_MSG: "This game already exists in this group!",
     DB_ERROR_MSG: "Error in DataBase",
     API_ERROR_MSG: "Error in IGDB API",

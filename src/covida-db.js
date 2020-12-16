@@ -3,7 +3,7 @@
 const covidaResponses = require('./covida-responses')
 const fetch = require('node-fetch');
 
-const ES_URL = 'http://localhost:9200';
+const ES_URL = 'http://localhost:9200/groups/';
 
 var arrayMethods = {
     POST: 'POST',
@@ -12,7 +12,7 @@ var arrayMethods = {
 };
 
 function makeFetch(uri, method, raw) {
-    return fetch(uri, {  
+    return fetch(`${ES_URL}`.concat(uri), {  
         method: method,
         headers: { //Request headers. format is the identical to that accepted by the Headers constructor (see below)
             'Content-Type': 'application/json'
@@ -23,21 +23,19 @@ function makeFetch(uri, method, raw) {
 }
 
 module.exports = {
-
     createGroup: function(name, desc) {
         var requestBody = JSON.stringify({
             "name": name,
             "desc": desc,
             "games": []
         });
-
-        return makeFetch(`${ES_URL}/groups/_doc`, arrayMethods.POST, requestBody)
+        return makeFetch('_doc', arrayMethods.POST, requestBody)
         .then(body => body._id)
         .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
     listGroups: function() {
-        return makeFetch(`${ES_URL}/groups/_search`, arrayMethods.GET, null)
+        return makeFetch('_search', arrayMethods.GET, null)
         .then(body => {
             if(body.hits.hits.length) {
                 return body.hits.hits.map(hit => {
@@ -45,19 +43,20 @@ module.exports = {
                     return hit._source;
                 });
             }
-            else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG);
+            else return Promise.reject();
         })
         .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG))
     },
 
     getGroupById: function(id) {
-        return makeFetch(`${ES_URL}/groups/_doc/${id}`, arrayMethods.GET, null)
+        return makeFetch(`_doc/${id}`, arrayMethods.GET, null)
         .then(body => {
             if(body.found) {
                 body._source.id = body._id;
                 return body._source;
-           } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
+           } else return Promise.reject();
         })
+        .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG))
     },
 
     editGroup: function(group_id, new_name, new_desc) {
@@ -70,17 +69,16 @@ module.exports = {
                 }
             }
         });
-        return fetch(`${ES_URL}/groups/_update/${group_id}`, arrayMethods.POST, requestBody)
+        return makeFetch(`_update/${group_id}`, arrayMethods.POST, requestBody)
         .then(body => {
             if(body.result == 'updated') {
                 return body._id;
-            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG);
+            } else return Promise.reject();
         })
         .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG))
     },
 
     removeGroup: function(group_id) {
-        console.log("OLA")
         var requestBody = JSON.stringify({
             "query": {
                 "match": {
@@ -88,17 +86,16 @@ module.exports = {
                 }
             }
         })
-        return fetch(`${ES_URL}/groups/_doc/${group_id}`, arrayMethods.DELETE, requestBody)
-        .then(body => { console.log("AAAAAA",body);
+        return makeFetch(`_doc/${group_id}`, arrayMethods.DELETE, requestBody)
+        .then(body => {
             if(body.result === 'deleted') return body._id
-            else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
+            else return Promise.reject();
         })
         .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG))
     },
 
 
     addGameToGroup: function(game, group_id){
-        
         var requestBody = JSON.stringify({
             "script": {
                 "lang": "painless",
@@ -114,7 +111,7 @@ module.exports = {
                 }
             }
         })
-        return makeFetch(`${ES_URL}/groups/_update/${group_id}`,arrayMethods.POST,requestBody)
+        return makeFetch(`_update/${group_id}`, arrayMethods.POST, requestBody)
         .then(body => body._id)
         .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG))
     },
@@ -129,7 +126,7 @@ module.exports = {
                 }
             }
         })
-        return makeFetch(`${ES_URL}/groups/_update/${group_id}`,arrayMethods.POST,requestBody)
+        return makeFetch(`_update/${group_id}`,arrayMethods.POST,requestBody)
         .then(body => body._id)
         .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     }

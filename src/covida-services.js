@@ -103,14 +103,22 @@ function services(data, db) {
             return data.getSpecificGame(game_id) //check if the game exists
             .then(gamesObj => {
                 return db.getGroupById(group_id) //check if the group exists
-                .then(() => {
-                    return db.addGameToGroup(gamesObj, group_id) //add game
-                    .then(finalObj => {
-                        return covidaResponses.setSuccessToUri(
-                            covidaResponses.OK,
-                            finalObj
-                        )   
-                    })
+                .then(groupObj => {
+                    const gameExists = groupObj.games.findIndex(g => g.id === parseInt(game_id))
+                    if(gameExists != -1) {  //check if the game already exists in the group
+                        return covidaResponses.setError(
+                            covidaResponses.CONFLIT_GAME, 
+                            covidaResponses.CONFLIT_GAME_MSG
+                        )
+                    } else {
+                        return db.addGameToGroup(gamesObj, group_id) //add game
+                        .then(finalObj => {
+                            return covidaResponses.setSuccessToUri(
+                                covidaResponses.OK,
+                                finalObj
+                            )   
+                        })
+                    }
                 })
             })
             .catch(err => covidaResponses.setError(err.status, err.body))
@@ -124,8 +132,9 @@ function services(data, db) {
             return db.getGroupById(group_id)
             .then(groupObj => {
                 var games = groupObj.games.filter(g => g.total_rating > min && g.total_rating < max);
-                if(games == -1) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
-                else {
+                if(!games.length) {
+                    return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAMES_0_MSG);
+                } else {
                     games.sort((a, b) => b.total_rating - a.total_rating); //sort the array games so that games can appear decreasingly
                     return covidaResponses.setSuccessToList(
                         covidaResponses.OK,
