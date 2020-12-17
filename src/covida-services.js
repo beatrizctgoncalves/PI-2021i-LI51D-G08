@@ -39,14 +39,23 @@ function services(data, db) {
 
 
         //Implementation of the route to create a group which accesses to the database
-        createGroup: function(group_id, group_desc) {
-            return db.createGroup(group_id, group_desc)
-            .then(obj => {
-                return covidaResponses.setSuccessToUri( //send the uri with id
-                    covidaResponses.CREATED,
-                    obj
-                )})
-            .catch(err => covidaResponses.setError(err.status, err.body))
+        createGroup: function(group_name, group_desc) {
+            var regExp = /[a-zA-Z]/g;
+            if(!regExp.test(group_name)) {  //verify if group_name has a string
+                return covidaResponses.setError( //send the uri with id
+                    covidaResponses.BAD_REQUEST,
+                    covidaResponses.BAD_REQUEST_MSG
+                )
+            } else {
+                return db.createGroup(group_name, group_desc)
+                .then(obj => {
+                    return covidaResponses.setSuccessToUri( //send the uri with id
+                        covidaResponses.CREATED,
+                        obj
+                    )
+                })
+                .catch(err => covidaResponses.setError(err.status, err.body))
+            }
         },
 
         //Implementation of the route to get all groups which accesses to the database
