@@ -24,7 +24,7 @@ module.exports = {
     BAD_REQUEST: 400,
     NOT_FOUND: 404,
     CONFLIT_GAME: 409,
-    DB_ERROR: 500,
+    DB_ERROR: 502,
     API_ERROR: 503,
 
     BAD_REQUEST_MSG: "Please insert a valid parameter!",
@@ -34,8 +34,8 @@ module.exports = {
     GROUP_NOT_FOUND_MSG: "Could not find group!",
     GROUPS_0_MSG: "Could not find any group!", //When listGroups 
     CONFLIT_GAME_MSG: "This game already exists in this group!",
-    DB_ERROR_MSG: "Error in DataBase",
-    API_ERROR_MSG: "Error in IGDB API",
+    DB_ERROR_MSG: "Bad Gateway: Error in DataBase",
+    API_ERROR_MSG: "Service Unavailable: Error in IGDB API",
 
     setError: function (status, message) {
         return Promise.reject({

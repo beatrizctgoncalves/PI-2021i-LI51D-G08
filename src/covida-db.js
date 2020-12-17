@@ -43,9 +43,9 @@ module.exports = {
                     return hit._source;
                 });
             }
-            else return Promise.reject();
+            else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG);
         })
-        .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG))
+        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
     getGroupById: function(id) {
@@ -54,9 +54,9 @@ module.exports = {
             if(body.found) {
                 body._source.id = body._id;
                 return body._source;
-           } else return Promise.reject();
+           } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
         })
-        .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG))
+        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
     editGroup: function(group_id, new_name, new_desc) {
@@ -73,9 +73,9 @@ module.exports = {
         .then(body => {
             if(body.result == 'updated') {
                 return body._id;
-            } else return Promise.reject();
+            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
         })
-        .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG))
+        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
     removeGroup: function(group_id) {
@@ -89,9 +89,9 @@ module.exports = {
         return makeFetch(`_doc/${group_id}`, arrayMethods.DELETE, requestBody)
         .then(body => {
             if(body.result === 'deleted') return body._id
-            else return Promise.reject();
+            else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
         })
-        .catch(() => covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG))
+        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
 

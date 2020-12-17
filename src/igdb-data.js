@@ -27,7 +27,7 @@ module.exports = {
         return fetch(`${IGDB_HOST}`, requestOptions)
         .then(response =>  response.json()) //Expecting a json response
         .then(body => {
-            if(!body.length) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
+            if(body.length > 1) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
             else return body;
         })
         .catch(() => covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG));
