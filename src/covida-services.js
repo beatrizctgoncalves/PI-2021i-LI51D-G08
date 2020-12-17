@@ -54,7 +54,6 @@ function services(data, db) {
                         obj
                     )
                 })
-                .catch(err => covidaResponses.setError(err.status, err.body))
             }
         },
 
@@ -67,7 +66,6 @@ function services(data, db) {
                     groupObj
                 )
             })
-            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to get a specific group which accesses to the database
@@ -79,19 +77,17 @@ function services(data, db) {
                     groupObj
                 )
             })
-            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to update a specific group which accesses to the database
         editGroup: function(group_id, new_name, new_desc) {
             return db.editGroup(group_id, new_name, new_desc)
-                .then(groupObj => {
-                    return covidaResponses.setSuccessToUri(
-                        covidaResponses.OK,
-                        groupObj
-                    )
-                })
-                .catch(err => covidaResponses.setError(err.status, err.body))
+            .then(groupObj => {
+                return covidaResponses.setSuccessToUri(
+                    covidaResponses.OK,
+                    groupObj
+                )
+            })
         },
 
        //Implementation of the route to remove a specific group which accesses to the database
@@ -103,7 +99,6 @@ function services(data, db) {
                     groupObj
                 )
             })
-            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
 
@@ -130,7 +125,6 @@ function services(data, db) {
                     }
                 })
             })
-            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to get a game between the given interval of values which accesses to both database and api
@@ -151,7 +145,6 @@ function services(data, db) {
                     )
                 }        
             })
-            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to delete a specific game which accesses to the database
@@ -174,7 +167,6 @@ function services(data, db) {
                     })
                 }
             })
-            .catch(err => covidaResponses.setError(err.status, err.body))
         }
     };
     return serv;
