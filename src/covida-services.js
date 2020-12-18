@@ -1,6 +1,5 @@
 'use strict'
 
-const { BAD_REQUEST } = require('./covida-responses');
 //const data = require('./igdb-data.js');
 //const db = require('./covida-db.js');
 const covidaResponses = require('./covida-responses');
@@ -23,10 +22,6 @@ function services(data, db) {
                     gamesObj
                 )                            
             })
-            .catch(error => {
-                if(error.status == covidaResponses.NOT_FOUND || error.status == covidaResponses.BAD_REQUEST) return covidaResponses.setError(error.status, error.body);
-                else return covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG);
-            })
         },
 
         //Implementation of the route to search for a game which accesses to the api
@@ -37,10 +32,6 @@ function services(data, db) {
                     covidaResponses.OK,
                     gamesObj
                 )
-            })
-            .catch(error => {
-                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
-                else return covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG);
             })
         },
 
@@ -60,10 +51,6 @@ function services(data, db) {
                         covidaResponses.CREATED,
                         obj
                     )
-                }) 
-                .catch(error => {//put in covida-db
-                    if(error.status == covidaResponses.BAD_REQUEST) return covidaResponses.setError(error.status, error.body);
-                    else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
                 })
             }
         },
@@ -77,10 +64,6 @@ function services(data, db) {
                     groupObj
                 )
             })
-            .catch(error => {
-                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
-                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
-            })
         },
 
         //Implementation of the route to get a specific group which accesses to the database
@@ -91,10 +74,6 @@ function services(data, db) {
                     covidaResponses.OK,
                     groupObj
                 )
-            })
-            .catch(error => {
-                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
-                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
             })
         },
 
@@ -107,10 +86,6 @@ function services(data, db) {
                     groupObj
                 )
             })
-            .catch(error => {
-                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
-                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
-            })
         },
 
        //Implementation of the route to remove a specific group which accesses to the database
@@ -121,10 +96,6 @@ function services(data, db) {
                     covidaResponses.OK,
                     groupObj
                 )
-            })
-            .catch(error => {
-                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
-                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
             })
         },
 
@@ -151,10 +122,6 @@ function services(data, db) {
                         })
                     }
                 })
-            })
-            .catch(error => {
-                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
-                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
             })
         },
 
@@ -183,10 +150,6 @@ function services(data, db) {
                     })
                 }       
             })
-            .catch(error => {
-                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
-                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
-            })
         },
 
         //Implementation of the route to delete a specific game which accesses to the database
@@ -208,10 +171,6 @@ function services(data, db) {
                         )
                     })
                 }
-            })
-            .catch(error => {
-                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
-                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
             })
         }
     };

@@ -31,6 +31,7 @@ module.exports = {
         });
         return makeFetch('_doc', arrayMethods.POST, requestBody)
         .then(body => body._id)
+        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
     listGroups: function() {
@@ -45,6 +46,10 @@ module.exports = {
                 } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG);
             } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG);
         })
+        .catch(error => {
+            if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+            else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
+        })
     },
 
     getGroupById: function(id) {
@@ -54,6 +59,10 @@ module.exports = {
                 body._source.id = body._id;
                 return body._source;
            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
+        })
+        .catch(error => {
+            if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+            else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
         })
     },
 
@@ -73,6 +82,10 @@ module.exports = {
                 return body._id;
             } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
         })
+        .catch(error => {
+            if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+            else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
+        })
     },
 
     removeGroup: function(group_id) {
@@ -87,6 +100,10 @@ module.exports = {
         .then(body => {
             if(body.result === 'deleted') return body._id
             else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);
+        })
+        .catch(error => {
+            if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+            else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
         })
     },
 
@@ -106,6 +123,7 @@ module.exports = {
         })
         return makeFetch(`_update/${group_id}`, arrayMethods.POST, requestBody)
         .then(body => body._id)
+        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
     removeGame: function(group_id, game_index) {
@@ -120,5 +138,6 @@ module.exports = {
         })
         return makeFetch(`_update/${group_id}`,arrayMethods.POST,requestBody)
         .then(body => body._id)
+        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     }
 }
