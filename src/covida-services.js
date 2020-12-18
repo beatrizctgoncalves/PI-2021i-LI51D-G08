@@ -22,7 +22,6 @@ function services(data, db) {
                     gamesObj
                 )                            
             })
-            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
         //Implementation of the route to search for a game which accesses to the api
@@ -34,7 +33,6 @@ function services(data, db) {
                     gamesObj
                 )
             })
-            .catch(err => covidaResponses.setError(err.status, err.body))
         },
 
 
