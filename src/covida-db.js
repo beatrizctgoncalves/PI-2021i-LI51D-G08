@@ -99,10 +99,7 @@ module.exports = {
                 "params": {
                     "games": {
                         "id": game[0].id,
-                        "name": game[0].name,
-                        "total_rating": game[0].total_rating,
-                        "summary": game[0].summary,
-                        "url": game[0].url
+                        "name": game[0].name
                     }
                 }
             }

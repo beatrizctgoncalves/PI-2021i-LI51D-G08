@@ -159,22 +159,29 @@ function services(data, db) {
         },
 
         //Implementation of the route to get a game between the given interval of values which accesses to both database and api
-        getRatingsFromGames: function(group_id, max, min) { //ratings can change
+        getRatingsFromGames: function(group_id, max, min) { 
             if(max > 100 || min < 0) {  //Check if the values are acceptable
                 return covidaResponses.setError(covidaResponses.BAD_REQUEST, covidaResponses.RATINGS_WRONG_MSG);
             }
-            return db.getGroupById(group_id) //id and name
+            return db.getGroupById(group_id)
             .then(groupObj => {
-                var games = groupObj.games.filter(g => g.total_rating > min && g.total_rating < max);
-                if(!games.length) {
-                    return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAMES_0_MSG);
-                } else {
-                    games.sort((a, b) => b.total_rating - a.total_rating); //sort the array games so that games can appear decreasingly
-                    return covidaResponses.setSuccessToList(
-                        covidaResponses.OK,
-                        games
+                const gameExists = groupObj.games.findIndex(g => g.id === parseInt(game_id))
+                if(gameExists == -1) {  //check if the game already exists in the group
+                    return covidaResponses.setError(
+                        covidaResponses.NOT_FOUND,
+                        covidaResponses.GAME_NOT_FOUND_MSG
                     )
-                }        
+                } else {
+                    return data.getSpecificGame(game_id) //get game's information because ratings can change
+                    .then(gamesObj => {
+                        var games = gamesObj.games.filter(g => g.total_rating > min && g.total_rating < max);
+                        games.sort((a, b) => b.total_rating - a.total_rating); //sort the array games so that games can appear decreasingly
+                        return covidaResponses.setSuccessToList(
+                            covidaResponses.OK,
+                            games
+                        ) 
+                    })
+                }       
             })
             .catch(error => {
                 if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
