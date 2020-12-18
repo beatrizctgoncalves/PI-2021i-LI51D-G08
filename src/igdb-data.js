@@ -30,10 +30,6 @@ module.exports = {
             if(body.length > 1) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
             else return body;
         })
-        .catch(error => {
-            if(error.status == 404) return covidaResponses.setError(error.status, error.body);
-            else return covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG);
-        })
     },
 
     //This method acesses to the API IGDB and make a request to get a game by name
@@ -55,10 +51,6 @@ module.exports = {
         .then(body => {
             if(!body.length) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
             else return body;
-        })
-        .catch(error => {
-            if(error.status == 404) return covidaResponses.setError(error.status, error.body);
-            else return covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG);
         })
     }
 }

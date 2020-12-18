@@ -1,5 +1,6 @@
 'use strict'
 
+const { BAD_REQUEST } = require('./covida-responses');
 //const data = require('./igdb-data.js');
 //const db = require('./covida-db.js');
 const covidaResponses = require('./covida-responses');
@@ -22,6 +23,10 @@ function services(data, db) {
                     gamesObj
                 )                            
             })
+            .catch(error => {
+                if(error.status == covidaResponses.NOT_FOUND || error.status == covidaResponses.BAD_REQUEST) return covidaResponses.setError(error.status, error.body);
+                else return covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG);
+            })
         },
 
         //Implementation of the route to search for a game which accesses to the api
@@ -32,6 +37,10 @@ function services(data, db) {
                     covidaResponses.OK,
                     gamesObj
                 )
+            })
+            .catch(error => {
+                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+                else return covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG);
             })
         },
 
@@ -51,6 +60,10 @@ function services(data, db) {
                         covidaResponses.CREATED,
                         obj
                     )
+                }) 
+                .catch(error => {//put in covida-db
+                    if(error.status == covidaResponses.BAD_REQUEST) return covidaResponses.setError(error.status, error.body);
+                    else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
                 })
             }
         },
@@ -64,6 +77,10 @@ function services(data, db) {
                     groupObj
                 )
             })
+            .catch(error => {
+                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
+            })
         },
 
         //Implementation of the route to get a specific group which accesses to the database
@@ -74,6 +91,10 @@ function services(data, db) {
                     covidaResponses.OK,
                     groupObj
                 )
+            })
+            .catch(error => {
+                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
             })
         },
 
@@ -86,6 +107,10 @@ function services(data, db) {
                     groupObj
                 )
             })
+            .catch(error => {
+                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
+            })
         },
 
        //Implementation of the route to remove a specific group which accesses to the database
@@ -97,11 +122,15 @@ function services(data, db) {
                     groupObj
                 )
             })
+            .catch(error => {
+                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
+            })
         },
 
 
         //Implementation of the route to add a game by name to a specific group which accesses to the database
-        addGameToGroup: function(game_id, group_id) {
+        addGameToGroup: function(game_id, group_id) { //save just game id and name
             return data.getSpecificGame(game_id) //check if the game exists
             .then(gamesObj => {
                 return db.getGroupById(group_id) //check if the group exists
@@ -123,14 +152,18 @@ function services(data, db) {
                     }
                 })
             })
+            .catch(error => {
+                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
+            })
         },
 
         //Implementation of the route to get a game between the given interval of values which accesses to both database and api
-        getRatingsFromGames: function(group_id, max, min) {
+        getRatingsFromGames: function(group_id, max, min) { //ratings can change
             if(max > 100 || min < 0) {  //Check if the values are acceptable
                 return covidaResponses.setError(covidaResponses.BAD_REQUEST, covidaResponses.RATINGS_WRONG_MSG);
             }
-            return db.getGroupById(group_id)
+            return db.getGroupById(group_id) //id and name
             .then(groupObj => {
                 var games = groupObj.games.filter(g => g.total_rating > min && g.total_rating < max);
                 if(!games.length) {
@@ -142,6 +175,10 @@ function services(data, db) {
                         games
                     )
                 }        
+            })
+            .catch(error => {
+                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
             })
         },
 
@@ -164,6 +201,10 @@ function services(data, db) {
                         )
                     })
                 }
+            })
+            .catch(error => {
+                if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+                else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
             })
         }
     };
