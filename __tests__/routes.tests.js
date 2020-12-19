@@ -2,19 +2,6 @@ const frisby = require('frisby');
 const SERVER_URI = `http://localhost:8080/`;
 const Joi = frisby.Joi;
 
-const initialTasks = [
-    {
-        id: 1,
-        name: "task1",
-        description: "Description form task 1"
-    }
-]
-  
-const tasksDbFunction = require('./../src/covida-db.js')
-const tasksIgdbFunction = require('./../src/igdb-data.js')
-const tasksServicesFunction = require('./../src/covida-services')
-
-
 describe('Get A Specific Game By Id', () => {
     test('Should get a specific game by id', () => {
         return frisby.get(`${SERVER_URI}games/id/1`)
@@ -102,24 +89,24 @@ describe('Get All Groups', () => {
     test('Should get all groups', () => {
         return frisby.get(`${SERVER_URI}groups`)
         .expect('status', 200)
-        .expect('json', [{
-            "name":"Test 1",
-            "desc":"Description of Test",
-            "games":[],
-            "id":"TLGhaHYB19w9EKmT1MPU"
+        .expect('jsonTypes', '*', [{
+            "name":Joi.string().required(),
+            "desc":Joi.string().required(),
+            "games":Joi.array(),
+            "id":Joi.string().required()
         }])
     })
 });
 
 describe('Get A Specific Group', () => {
     test('Should get a specific group', () => {
-        return frisby.get(`${SERVER_URI}groups/TLGhaHYB19w9EKmT1MPU`)
+        return frisby.get(`${SERVER_URI}groups/${Joi.string()}`)
         .expect('status', 200)
-        .expect('json', {
-            "name":"Test 1",
-            "desc":"Description of Test",
-            "games":[],
-            "id":"TLGhaHYB19w9EKmT1MPU"
+        .expect('json', 'jsonTypes', '*', {
+            "name":Joi.string().required(),
+            "desc":Joi.string().required(),
+            "games":Joi.array(),
+            "id":Joi.string().required()
         })
     })
 });

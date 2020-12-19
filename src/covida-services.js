@@ -79,13 +79,21 @@ function services(data, db) {
 
         //Implementation of the route to update a specific group which accesses to the database
         editGroup: function(group_id, new_name, new_desc) {
-            return db.editGroup(group_id, new_name, new_desc)
-            .then(groupObj => {
-                return covidaResponses.setSuccessToUri(
-                    covidaResponses.OK,
-                    groupObj
+            var regExp = /[a-zA-Z]/g;
+            if(!regExp.test(new_name)) {  //verify if new_name has a string
+                return covidaResponses.setError( //send the uri with id
+                    covidaResponses.BAD_REQUEST,
+                    covidaResponses.BAD_REQUEST_MSG
                 )
-            })
+            } else {
+                return db.editGroup(group_id, new_name, new_desc)
+                .then(groupObj => {
+                    return covidaResponses.setSuccessToUri(
+                        covidaResponses.OK,
+                        groupObj
+                    )
+                })
+            }
         },
 
        //Implementation of the route to remove a specific group which accesses to the database
