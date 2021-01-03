@@ -1,11 +1,12 @@
 'use strict';
 
-const BASE_URL = 'http://localhost:8080/';
+const BASE_URL = 'http://localhost:8080';
 
 var arrayMethods = {
     POST: 'POST',
     DELETE: 'DELETE',
     GET: 'GET',
+    PUT: 'PUT'
 };
 
 function makeFetch(uri, method, raw) {
@@ -20,74 +21,52 @@ function makeFetch(uri, method, raw) {
 }
 
 module.exports = {
+    getSpecificGame: function(id) {
+        return makeFetch(`/games/id/${id}`, arrayMethods.GET, null)
+    },
+
+    searchGamesByName: function(name) {
+        return makeFetch(`/games/name/${name}`, arrayMethods.GET, null)
+    },
+
     createGroup: function(name, desc) {
         var requestBody = JSON.stringify({
             "name": name,
             "desc": desc,
             "games": []
         });
-        return makeFetch('/groups/_doc', arrayMethods.POST, requestBody)
+        return makeFetch('/groups', arrayMethods.POST, requestBody)
     },
 
     listGroups: function() {
-        return makeFetch('/groups/_search', arrayMethods.GET, null)
+        return makeFetch('/groups', arrayMethods.GET, null)
     },
 
     getGroupById: function(id) {
-        return makeFetch(`/groups/_doc/${id}`, arrayMethods.GET, null)
+        return makeFetch(`/groups/${id}`, arrayMethods.GET, null)
     },
 
     editGroup: function(group_id, new_name, new_desc) {
         var requestBody = JSON.stringify({
-            "script": {
-                "source": "ctx._source.name = params.name; ctx._source.desc = params.desc",
-                "params": {
-                    "name": `${new_name}`,
-                    "desc": `${new_desc}`
-                }
-            }
+            "name": `${new_name}`,
+            "desc": `${new_desc}`
         });
-        return makeFetch(`/groups/_update/${group_id}`, arrayMethods.POST, requestBody)
+        return makeFetch(`/groups/${group_id}`, arrayMethods.PUT, requestBody)
     },
 
     removeGroup: function(group_id) {
-        var requestBody = JSON.stringify({
-            "query": {
-                "match": {
-                    "id": `${group_id}`
-                }
-            }
-        })
-        return makeFetch(`/groups/_doc/${group_id}`, arrayMethods.DELETE, requestBody)
+        return makeFetch(`/groups/${group_id}`, arrayMethods.DELETE, null)
     },
 
-
-    addGameToGroup: function(game, group_id){
-        var requestBody = JSON.stringify({
-            "script": {
-                "lang": "painless",
-                "inline": "ctx._source.games.add(params.games)",
-                "params": {
-                    "games": {
-                        "id": game[0].id,
-                        "name": game[0].name
-                    }
-                }
-            }
-        })
-        return makeFetch(`/groups/_update/${group_id}`, arrayMethods.POST, requestBody)
+    addGameToGroup: function(game_id, group_id){
+        return makeFetch(`/groups/${group_id}/games/${game_id}`, arrayMethods.PUT, null)
     },
 
-    removeGame: function(group_id, game_index) {
-        var requestBody =  JSON.stringify({
-            "script": {
-                "lang": "painless",
-                "inline": "ctx._source.games.remove(params.game)",
-                "params": {
-                    "game": game_index
-                }
-            }
-        })
-        return makeFetch(`/groups/_update/${group_id}`,arrayMethods.POST,requestBody)
+    getRatingsFromGames: function(group_id, max, min){
+        return makeFetch(`/groups/${group_id}/games/${min}&${max}`, arrayMethods.GET, null)
+    },
+
+    removeGame: function(game_id, group_id){
+        return makeFetch(`/groups/${group_id}/games/${game_id}`, arrayMethods.DELETE, null)
     }
 }

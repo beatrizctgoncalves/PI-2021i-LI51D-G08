@@ -12,14 +12,20 @@ const routes = require('./routes.js');
 window.onload = () => {
    setBaseTemplate();
    
-   location.hash = '#home';
+   if (location.hash) {
+      onHashChange();
+   } else {
+      location.hash = '#home';
+   }
 
-   let [modName, ...args] = location.hash.substring(1).split('/');
-   const module = getModule(modName);
-   const request = {'name': modName, 'args': args};
-   
-   module.getView && (mainContainer.innerHTML = module.getView());
-   module.run && module.run(request);
+   function onHashChange() {
+      let [modName, ...args] = location.hash.substring(1).split('/');
+      const module = getModule(modName);
+      const request = {'name': modName, 'args': args};
+      
+      module.getView && (mainContainer.innerHTML = module.getView());
+      module.run && module.run(request);
+  }
 
    function setBaseTemplate() {
       document.body.innerHTML =
@@ -42,7 +48,14 @@ window.onload = () => {
          <div id='mainContainer'></div>
          <div class="w-25 alertDiv" id="alertContainer"></div>`;
       const mainContainer = document.querySelector('#mainContainer');
+      document.getElementById("searchButton").addEventListener("click", redirectSearchResult);
       return mainContainer;
+   }
+
+   function redirectSearchResult() {
+      const query = document.getElementById("searchForm").value;
+      if (query)
+         location.hash = `#search/${query}`;
    }
 
    function getModule(name) {

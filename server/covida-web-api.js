@@ -13,12 +13,13 @@ function createWebApi(app, services) {
         },
 
         searchGamesByName: function(req, res) { //Implementation of the route to get a specificsearch for a game by name
-            console.log("Get A Specific Game")
+            console.log("Search Game By Name")
             promisesAsyncImplementation(
                 services.searchGamesByName(req.params.game_name),
                 res
             );
         },
+
 
         createGroup: function(req, res) { //Implementation of the route to create a group
             console.log("Create Group")
@@ -114,7 +115,6 @@ function createWebApi(app, services) {
     app.get('/users/:user_id', wa.getUserById)
     app.post('/users/signin', wa.signIn)
 
-
     app.get('/games/id/:game_id', wa.getSpecificGame); //Get a specific game by id
     app.get('/games/name/:game_name', wa.searchGamesByName); //Search game by name
 
@@ -131,8 +131,8 @@ function createWebApi(app, services) {
     return wa;
 }
 
- //Handle multiple asynchronous operations easily and provide better error handling than callbacks and events
- function promisesAsyncImplementation(promise, res) {
+//Handle multiple asynchronous operations easily and provide better error handling than callbacks and events
+function promisesAsyncImplementation(promise, res) {
     promise
     .then(result => {
         //Success reponse

@@ -3,13 +3,15 @@
 const covidaResponses = require('./covida-responses')
 const fetch = require('node-fetch')
 
+const GET_API_IMAGE = "https://api.igdb.com/v4/covers"
 const IGDB_HOST = 'https://api.igdb.com/v4/games' //API IGDB's base URL with a specific endpoint
 const IGDB_CID = 's4fwgb8isqexk2j87n2xagqfc3hhy6'
 const IGDB_KEY = 'Bearer 5tfgildk5un7ie5tz6fzywdd1dcryr'
+const API_IMAGE = "https:"
 
 module.exports = {
     
-    //This method acesses to the API IGDB and make a request to get a specific game by id
+    //This method makes a request to get a specific game by id
     getSpecificGame: function(id) { 
         var myHeaders = new fetch.Headers();
         myHeaders.append("Client-ID", `${IGDB_CID}`);
@@ -28,7 +30,16 @@ module.exports = {
         .then(response =>  response.json()) //Expecting a json response
         .then(body => {
             if(body.length > 1) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
-            else return body;
+            else {
+                return body.map(e => ({
+                    "id": e.id,
+                    "name": e.name,
+                    "summary": e.summary,
+                    "total_rating": e.total_rating,
+                    "url": e.url,
+                    "image": null
+                }));
+            }
         })
         .catch(error => {
             if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
@@ -36,7 +47,7 @@ module.exports = {
         })
     },
 
-    //This method acesses to the API IGDB and make a request to get a game by name
+    //This method makes a request to get a game by name
     searchGamesByName: function(name) { //Most of the requests to the API IGDB use the POST method
         var myHeaders = new fetch.Headers();
         myHeaders.append("Client-ID", `${IGDB_CID}`);
@@ -54,11 +65,33 @@ module.exports = {
         .then(response => response.json())
         .then(body => {
             if(!body.length) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
-            else return body;
+            else {
+                body.map(e => e.image = this.getImage(e.id).then(image => image))
+                return body;
+            }
         })
         .catch(error => {
             if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
             else return covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG);
         })
+    },
+
+    //This method makes a request to get the image of a specific game
+    getImage: function(id) {
+        var headers = new fetch.Headers();
+        headers.append("Client-ID", `${IGDB_CID}`);
+        headers.append("Authorization", `${IGDB_KEY}`);
+        headers.append("Content-Type", "text/plain");
+        
+        var raw  = `fields url; where game = ${id};`;
+        var requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: raw,
+        };
+        return fetch(`${GET_API_IMAGE}`, requestOptions)
+        .then(response => response.json())
+        .then(body => API_IMAGE.concat(body[0].url))
+        .catch(() => covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG))
     }
 }

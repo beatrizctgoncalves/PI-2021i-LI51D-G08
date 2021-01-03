@@ -15,22 +15,38 @@ function services(data, db) {
             }
             return data.getSpecificGame(game_id)
             .then(gamesObj => {
-                return covidaResponses.setSuccessToList(
-                    covidaResponses.OK,
-                    gamesObj
-                )                            
+                return data.getImage(game_id)
+                .then(image => {
+                    gamesObj[0].image = image; //get image
+                    return covidaResponses.setSuccessToList(
+                        covidaResponses.OK,
+                        gamesObj
+                    )
+                })
             })
         },
 
         //Implementation of the route to search for a game which accesses to the api
         searchGamesByName: function(game_name) {
-            return data.searchGamesByName(game_name)
-            .then(gamesObj => {
-                return covidaResponses.setSuccessToList(
-                    covidaResponses.OK,
-                    gamesObj
+            var regExp = /[a-zA-Z]/g;
+            if(!regExp.test(game_name)) {  //verify if new_name has a string
+                return covidaResponses.setError( //send the uri with id
+                    covidaResponses.BAD_REQUEST,
+                    covidaResponses.BAD_REQUEST_MSG
                 )
-            })
+            } else {
+                return data.searchGamesByName(game_name)
+                .then(gamesObj => gamesObj.map(e => 
+                    data.getImage(e.id)
+                    .then(image => {
+                        e.image = image; //TODO: fix
+                        return covidaResponses.setSuccessToList(
+                            covidaResponses.OK,
+                            gamesObj
+                        )
+                    })
+                ))
+            }
         },
 
 

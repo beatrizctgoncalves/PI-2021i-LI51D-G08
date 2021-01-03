@@ -1,11 +1,8 @@
 const handlebars = require('handlebars');
 
-function formatName(name) {
-    return name.replaceAll("%20", " ");
-}
-
 module.exports = {
     logo: require('../images/covida.png').default,
+
     errorTemplate: (msg) => {
         if (msg) {
             return `<div class="alert alert-danger m-5 text-center" role="alert">
@@ -17,6 +14,7 @@ module.exports = {
                 </div>`
         }
     },
+
     successTemplate: (msg) => {
         if (msg) {
             return `
@@ -32,6 +30,7 @@ module.exports = {
                 	`
         }
     },
+
     noResultsTemplate: (msg) => {
         if (msg) {
             return `
@@ -47,12 +46,36 @@ module.exports = {
                 	`
         }
     },
+    
     handlebars: handlebars,
-    formatName: formatName,
+
+    formatName: function(name) {
+        return name.replaceAll("%20", " ");
+    },
+
     spinnerTemplate: 
         `<div class="text-center">
 		    <div class="spinner-border text-primary m-5" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
-        </div>`
+        </div>`,
+
+    //TODO: colocar a foto de cada jogo
+    gamesTemplate: function() {
+        return `<div class="card-columns card-popular m-3">
+           {{#each games}}
+           <div class="card">
+                <div class="card-body text-center">
+                    <a href={{url}}>{{name}}</a>
+                    <p class="card-text">{{summary}}</p>
+                    {{#if total_rating}}
+                        <div class="progress">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{total_rating}}%">{{total_rating}}</div>
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+            {{/each}}
+        </div>`;
+    }
 }
