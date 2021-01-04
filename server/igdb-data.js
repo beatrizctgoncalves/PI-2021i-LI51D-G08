@@ -65,10 +65,7 @@ module.exports = {
         .then(response => response.json())
         .then(body => {
             if(!body.length) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
-            else {
-                body.map(e => e.image = this.getImage(e.id).then(image => image))
-                return body;
-            }
+            else return body;
         })
         .catch(error => {
             if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);

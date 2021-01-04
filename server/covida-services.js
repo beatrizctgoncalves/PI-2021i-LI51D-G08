@@ -36,16 +36,19 @@ function services(data, db) {
                 )
             } else {
                 return data.searchGamesByName(game_name)
-                .then(gamesObj => gamesObj.map(e => 
-                    data.getImage(e.id)
-                    .then(image => {
+                .then(gamesObj => {
+                    console.log(gamesObj)
+                    
+                    gamesObj.map(e => data.getImage(e.id).then(image => {
                         e.image = image; //TODO: fix
-                        return covidaResponses.setSuccessToList(
-                            covidaResponses.OK,
-                            gamesObj
-                        )
-                    })
-                ))
+                        console.log("KKKKKKKKKKKKKKK")    
+                        console.log(gamesObj)
+                    }))
+                    return covidaResponses.setSuccessToList(
+                        covidaResponses.OK,
+                        gamesObj
+                    )
+                })
             }
         },
 

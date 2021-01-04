@@ -1,9 +1,6 @@
 const passport = require('passport');
-
 const session = require('express-session');
-
 const services = require('./covida-services');
-
 const FileStore = require('session-file-store')(session);
 
 function userToRef(user, done) {
@@ -26,7 +23,6 @@ module.exports = {
             secret: 'iselleic',
             store: new FileStore()
         }));
-
         app.use(passport.initialize(undefined));
         app.use(passport.session(undefined));
 

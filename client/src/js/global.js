@@ -65,6 +65,7 @@ module.exports = {
         return `<div class="card-columns card-popular m-3">
            {{#each games}}
            <div class="card">
+                <img class="card-img-top img-fluid" src="{{image}}" alt="Card image cap">
                 <div class="card-body text-center">
                     <a href={{url}}>{{name}}</a>
                     <p class="card-text">{{summary}}</p>

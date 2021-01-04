@@ -22,7 +22,7 @@ module.exports = {
         .then(gameResult => {
             console.log(gameResult)
             itemsContainer.innerHTML = modListContentsTemplate({
-                games: rslt,
+                games: gameResult
             });
         })
         .catch((error) => {
