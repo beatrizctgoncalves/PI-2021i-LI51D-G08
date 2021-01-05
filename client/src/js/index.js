@@ -8,10 +8,12 @@ import 'bootstrap';
 
 const global = require('./global.js');
 const routes = require('./routes.js');
+const auth = require('./auth.js');
 
 window.onload = () => {
-   setBaseTemplate();
+   const [mainContainer, userInfo] = setBaseTemplate();
    
+   //auth.inialization
    if (location.hash) {
       onHashChange();
    } else {
@@ -41,6 +43,9 @@ window.onload = () => {
                      <button id="searchButton" class="btn btn-primary"><i class="fas fa-search"></i></button>
                   </div>
                </div>
+               <div>
+                  <div id='userInfo'></div>
+               </div>
             </div>
          </div>
          </nav>
@@ -48,8 +53,9 @@ window.onload = () => {
          <div id='mainContainer'></div>
          <div class="w-25 alertDiv" id="alertContainer"></div>`;
       const mainContainer = document.querySelector('#mainContainer');
+      const userInfo = document.querySelector('#userInfo');
       document.getElementById("searchButton").addEventListener("click", redirectSearchResult);
-      return mainContainer;
+      return [mainContainer, userInfo];
    }
 
    function redirectSearchResult() {

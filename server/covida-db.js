@@ -171,8 +171,8 @@ module.exports = {
             if(body.hits) {
                 if(body.hits.hits.length) {
                     return body.hits.hits.map(hit => hit._source);
-                } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.USER_NOT_FOUND_MSG);
-            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.USER_NOT_FOUND_MSG);
+                } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.USERNAME_USER_MSG);
+            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.USERNAME_USER_MSG);
         })
         .catch(error => {
             if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);

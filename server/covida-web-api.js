@@ -110,10 +110,26 @@ function createWebApi(app, services) {
                 res
             )
         },
+
+        getUser: function(req, res) {
+            console.log("Get User")
+            promisesAsyncImplementation(
+                services.getUser(req),
+                res
+            )
+        },
+
+        logout: function(req, res) {
+            console.log("Logout");
+            req.logout();
+            res.send();
+        }
     }
     app.post('/users/signup', wa.signUp)
     app.get('/users/:user_id', wa.getUserById)
     app.post('/users/signin', wa.signIn)
+    app.get('/user', wa.getUser)
+    app.post('/users/logout', wa.logout)
 
     app.get('/games/id/:game_id', wa.getSpecificGame); //Get a specific game by id
     app.get('/games/name/:game_name', wa.searchGamesByName); //Search game by name

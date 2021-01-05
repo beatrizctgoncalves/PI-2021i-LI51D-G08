@@ -36,7 +36,10 @@ module.exports = {
     CONFLIT_GAME_MSG: "This game already exists in this group!",
     DB_ERROR_MSG: "Bad Gateway: Error in DataBase",
     API_ERROR_MSG: "Service Unavailable: Error in IGDB API",
+
     CONFLIT_USER_MSG: "This user already exists!",
+    USERNAME_USER_MSG: "This username does not exist!",
+    PASSWORD_USER_MSG: "Wrong password!",
 
     setError: function (status, message) {
         return Promise.reject({

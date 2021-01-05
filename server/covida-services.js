@@ -1,8 +1,8 @@
 'use strict'
 
-const covidaResponses = require('./covida-responses');
+const { request } = require("express")
 
-function services(data, db) {
+function services(data, db, auth, covidaResponses) {
     const serv = {
         
         //Implementation of the route to get a specific game by id which accesses to the api
@@ -264,23 +264,23 @@ function services(data, db) {
             const username = requestBody.username;
             const password = requestBody.password;
             return this.getUserByName(username)
-                .then(foundUser => {
-                    if(foundUser.findIndex(u => u.password == password) === -1) {
-                        return covidaResponses.setError(
-                            covidaResponses.NOT_FOUND,
-                            covidaResponses.USER_NOT_FOUND_MSG
+            .then(foundUser => {
+                if(foundUser.findIndex(u => u.password == password) === -1) {
+                    return covidaResponses.setError(
+                        covidaResponses.NOT_FOUND,
+                        covidaResponses.PASSWORD_USER_MSG
+                    )
+                } else {
+                    return userLogin(request, foundUser)
+                    .then(obj => {
+                        return covidaResponses.setSuccessToUri(
+                            covidaResponses.OK,
+                            'users/',
+                            obj
                         )
-                    } else {
-                        return userLogin(request, foundUser)
-                        .then(() => {
-                            return utils.success(
-                                `User ${username} found`,
-                                RESOURCE_FOUND_MSG,
-                                username
-                            )
-                        })
-                    }
-                })
+                    })
+                }
+            })
         },
 
         userLogin: function(req, user) {
@@ -291,8 +291,26 @@ function services(data, db) {
                     } else {
                         resolve(result);
                     }
-                });
-            });
+                })
+            })
+        },
+
+        getUser: function(req) {
+            return new Promise((resolve, reject) => {
+                const user = req.isAutheticated() && request.data.username;
+                if (user) {
+                    resolve(covidaResponses.setSuccessToUri(
+                        covidaResponses.OK,
+                        '/users',
+                        user
+                    ));
+                } else {
+                    reject(covidaResponses.setError(
+                        covidaResponses.NOT_FOUND,
+                        covidaResponses.USERNAME_USER_MSG
+                    ));
+                }
+            })
         }
     };
     return serv;
