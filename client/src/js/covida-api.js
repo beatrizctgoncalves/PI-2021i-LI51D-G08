@@ -68,5 +68,29 @@ module.exports = {
 
     removeGame: function(game_id, group_id){
         return makeFetch(`/groups/${group_id}/games/${game_id}`, arrayMethods.DELETE, null)
+    },
+
+    signUp: function(username, password) {
+        var requestBody = JSON.stringify({
+            "username": `${username}`,
+            "password": `${password}`
+        });
+        return makeFetch('/users/signup', arrayMethods.POST, requestBody)
+    },
+    
+    signIn: function(username, password) {
+        var requestBody = JSON.stringify({
+            "username": `${username}`,
+            "password": `${password}`
+        });
+        return makeFetch('/users/signin', arrayMethods.POST, requestBody)
+    },
+    
+    logout: function() {
+        return makeFetch('/users/logout', arrayMethods.POST, null)
+    },
+
+    getUser: function() {
+        return makeFetch('/user', arrayMethods.GET, null)
     }
 }

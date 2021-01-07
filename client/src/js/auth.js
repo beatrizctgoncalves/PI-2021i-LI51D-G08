@@ -68,12 +68,14 @@ module.exports = {
                 butSignIn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${butSignIn.innerHTML}`
                 return api.signIn(username, password)
                 .then(loginResponse => {
-                    if (loginResponse.success) {
-                        alert(`Welcome ${loginResponse.success.data}`);
-                        setCurrentUser(loginResponse.success.data);
+                   if(!loginResponse.error) {
+                        alert(`Welcome ${loginResponse}`);
+                        setCurrentUser(loginResponse);
                         location.assign(`#${(req.args && req.args[0]) || 'home'}`);
-                    } else return Promise.reject(loginResponse.error.detail);
-                }).catch(error => {
+                    } else return Promise.reject(loginResponse.error)
+                })
+                .catch(error => {
+                    console.log(error.error)
                     alert(error);
                     txtUsername.value = "";
                     txtPassword.value = "";
@@ -131,19 +133,15 @@ module.exports = {
                 }
                 butSignUp.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${butSignUp.innerHTML}`
                 return api.signUp(username, password)
-                .then(response => {
-                    if (response.success) {
-                        api.signIn(username, password)
-                        .then(loginResponse => {
-                            if (loginResponse.success) {
-                                setCurrentUser(loginResponse.success.data);
-                                alert(`Thanks ${username} for joining Chelas `);
-                                location.assign(`#${(req.args && req.args[0]) || 'home'}`);
-                            }
-                        })
-                    } else {
-                        return Promise.reject(response.error.detail)
-                    }
+                .then(() => {
+                    return api.signIn(username, password)
+                    .then(loginResponse => {
+                        if(!loginResponse.error) {
+                            setCurrentUser(loginResponse);
+                            alert(`Thanks ${username} for joining COVIDA`);
+                            location.assign(`#${(req.args && req.args[0]) || 'home'}`);
+                        } else return Promise.reject(loginResponse.error);
+                    })
                 })
                 .catch(errorMsg => {
                     alert(errorMsg);
