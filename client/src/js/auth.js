@@ -20,116 +20,138 @@ let userInfoBox;
 
 function setCurrentUser(username) {
 	currUsername = username;
-	userInfoBox.innerHTML = username ?
-		loggedInTemplate(username) :
-		loggedOut;
+	userInfoBox.innerHTML = username ? loggedInTemplate(username) : loggedOut;
 }
 
 module.exports = {
-
-        initialize: async(userinfo) => {
-            userInfoBox = userinfo;
-
-            try{
-                setCurrentUser(await api.getUserById());
-            }catch(err){
-                setCurrentUser(null);
-        }
-},
-
-getCurrentUser: () => currUsername,
-
-login: {
-    getView: (req) => `
-    <div>
-        <label for='txtUsername'>Username: </label>
-        <input type='text' id='txtUsername'><br>
-        <label for='txtPassword'>Password : </label>
-        <input type='password' id='txtPassword'><br>
-        <input type='button' id='butLogin' value='Login'>
-    </div>
-`,
-    run: () => {
-        const txtUsername = document.querySelector('#txtUsername');
-		const txtPassword = document.querySelector('#txtPassword');
-        const butLogin = document.querySelector('#butLogin');
-        
-        butLogin.onclick = async () => {
-            const username = txtUsername.value;
-            if (username.length == 0) {
-                alert('Username is empty.');
-                return;
-            }
-            const password = txtPassword.value;
-            if (password.length == 0) {
-                alert('Password is empty.');
-                return;
-            }
-
-            try {
-                const user = await api.login(username,password);
-                setCurrentUser(user);
-                location.assign('#home');
-            }catch(err){
-                alert(err);
-                txtUsername.value = "";
-                txtPassword.value = "";
-            }
-    }
-}
-},
-logout: {
-    getView: (req) => `
-    `,
-
-    run: async () => {
+    initialize: async(userinfo) => {
+        userInfoBox = userinfo;
         try {
-            await api.logout();
-        } catch (err) {
-            alert(err);
+            setCurrentUser(await api.getUserById());
+        } catch(err){
+            setCurrentUser(null);
         }
-        setCurrentUser(null);
-        location.assign('#home');
-    }
-},
-createUser: {
-    getView: (req) => `
-        <div>
-            <label for='txtUsername'>Username: </label>
-            <input type='text' id='txtUsername'><br>
-            <label for='txtPassword'>Password : </label>
-            <input type='password' id='txtPassword'><br>
-            <input type='button' id='butReg' value='Register'>
-        </div>
-    `,
-    run: () => {
-        const txtUsername = document.querySelector('#txtUsername');
-        const txtPassword = document.querySelector('#txtPassword');
-        const butReg = document.querySelector('#butReg');
+    },
 
-        butReg.onclick = async () => {
-            const username = txtUsername.value;
-            if (username.length == 0) {
-                alert('Username is empty.');
-                return;
-            }
-            const password = txtPassword.value;
-            if (password.length == 0) {
-                alert('Password is empty.');
-                return;
-            }
+    getCurrentUser: () => currUsername,
 
-            try {
-                const register = await api.createUser(username,password)
-                const user = await api.login(username, password);
-                setCurrentUser(user);
+    signIn: {
+        getView: () => 
+            `<h1>Sign In</h1>
+            <div class="col-lg-6 offset-lg-3">
+                <div class="form-group">
+                    <label for='txtUsername'>Username: </label>
+                    <input type='text' class="form-control" id='txtUsername' placeholder="Enter Username" required><br>
+                    <label for='txtPassword'>Password : </label>
+                    <input type='password' class="form-control" id='txtPassword' placeholder="Enter Password" required><br>
+                    <button type="submit" class="btn btn-primary" id='butSignIn'>Sign In</button>
+                </div>
+            </div>`,
+
+        run: (req) => {
+            const buttonText = 'Sign In';
+            const txtUsername = document.querySelector('#txtUsername');
+            const txtPassword = document.querySelector('#txtPassword');
+            const butSignIn = document.querySelector('#butSignIn');
+
+            butSignIn.onclick = () => {
+                const username = txtUsername.value;
+                if (username.length === 0) {
+                    alert('Username is empty.');
+                    return;
+                }
+                const password = txtPassword.value;
+                if (password.length === 0) {
+                    alert('Password is empty.');
+                    return;
+                }
+                butSignIn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${butSignIn.innerHTML}`
+                return api.signIn(username, password)
+                .then(loginResponse => {
+                    if (loginResponse.success) {
+                        alert(`Welcome ${loginResponse.success.data}`);
+                        setCurrentUser(loginResponse.success.data);
+                        location.assign(`#${(req.args && req.args[0]) || 'home'}`);
+                    } else return Promise.reject(loginResponse.error.detail);
+                }).catch(error => {
+                    alert(error);
+                    txtUsername.value = "";
+                    txtPassword.value = "";
+                    butSignIn.innerHTML = buttonText;
+                })
+            }
+        }
+    },
+
+    logout: {
+        getView: () => ``,
+
+        run: () => {
+            api.logout()
+            .catch(error => {
+                alert(error);
+            })
+            .then(() => {
+                alert(`See you soon ${currUsername}. Bye!`);
+                setCurrentUser(null);
                 location.assign('#home');
-            } catch (err) {
-                alert(err);
-                txtUsername.value = "";
-                txtPassword.value = "";
+            })
+        }
+    },
+
+    signUp: {
+        getView: () => 
+            `<h1>Sign Up</h1>
+            <div class= "col-lg-6 offset-lg-3">
+                <div class="form-group">
+                    <label for='txtUsername'>Username: </label>
+                    <input type='text' class="form-control" id='txtUsername' placeholder="Enter Username" required><br>
+                    <label for='txtPassword'>Password: </label>
+                    <input type='password' class="form-control" id='txtPassword' placeholder="Enter Password" required><br>
+                    <button type="submit" class="btn btn-primary" id='butSignUp'>Sign Up</button>
+                </div>
+            </div>`,
+
+        run: (req) => {
+            const buttonText = 'Sign Up';
+            const txtUsername = document.querySelector('#txtUsername');
+            const txtPassword = document.querySelector('#txtPassword');
+            const butSignUp = document.querySelector('#butSignUp');
+
+            butSignUp.onclick = () => {
+                const username = txtUsername.value;
+                if (username.length === 0) {
+                    alert('Username is empty.');
+                    return;
+                }
+                const password = txtPassword.value;
+                if (password.length === 0) {
+                    alert('Password is empty.');
+                    return;
+                }
+                butSignUp.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${butSignUp.innerHTML}`
+                return api.signUp(username, password)
+                .then(response => {
+                    if (response.success) {
+                        api.signIn(username, password)
+                        .then(loginResponse => {
+                            if (loginResponse.success) {
+                                setCurrentUser(loginResponse.success.data);
+                                alert(`Thanks ${username} for joining Chelas `);
+                                location.assign(`#${(req.args && req.args[0]) || 'home'}`);
+                            }
+                        })
+                    } else {
+                        return Promise.reject(response.error.detail)
+                    }
+                })
+                .catch(errorMsg => {
+                    alert(errorMsg);
+                    txtUsername.value = "";
+                    txtPassword.value = "";
+                    butSignUp.innerHTML = buttonText;
+                })
             }
         }
     }
-}
 }

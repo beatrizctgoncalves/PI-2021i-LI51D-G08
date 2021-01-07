@@ -6,11 +6,9 @@ const modListContentsTemplate =
     handlebars.compile(global.gamesTemplate());
 
 module.exports = {
-    getView: () => `
-		<h1>Search Results</h1>
-
-		<div id='results'></div>	
-    `,
+    getView: () => 
+        `<h1>Search Results</h1>
+		<div id='results'></div>`,
     
     authenticationRequired: false,
 
@@ -20,14 +18,16 @@ module.exports = {
 
         api.searchGamesByName(game)
         .then(gameResult => {
-            console.log(gameResult)
+            console.log("LLLLLLLLLLLLLL")
             itemsContainer.innerHTML = modListContentsTemplate({
                 games: gameResult
-            });
+            })
         })
-        .catch((error) => {
-            if(error.status == 404) return itemsContainer.innerHTML = global.noResultsTemplate();
+        .catch((error) => { //when there's an error it doesn't catch it
+            console.log("KKKKKKKKKKKKKKKKKKKKKKKKKK")
+            console.log(error.error)
+            if(error.error == "Could not find game!") return itemsContainer.innerHTML = global.noResultsTemplate();
             else return itemsContainer.innerHTML = global.errorTemplate(error.body)
-        });
+        })
     }
 }

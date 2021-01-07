@@ -13,21 +13,25 @@ const auth = require('./auth.js');
 window.onload = () => {
    const [mainContainer, userInfo] = setBaseTemplate();
    
-   //auth.inialization
-   if (location.hash) {
-      onHashChange();
-   } else {
-      location.hash = '#home';
-   }
+   auth.initialize(userInfo)
+   .then(() => {
+      window.onhashchange = onHashChange;
+         if (location.hash) {
+            onHashChange();
+         } else {
+           location.hash = '#home';
+         }
+      }
+   );
 
    function onHashChange() {
       let [modName, ...args] = location.hash.substring(1).split('/');
       const module = getModule(modName);
       const request = {'name': modName, 'args': args};
-      
+
       module.getView && (mainContainer.innerHTML = module.getView());
       module.run && module.run(request);
-  }
+   }
 
    function setBaseTemplate() {
       document.body.innerHTML =
@@ -39,7 +43,7 @@ window.onload = () => {
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                <div class="navbar-nav" id="navBarLinks">
                   <div class="form-inline">
-                     <input  id="searchForm" class="form-control mr-sm-2" type="search" placeholder="Search">
+                     <input id="searchForm" class="form-control mr-sm-2" type="search" placeholder="Search">
                      <button id="searchButton" class="btn btn-primary"><i class="fas fa-search"></i></button>
                   </div>
                </div>
@@ -60,17 +64,15 @@ window.onload = () => {
 
    function redirectSearchResult() {
       const query = document.getElementById("searchForm").value;
-      if (query)
-         location.hash = `#search/${query}`;
+      if (query) location.hash = `#search/${query}`;
    }
 
    function getModule(name) {
       const modDefault = {
-            getView: (req) => '<h1>' + req.name + '</h1>',
-            authenticationRequired: false,
-            run: () => {
-            }
+         getView: (req) => '<h1>' + req.name + '</h1>',
+         authenticationRequired: false,
+         run: () => { }
       };
       return routes[name] || modDefault;
-  }
+   }
 }
