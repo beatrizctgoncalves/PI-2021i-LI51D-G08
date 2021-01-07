@@ -132,16 +132,19 @@ module.exports = {
                     return;
                 }
                 butSignUp.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${butSignUp.innerHTML}`
+                console.log(username)
                 return api.signUp(username, password)
-                .then(() => {
-                    return api.signIn(username, password)
-                    .then(loginResponse => {
-                        if(!loginResponse.error) {
-                            setCurrentUser(loginResponse);
-                            alert(`Thanks ${username} for joining COVIDA`);
-                            location.assign(`#${(req.args && req.args[0]) || 'home'}`);
-                        } else return Promise.reject(loginResponse.error);
-                    })
+                .then(createResponse => {
+                    if(!createResponse.error) {
+                        return api.signIn(username, password)
+                        .then(loginResponse => {
+                            if(!loginResponse.error) {
+                                setCurrentUser(loginResponse);
+                                alert(`Thanks ${username} for joining COVIDA`);
+                                location.assign(`#${(req.args && req.args[0]) || 'home'}`);
+                            } else return Promise.reject(loginResponse.error);
+                        })
+                    } else return Promise.reject(createResponse.error);
                 })
                 .catch(errorMsg => {
                     alert(errorMsg);

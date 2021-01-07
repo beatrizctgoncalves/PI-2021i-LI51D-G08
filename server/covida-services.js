@@ -265,14 +265,16 @@ function services(data, db, auth, covidaResponses) {
             const password = requestBody.password;
             return this.getUserByName(username)
             .then(foundUser => {
-                if(foundUser.findIndex(u => u.password == password) === -1) {
+                if(foundUser.body[0].password != password) {
                     return covidaResponses.setError(
                         covidaResponses.NOT_FOUND,
                         covidaResponses.PASSWORD_USER_MSG
                     )
                 } else {
-                    return userLogin(request, foundUser)
+                    console.log(foundUser)
+                    return userLogin(request, foundUser.body[0])
                     .then(obj => {
+                        console.log(obj)
                         return covidaResponses.setSuccessToUri(
                             covidaResponses.OK,
                             'users/',
@@ -284,11 +286,20 @@ function services(data, db, auth, covidaResponses) {
         },
 
         userLogin: function(req, user) {
+            console.log("ENTROU")
             return new Promise((resolve, reject) => {
+                console.log("REQ")
+                console.log(req)
+                console.log("USER")
+                console.log(user)
                 req.login(user, (err, result) => {
                     if (err) {
+                        console.log("ERROR")
+
                         reject(err);
                     } else {
+                        console.log("OK")
+
                         resolve(result);
                     }
                 })
