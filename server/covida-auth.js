@@ -8,7 +8,7 @@ function userToRef(user, done) {
 }
 
 function refToUser(userRef, done) {
-    services.getUserByName(userRef.data.username)
+    services.getUserByName(userRef.username)
         .then(user => {
             done(null, user)
         })
@@ -21,7 +21,9 @@ module.exports = {
             resave: false,
             saveUninitialized: false,
             secret: 'iselleic',
-            store: new FileStore()
+            store: new FileStore({
+                path: './sessions/'
+            })
         }));
         app.use(passport.initialize(undefined));
         app.use(passport.session(undefined));

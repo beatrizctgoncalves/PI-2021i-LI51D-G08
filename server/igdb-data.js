@@ -36,8 +36,7 @@ module.exports = {
                     "name": e.name,
                     "summary": e.summary,
                     "total_rating": e.total_rating,
-                    "url": e.url,
-                    "image": null
+                    "url": e.url
                 }));
             }
         })
@@ -65,7 +64,9 @@ module.exports = {
         .then(response => response.json())
         .then(body => {
             if(!body.length) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
-            else return body;
+            else {
+                return body;
+            }
         })
         .catch(error => {
             if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
@@ -88,7 +89,12 @@ module.exports = {
         };
         return fetch(`${GET_API_IMAGE}`, requestOptions)
         .then(response => response.json())
-        .then(body => API_IMAGE.concat(body[0].url))
+        .then(body => {
+            if(body.length)
+                return API_IMAGE.concat(body[0].url)
+            else 
+                return undefined;
+        })
         .catch(() => covidaResponses.setError(covidaResponses.API_ERROR, covidaResponses.API_ERROR_MSG))
     }
 }

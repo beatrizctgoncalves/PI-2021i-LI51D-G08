@@ -16,17 +16,18 @@ module.exports = {
         const itemsContainer = document.querySelector('#results');
         const game = request.args[0];
 
-        api.searchGamesByName(game)
+        return api.searchGamesByName(game)
         .then(gameResult => {
-            console.log("LLLLLLLLLLLLLL")
-            itemsContainer.innerHTML = modListContentsTemplate({
-                games: gameResult
-            })
+            if(!gameResult.error) {
+                    itemsContainer.innerHTML = modListContentsTemplate({
+                        games: gameResult
+                    })
+            } else {
+                return Promise.reject(gameResult.error)
+            }
         })
         .catch((error) => { //when there's an error it doesn't catch it
-            console.log("KKKKKKKKKKKKKKKKKKKKKKKKKK")
-            console.log(error.error)
-            if(error.error == "Could not find game!") return itemsContainer.innerHTML = global.noResultsTemplate();
+            if(error == "Could not find game!") return itemsContainer.innerHTML = global.noResultsTemplate();
             else return itemsContainer.innerHTML = global.errorTemplate(error.body)
         })
     }

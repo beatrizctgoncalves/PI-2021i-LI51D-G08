@@ -16,8 +16,8 @@ function services(data, db, auth, covidaResponses) {
             return data.getSpecificGame(game_id)
             .then(gamesObj => {
                 return data.getImage(game_id)
-                .then(image => {
-                    gamesObj[0].image = image; //get image
+                .then(urlImage => {
+                    gamesObj[0].urlImage = urlImage; //get image
                     return covidaResponses.setSuccessToList(
                         covidaResponses.OK,
                         gamesObj
@@ -36,17 +36,18 @@ function services(data, db, auth, covidaResponses) {
                 )
             } else {
                 return data.searchGamesByName(game_name)
-                .then(gamesObj => {
-                    console.log(gamesObj)
-                    
-                    gamesObj.map(e => data.getImage(e.id).then(image => {
-                        e.image = image; //TODO: fix
-                        console.log("KKKKKKKKKKKKKKK")    
-                        console.log(gamesObj)
-                    }))
-                    return covidaResponses.setSuccessToList(
-                        covidaResponses.OK,
-                        gamesObj
+                .then(gamesObj => {                   
+                    const newObj = gamesObj.map(e => {
+                        return data.getImage(e.id)
+                        .then(urlImage => e.urlImage = urlImage)
+                    });
+                    return Promise.all(newObj)
+                    .then(() => {
+                            return covidaResponses.setSuccessToList(
+                                covidaResponses.OK,
+                                gamesObj
+                            )
+                        }
                     )
                 })
             }
@@ -265,33 +266,29 @@ function services(data, db, auth, covidaResponses) {
             const password = requestBody.password;
             return this.getUserByName(username)
             .then(foundUser => {
-                if(foundUser.findIndex(u => u.password == password) === -1) {
+                if(foundUser.body[0].password != password) {
                     return covidaResponses.setError(
                         covidaResponses.NOT_FOUND,
                         covidaResponses.PASSWORD_USER_MSG
                     )
                 } else {
-                    return userLogin(request, foundUser)
-                    .then(obj => {
-                        return covidaResponses.setSuccessToUri(
+                    //User Login
+                    new Promise((resolve, reject) => {
+                        request.login(foundUser, (err, result) => {
+                            if (err) {        
+                                reject(err);
+                            } else {        
+                                resolve(result);
+                            }
+                        })
+                    })
+                    .then(() => {
+                        return covidaResponses.setSuccessToList(
                             covidaResponses.OK,
-                            'users/',
-                            obj
+                            username
                         )
                     })
                 }
-            })
-        },
-
-        userLogin: function(req, user) {
-            return new Promise((resolve, reject) => {
-                req.login(user, (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(result);
-                    }
-                })
             })
         },
 
