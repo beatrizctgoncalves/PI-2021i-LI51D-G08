@@ -5,5 +5,6 @@ module.exports = {
     search: require('./search.js'),
     signUp: auth.signUp,
     signIn: auth.signIn,
-    logout: auth.logout
+    logout: auth.logout,
+    account : require('./account.js'),
 };

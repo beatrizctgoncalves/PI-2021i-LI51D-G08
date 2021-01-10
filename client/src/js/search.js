@@ -18,7 +18,6 @@ module.exports = {
 
         return api.searchGamesByName(game)
         .then(gameResult => {
-            console.log("LLLLLLLLLLLLLL")
             itemsContainer.innerHTML = modListContentsTemplate({
                 games: gameResult
             })

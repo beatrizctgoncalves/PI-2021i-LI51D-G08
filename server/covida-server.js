@@ -16,9 +16,8 @@ const servicesCreator = require('./covida-services')
 const data = require('./igdb-data')
 const db = require('./covida-db')
 const covidaResponses = require('./covida-responses')
-const auth = require('./covida-auth')
 
-const services = servicesCreator(data, db, auth, covidaResponses)
+const services = servicesCreator(data, db, covidaResponses)
 webApiCreator(app, services)
 
 const PORT = 8080;

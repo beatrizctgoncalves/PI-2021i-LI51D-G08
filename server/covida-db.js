@@ -23,13 +23,14 @@ function makeFetch(uri, method, raw) {
 }
 
 module.exports = {
-    createGroup: function(name, desc) {
+    createGroup: function(name, desc, owner) {
         var requestBody = JSON.stringify({
+            "owner": owner,
             "name": name,
             "desc": desc,
             "games": []
         });
-        return makeFetch('groups/_doc', arrayMethods.POST, requestBody)
+        return makeFetch('groups/_doc?refresh=true', arrayMethods.POST, requestBody)
         .then(body => body._id)
         .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },

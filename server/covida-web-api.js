@@ -24,7 +24,7 @@ function createWebApi(app, services) {
         createGroup: function(req, res) { //Implementation of the route to create a group
             console.log("Create Group")
             promisesAsyncImplementation(
-                services.createGroup(req.body.name, req.body.desc),
+                services.createGroup(req),
                 res
             );
         },

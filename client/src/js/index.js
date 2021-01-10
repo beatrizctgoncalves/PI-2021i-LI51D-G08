@@ -19,7 +19,7 @@ window.onload = () => {
          if (location.hash) {
             onHashChange();
          } else {
-           location.hash = '#home';
+            location.hash = '#home';
          }
       }
    );
@@ -71,7 +71,9 @@ window.onload = () => {
       const modDefault = {
          getView: (req) => '<h1>' + req.name + '</h1>',
          authenticationRequired: false,
-         run: () => { }
+         run: () => { 
+
+         }
       };
       return routes[name] || modDefault;
    }

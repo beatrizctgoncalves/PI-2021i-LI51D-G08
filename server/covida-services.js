@@ -2,7 +2,7 @@
 
 const { request } = require("express")
 
-function services(data, db, auth, covidaResponses) {
+function services(data, db, covidaResponses) {
     const serv = {
         
         //Implementation of the route to get a specific game by id which accesses to the api
@@ -55,7 +55,11 @@ function services(data, db, auth, covidaResponses) {
 
 
         //Implementation of the route to create a group which accesses to the database
-        createGroup: function(group_name, group_desc) {
+        createGroup: function(request) {
+            const group_name = request.body.name;
+            const group_desc = request.body.desc;
+            const owner = request.user.username;
+
             var regExp = /[a-zA-Z]/g;
             if(!regExp.test(group_name)) {  //verify if group_name has a string
                 return covidaResponses.setError(
@@ -63,7 +67,7 @@ function services(data, db, auth, covidaResponses) {
                     covidaResponses.BAD_REQUEST_MSG
                 )
             } else {
-                return db.createGroup(group_name, group_desc)
+                return db.createGroup(group_name, group_desc, owner)
                 .then(obj => {
                     return covidaResponses.setSuccessToUri( //send the uri with id
                         covidaResponses.CREATED,
@@ -273,11 +277,11 @@ function services(data, db, auth, covidaResponses) {
                     )
                 } else {
                     //User Login
-                    new Promise((resolve, reject) => {
-                        request.login(foundUser, (err, result) => {
+                    return new Promise((resolve, reject) => {
+                        request.login(foundUser.body[0], (err, result) => {
                             if (err) {        
                                 reject(err);
-                            } else {        
+                            } else {
                                 resolve(result);
                             }
                         })
@@ -286,7 +290,7 @@ function services(data, db, auth, covidaResponses) {
                         return covidaResponses.setSuccessToList(
                             covidaResponses.OK,
                             username
-                        )
+                        );
                     })
                 }
             })
