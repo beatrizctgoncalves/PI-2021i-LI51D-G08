@@ -29,6 +29,14 @@ function createWebApi(app, services) {
             );
         },
 
+        getGroups: function(req, res) { //Implementation of the route to get all groups
+            console.log("Get Groups From A User")
+            promisesAsyncImplementation(
+                services.getGroups(req.params.owner),
+                res
+            );
+        },
+
         listGroups: function(req, res) { //Implementation of the route to get all groups
             console.log("List Groups")
             promisesAsyncImplementation(
@@ -134,7 +142,8 @@ function createWebApi(app, services) {
     app.get('/games/id/:game_id', wa.getSpecificGame); //Get a specific game by id
     app.get('/games/name/:game_name', wa.searchGamesByName); //Search game by name
 
-    app.post('/groups', wa.createGroup); //Post a group in the database
+    app.post('/groups', wa.createGroup); //Create a group in the database
+    app.get('/groups/owner/:owner', wa.getGroups); //Get all groups from a user
     app.get('/groups', wa.listGroups); //Get all groups
     app.get('/groups/:group_id', wa.getGroupById); //Get a specific group
     app.put('/groups/:group_id', wa.editGroup); //Update a specific group

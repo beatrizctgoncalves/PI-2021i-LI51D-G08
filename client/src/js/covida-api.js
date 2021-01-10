@@ -1,7 +1,5 @@
 'use strict';
 
-const BASE_URL = 'http://localhost:8080';
-
 var arrayMethods = {
     POST: 'POST',
     DELETE: 'DELETE',
@@ -10,7 +8,7 @@ var arrayMethods = {
 };
 
 function makeFetch(uri, method, raw) {
-    return fetch(`${BASE_URL}`.concat(uri), {  
+    return fetch(uri, {  
         method: method,
         headers: { //Request headers. format is the identical to that accepted by the Headers constructor (see below)
             'Content-Type': 'application/json'
@@ -29,13 +27,17 @@ module.exports = {
         return makeFetch(`/games/name/${name}`, arrayMethods.GET, null)
     },
 
-    createGroup: function(name, desc) {
+    createGroup: function(name, desc, currentUser) {
         var requestBody = JSON.stringify({
             "name": name,
             "desc": desc,
-            "games": []
+            "owner": currentUser
         });
         return makeFetch('/groups', arrayMethods.POST, requestBody)
+    },
+
+    getGroups: function(owner) {
+        return makeFetch(`/groups/owner/${owner}`, arrayMethods.GET, null)
     },
 
     listGroups: function() {

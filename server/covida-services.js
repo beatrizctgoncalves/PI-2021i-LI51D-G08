@@ -43,12 +43,11 @@ function services(data, db, covidaResponses) {
                     });
                     return Promise.all(newObj)
                     .then(() => {
-                            return covidaResponses.setSuccessToList(
-                                covidaResponses.OK,
-                                gamesObj
-                            )
-                        }
-                    )
+                        return covidaResponses.setSuccessToList(
+                            covidaResponses.OK,
+                            gamesObj
+                        )
+                    })
                 })
             }
         },
@@ -58,7 +57,7 @@ function services(data, db, covidaResponses) {
         createGroup: function(request) {
             const group_name = request.body.name;
             const group_desc = request.body.desc;
-            const owner = request.user.username;
+            const owner = request.body.owner;
 
             var regExp = /[a-zA-Z]/g;
             if(!regExp.test(group_name)) {  //verify if group_name has a string
@@ -76,6 +75,17 @@ function services(data, db, covidaResponses) {
                     )
                 })
             }
+        },
+
+        //Implementation of the route to get all groups from a user which accesses to the database
+        getGroups: function(owner) {
+            return db.getGroups(owner)
+            .then(groupObj => {
+                return covidaResponses.setSuccessToList(
+                    covidaResponses.OK,
+                    groupObj
+                )
+            })
         },
 
         //Implementation of the route to get all groups which accesses to the database
@@ -137,24 +147,28 @@ function services(data, db, covidaResponses) {
         addGameToGroup: function(game_id, group_id) { //save just game id and name
             return data.getSpecificGame(game_id) //check if the game exists
             .then(gamesObj => {
-                return db.getGroupById(group_id) //check if the group exists
-                .then(groupObj => {
-                    const gameExists = groupObj.games.findIndex(g => g.id === parseInt(game_id))
-                    if(gameExists != -1) {  //check if the game already exists in the group
-                        return covidaResponses.setError(
-                            covidaResponses.CONFLIT, 
-                            covidaResponses.CONFLIT_GAME_MSG
-                        )
-                    } else {
-                        return db.addGameToGroup(gamesObj, group_id) //add game
-                        .then(finalObj => {
-                            return covidaResponses.setSuccessToUri(
-                                covidaResponses.OK,
-                                'groups/',
-                                finalObj
-                            )   
-                        })
-                    }
+                return data.getImage(game_id)
+                .then(urlImage => {
+                    gamesObj[0].urlImage = urlImage; //get image
+                    return db.getGroupById(group_id) //check if the group exists
+                    .then(groupObj => {
+                        const gameExists = groupObj.games.findIndex(g => g.id === parseInt(game_id))
+                        if(gameExists != -1) {  //check if the game already exists in the group
+                            return covidaResponses.setError(
+                                covidaResponses.CONFLIT,
+                                covidaResponses.CONFLIT_GAME_MSG
+                            )
+                        } else {
+                            return db.addGameToGroup(gamesObj, group_id) //add game
+                            .then(finalObj => {
+                                return covidaResponses.setSuccessToUri(
+                                    covidaResponses.OK,
+                                    'groups/',
+                                    finalObj
+                                )   
+                            })
+                        }
+                    })
                 })
             })
         },

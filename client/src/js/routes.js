@@ -6,5 +6,6 @@ module.exports = {
     signUp: auth.signUp,
     signIn: auth.signIn,
     logout: auth.logout,
-    account : require('./account.js'),
+    account: require('./account.js'),
+    groups: require('./groups/groups.js')
 };

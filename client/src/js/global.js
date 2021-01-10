@@ -60,7 +60,6 @@ module.exports = {
             </div>
         </div>`,
 
-    //TODO: colocar a foto de cada jogo
     gamesTemplate: function() {
         return `<div class="card-columns card-popular m-3">
            {{#each games}}

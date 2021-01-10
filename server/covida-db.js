@@ -35,6 +35,24 @@ module.exports = {
         .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
     },
 
+    getGroups: function(owner) {
+        return makeFetch(`groups/_search?q=owner:${owner}`, arrayMethods.GET, null)
+        .then(body => {
+            if(body.hits) {
+                if(body.hits.hits.length) {
+                    return body.hits.hits.map(hit => {
+                        hit._source.id = hit._id;
+                        return hit._source;
+                    });
+                } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG);
+            } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUPS_0_MSG);
+        })
+        .catch(error => {
+            if(error.status == covidaResponses.NOT_FOUND) return covidaResponses.setError(error.status, error.body);
+            else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG);
+        })
+    },
+
     listGroups: function() {
         return makeFetch('groups/_search', arrayMethods.GET, null)
         .then(body => {
@@ -117,7 +135,11 @@ module.exports = {
                 "params": {
                     "games": {
                         "id": game[0].id,
-                        "name": game[0].name
+                        "name": game[0].name,
+                        "summary": game[0].summary,
+                        "total_rating": game[0].total_rating,
+                        "url": game[0].url,
+                        "urlImage": game[0].urlImage
                     }
                 }
             }
