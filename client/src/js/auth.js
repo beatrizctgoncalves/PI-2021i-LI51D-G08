@@ -90,7 +90,7 @@ module.exports = {
 
         run: () => {
             api.logout()
-            .catch(error => {
+            .catch(error => { //error
                 alert(error);
             })
             .then(() => {

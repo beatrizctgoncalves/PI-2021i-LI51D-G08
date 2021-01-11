@@ -130,7 +130,7 @@ function createWebApi(app, services) {
         logout: function(req, res) {
             console.log("Logout");
             req.logout();
-            res.send();
+            res.send(); //error
         }
     }
     app.post('/users/signup', wa.signUp)
