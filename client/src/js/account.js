@@ -94,7 +94,6 @@ module.exports = {
             .then(response => {
                 if (!response.error) {
                     alert(`New Group ${groupName} successfully created`)
-                    run(); //error
                 } else {
                     return Promise.reject(response.error);
                 }

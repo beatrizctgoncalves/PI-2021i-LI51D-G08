@@ -7,5 +7,8 @@ module.exports = {
     signIn: auth.signIn,
     logout: auth.logout,
     account: require('./account.js'),
-    groups: require('./groups/groups.js')
+    groups: require('./groups/groups.js'),
+    editGroup: require('./groups/editGroup.js'),
+    removeGroup: require('./groups/removeGroup.js'),
+    detailsGroup: require('./groups/detailsGroup.js')
 };

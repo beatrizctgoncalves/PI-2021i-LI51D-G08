@@ -68,6 +68,7 @@ window.onload = () => {
    }
 
    function getModule(name) {
+      console.log(name);
       const modDefault = {
          getView: (req) => '<h1>' + req.name + '</h1>',
          authenticationRequired: false,
