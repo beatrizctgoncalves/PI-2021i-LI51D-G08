@@ -13,17 +13,15 @@ const modListContentsTemplate =
                         <a href="#detailsGroup/{{name}}/{{id}}" class = "text-dark">
                             {{name}}
                         </a>
-                        <a href="#editGroup/{{id}}" class="float-left text-dark">
+                        <a href="#editGroup/{{name}}/{{id}}" class="float-left text-dark">
                             <i class="far fa-edit"></i>
                         </a>
                         <a href="#removeGroup/{{name}}/{{id}}" class="float-right text-dark">
                             <i class="fas fa-trash-alt"></i>
                         </a>
-                        
                     </div>
                     <div class="card-body text-center">
                         <p class="card-text"><em>{{desc}}</em></p>
-                        
                     </div>
                     <div class="card-footer text-muted">
                         <div class="card-body text-center">
@@ -35,7 +33,6 @@ const modListContentsTemplate =
                             </a>
                          </div>
                         {{#each games}}
-                        
                             <div class="card-body text-center">
                                 <a href={{url}}>{{name}}</a>
                             </div>
@@ -71,7 +68,8 @@ module.exports = {
                 return Promise.reject(allGroups.error);
             }
         })
-        .catch(error => alert(error));
-        //alert("You don't have any group yet!")
+        .catch(error => {
+            alert(error);
+        })
     }
 }

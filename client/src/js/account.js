@@ -9,7 +9,7 @@ module.exports = {
             <div class="row h-100 justify-content-center align-items-center"">
             <div class="col-sm">
                <div class="card">
-                    <h5 class="card-header text-center bg-primary ">Account Statistics</h5>
+                    <h5 class="card-header text-center bg-primary">Account Statistics</h5>
                     <div class="card-body">                    
                         <h5 class="card-title"><i class="fas fa-lock"></i> Groups</h5>
                         <p class="card-text" id="groupsCounter"></p>
@@ -19,7 +19,7 @@ module.exports = {
                </div>
             </div>
             <div class="col-sm">
-               <h5 class="text-center mb-4">Not Enough? Create A New Group!</h5>
+               <h5 class="text-center mb-4">Create A New Group!</h5>
                     <div class="form-group row">
                         <label for="groupName" class="col-sm-2 col-form-label">Name</label>
                         <div class="col-sm-10">
@@ -40,9 +40,9 @@ module.exports = {
                </div>
             </div>
             <div class="row">
-               <div class="col-sm">
+                <div class="col-sm">
                     <div class = "mx-auto">
-                        <a href="#groups" class="btn btn-primary btn-lg btn-block mt-5">My Groups</a>
+                        <a href="#groups" class="btn btn-primary btn-lg btn-block mt-5" id="myGroups"></a>
                     </div>
                 </div>
             </div>`
@@ -52,7 +52,7 @@ module.exports = {
 
     run: () => {
         let currentUser = auth.getCurrentUser();
-        api.listGroups()
+        api.getGroups(currentUser)
         .then(allGroups => {
             if (!allGroups.error) {       
                 let groupsField = document.getElementById("groupsCounter");
@@ -63,18 +63,24 @@ module.exports = {
                 if(allGroups.body) {
                     if(allGroups.body.length) {
                         groupsCounter = allGroups.body;
-                        allGroups.body.forEach((group) => gamesCounter += group.games.length);
+                        groupsCounter.forEach(group => gamesCounter += group.games.length);
                         groupsField.innerHTML = `<b>${groupsCounter.length}</b> Group Registered`
                     } else {
                         groupsField.innerHTML = `<b>0</b> Group Registered`
                     }
                 }
-                gamesField.innerHTML = `Watched <b>${gamesCounter}</b> Games`
+                gamesField.innerHTML = `Played <b>${gamesCounter}</b> Games`
+                let myGroups = document.getElementById("myGroups");
+                myGroups.innerText = `My Groups`;
             } else {
                 return Promise.reject(allGroups.error);
             }
         })
-        .catch(error => alert(error));
+        .catch(error => {
+            alert(error);
+            let myGroups = document.getElementById("myGroups");
+            myGroups.innerText = `You don't have groups yet!`; //error
+        })
 
         const txtName = document.querySelector('#groupName');
         const txtDescription = document.querySelector('#groupDesc');
@@ -94,6 +100,7 @@ module.exports = {
             .then(response => {
                 if (!response.error) {
                     alert(`New Group ${groupName} successfully created`)
+                    location.reload();
                 } else {
                     return Promise.reject(response.error);
                 }

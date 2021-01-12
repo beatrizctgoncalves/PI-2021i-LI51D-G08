@@ -6,8 +6,8 @@ const modListContentsTemplate =
     handlebars.compile( `
         <div class="col-lg-6 offset-lg-3">
             <div class="card text-center">
-                <div class="card-body text-center">
-                    <p class="card-text"><em>Name: {{name}}</em></p>
+                <div class="card-header bg-primary">
+                    Name: {{name}}
                 </div>
                 <div class="card-body text-center">
                     <p class="card-text"><em>Description: {{desc}}</em></p>
@@ -33,7 +33,6 @@ const modListContentsTemplate =
     `);
 
 module.exports  = {
-
     getView: () => {
         return `<h1 id='title'></h1>
             <div id='groupDetails'>
@@ -45,7 +44,7 @@ module.exports  = {
     run: (req) => {
         const groupDetails = document.querySelector(`#groupDetails`);
         const title = document.querySelector('#title');
-        const name = global.formatName(req.args[0] + " Details");
+        const name = global.formatName("Details of " + req.args[0]);
         title.innerHTML = name;
         api.getGroupById(req.args[1])
         .then(group => {

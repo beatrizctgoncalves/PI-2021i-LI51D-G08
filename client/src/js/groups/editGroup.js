@@ -1,41 +1,30 @@
 const api = require('../covida-api.js');
-const auth = require('../auth.js');
 const global = require('../global.js');
-const { create } = require('handlebars');
-
-const handlers = global.handlebars;
 
 module.exports = {
 
     getView: () => {
-        
-        let currentUser = auth.getCurrentUser();
-        return `<h1> Edit ${currentUser}'s Groups</h1>
+        return `<h1 id='titleEdit'></h1>
             <div id='editGroup'>
-               
-            </div>
-            <div class="form-group row">
-                        <label for="groupName" class="col-sm-2 col-form-label">Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="newGroupName" placeholder="Enter Group Name" required>
-                        </div>
-                    </div>
+                <div class="col-lg-6 offset-lg-3">
                     <div class="form-group row">
-                        <label for="groupDesc" class="col-sm-2 col-form-label">Description</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="newGroupDesc" placeholder="Enter Group Description" required>
-                        </div>
+                        <label for="groupName" class="col-sm-2 col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="newGroupName" placeholder="Enter A New Name" required><br><br><br>
+                        <label for="groupDesc" class="col-sm-2 col-form-label">Description:</label>
+                        <input type="text" class="form-control" id="newGroupDesc" placeholder="Enter A New Description" required><br><br><br>
+                        <button id="editButton" class="btn btn-primary">Edit</button>
                     </div>
-                    <div class="form-group row">
-                        <div class="col text-center">
-                            <button id="editButton" class="btn btn-primary">Edit</button>
-                        </div>
-                    </div>
-            `},
+                </div>
+            </div>`
+    },
 
     authenticationRequired: true,
 
     run: (req) => {
+        const titleEdit = document.querySelector('#titleEdit');
+        const name = global.formatName("Editing Group " + req.args[0]);
+        titleEdit.innerHTML = name;
+
         const newtxtName = document.querySelector('#newGroupName');
         const newtxtDescription = document.querySelector('#newGroupDesc');
         const editButton = document.querySelector('#editButton');
@@ -53,11 +42,10 @@ module.exports = {
                 return;
             }
             console.log(req.args[0]);
-            return api.editGroup(req.args[0],groupName,groupDesc)
+            return api.editGroup(req.args[1],groupName,groupDesc)
             .then(response => {
                 if (!response.error) {
-
-                    alert(`Update Group ${groupName} successfully created`)
+                    alert(`Group ${groupName} successfully updated`)
                     location.assign(`#groups`)
                 } else {
                     return Promise.reject(response.error);
@@ -65,7 +53,6 @@ module.exports = {
             }).catch(error => {
                 alert(error);
             })
-    
         }
     }
 }
