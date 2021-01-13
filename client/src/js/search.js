@@ -18,12 +18,15 @@ module.exports = {
 
         return api.searchGamesByName(game)
         .then(gameResult => {
-            itemsContainer.innerHTML = modListContentsTemplate({
-                games: gameResult
-            })
+            if(!gameResult.error) {
+                itemsContainer.innerHTML = modListContentsTemplate({
+                    games: gameResult
+                })
+            } else {
+                return Promise.reject(gameResult.error);
+            }
         })
         .catch((error) => {
-            console.log(error)
             if(error == "Could not find game!") return itemsContainer.innerHTML = global.noResultsTemplate();
             else return itemsContainer.innerHTML = global.errorTemplate(error.body)
         })

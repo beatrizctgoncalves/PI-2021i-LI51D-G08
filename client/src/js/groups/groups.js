@@ -61,6 +61,7 @@ module.exports = {
         })
         .catch(error => {
             alert(error);
+            location.assign('#account');
         })
     }
 }

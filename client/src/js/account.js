@@ -6,20 +6,20 @@ module.exports = {
         let currentUser = auth.getCurrentUser();
         return `<h1>${currentUser}'s Account</h1>
             <div class="container">
-            <div class="row h-100 justify-content-center align-items-center"">
-            <div class="col-sm">
-               <div class="card">
-                    <h5 class="card-header text-center bg-primary">Account Statistics</h5>
-                    <div class="card-body">                    
-                        <h5 class="card-title"><i class="fas fa-lock"></i> Groups</h5>
-                        <p class="card-text" id="groupsCounter"></p>
-                        <h5 class="card-title"><i class="fas fa-tv"></i> Games</h5>
-                        <p class="card-text" id="gamesCounter"></p>
+                <div class="row h-100 justify-content-center align-items-center"">
+                    <div class="col-sm">
+                        <div class="card">
+                            <h5 class="card-header text-center bg-primary">Account Statistics</h5>
+                            <div class="card-body">                    
+                                <h5 class="card-title"><i class="fas fa-lock"></i> Groups</h5>
+                                <p class="card-text" id="groupsCounter"></p>
+                                <h5 class="card-title"><i class="fas fa-tv"></i> Games</h5>
+                                <p class="card-text" id="gamesCounter"></p>
+                            </div>
+                        </div>
                     </div>
-               </div>
-            </div>
-            <div class="col-sm">
-               <h5 class="text-center mb-4">Create A New Group!</h5>
+                <div class="col-sm">
+                    <h5 class="text-center mb-4">Create A New Group!</h5>
                     <div class="form-group row">
                         <label for="groupName" class="col-sm-2 col-form-label">Name</label>
                         <div class="col-sm-10">
@@ -37,12 +37,12 @@ module.exports = {
                             <button id="createButton" class="btn btn-primary">Create</button>
                         </div>
                     </div>
-               </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-sm">
                     <div class = "mx-auto">
-                        <a href="#groups" class="btn btn-primary btn-lg btn-block mt-5" id="myGroups"></a>
+                        <a href="#groups" class="btn btn-primary btn-lg btn-block mt-5">My Groups</a>
                     </div>
                 </div>
             </div>`
@@ -54,32 +54,18 @@ module.exports = {
         let currentUser = auth.getCurrentUser();
         api.getGroups(currentUser)
         .then(allGroups => {
-            if (!allGroups.error) {       
-                let groupsField = document.getElementById("groupsCounter");
-                let gamesField = document.getElementById("gamesCounter");
+            let groupsField = document.getElementById("groupsCounter");
+            let gamesField = document.getElementById("gamesCounter");
+            if (!allGroups.error) {
+                groupsCounter = allGroups;
+                groupsCounter.map(group => gamesCounter = group.games.length);
 
-                let groupsCounter = 0;
-                let gamesCounter = 0;
-                if(allGroups.body) {
-                    if(allGroups.body.length) {
-                        groupsCounter = allGroups.body;
-                        groupsCounter.forEach(group => gamesCounter += group.games.length);
-                        groupsField.innerHTML = `<b>${groupsCounter.length}</b> Group Registered`
-                    } else {
-                        groupsField.innerHTML = `<b>0</b> Group Registered`
-                    }
-                }
-                gamesField.innerHTML = `Played <b>${gamesCounter}</b> Games`
-                let myGroups = document.getElementById("myGroups");
-                myGroups.innerText = `My Groups`;
+                groupsField.innerHTML = `<b>${groupsCounter.length}</b> Groups Registered`
+                gamesField.innerHTML = `<b>${gamesCounter}</b> Games Saved`
             } else {
-                return Promise.reject(allGroups.error);
+                groupsField.innerHTML = `<b>0</b> Groups Registered`
+                gamesField.innerHTML = `<b>0</b> Games Saved`
             }
-        })
-        .catch(error => {
-            alert(error);
-            let myGroups = document.getElementById("myGroups");
-            myGroups.innerText = `You don't have groups yet!`; //error
         })
 
         const txtName = document.querySelector('#groupName');

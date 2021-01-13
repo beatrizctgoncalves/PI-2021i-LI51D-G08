@@ -1,4 +1,5 @@
 const api = require('../covida-api.js');
+const global = require('../global.js');
 
 module.exports = {
 
@@ -14,8 +15,8 @@ module.exports = {
         return api.removeGroup(req.args[1])
         .then(response => {
             if (!response.error) {
-                alert(`Group ${req.args[0]} successfully removed`)
-                location.assign(`#groups`)
+                alert(`Group ${req.args[0]} successfully removed`);
+                location.assign(`#groups`);
             } else {
                 return Promise.reject(response.error);
             }

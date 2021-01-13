@@ -41,7 +41,7 @@ module.exports = {
                 alert('Group Description is empty');
                 return;
             }
-            return api.editGroup(req.args[1],groupName,groupDesc)
+            return api.editGroup(req.args[1], groupName, groupDesc)
             .then(response => {
                 if (!response.error) {
                     alert(`Group ${groupName} successfully updated`)

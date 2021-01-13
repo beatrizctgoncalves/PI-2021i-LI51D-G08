@@ -63,11 +63,12 @@ module.exports = {
                         games: gameResult
                     })
                 } else {
-                    return Promise.reject(response.error);
+                    return Promise.reject(gameResult.error);
                 }
             })
             .catch((error) => {
-                alert(error);
+                if(error == "Could not find game!") return itemsContainer.innerHTML = global.noResultsTemplate();
+                else return itemsContainer.innerHTML = global.errorTemplate(error.body)
             })
         }
     }

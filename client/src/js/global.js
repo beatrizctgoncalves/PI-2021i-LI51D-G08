@@ -15,19 +15,11 @@ module.exports = {
         }
     },
 
-    successTemplate: (msg) => {
-        if (msg) {
-            return `<div class="alert alert-success m-5" role="alert">${msg}</div>`
-        } else {
-            return `<div class="alert alert-success m-5" role="alert">Operation Completed Successfully</div>`
-        }
-    },
-
     noResultsTemplate: (msg) => {
         if (msg) {
-            return `<div class="alert alert-warning m-5" role="alert">${msg}</div>`
+            return `<div class="alert alert-warning m-5 text-center" role="alert">${msg}</div>`
         } else {
-            return `<div class="alert alert-warning m-5" role="alert">No Results Found</div>`
+            return `<div class="alert alert-warning m-5 text-center" role="alert">No Results Found</div>`
         }
     },
     

@@ -55,8 +55,12 @@ module.exports = {
                <div class="container">
                   <a class="btn btn-primary btn-circle btn-sm footerItem" href="https://github.com/beatrizctgoncalves">
                   <i class="fab fa-github footerIcon"></i></a>
-                  <a class="btn btn-primary btn-circle btn-sm footerItem" href="https://www.linkedin.com/in/beatriz-gon%C3%A7alves-a28716195/">
-                  <i class="fab fa-linkedin footerIcon"></i></a>
+
+                  <a class="btn btn-primary btn-circle btn-sm footerItem" href="https://github.com/tomassms">
+                  <i class="fab fa-github footerIcon"></i></a>
+
+                  <a class="btn btn-primary btn-circle btn-sm footerItem" href="https://github.com/bullycow">
+                  <i class="fab fa-github footerIcon"></i></a>
                </div>
                <p class="copyright">ISEL-PI-G08 © 2021</p>
             </footer>

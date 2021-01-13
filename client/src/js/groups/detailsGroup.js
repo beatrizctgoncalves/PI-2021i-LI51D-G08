@@ -25,7 +25,7 @@ const modListContentsTemplate =
                             {{/if}}
                             <div class="card-body text-center">
                                 <div class="card-body text-center">
-                                    <a href="#removeGame/{{id}}" class="float-right text-pink">
+                                    <a href="#removeGame/{{group_id}}/{{id}}" class="float-right text-pink">
                                         <i class="fas fa-minus"></i>
                                     </a>
                                 </div>
@@ -61,6 +61,7 @@ module.exports  = {
         api.getGroupById(req.args[1])
         .then(group => {
             if (!group.error) {
+                group.games.map(g => g.group_id = req.args[1])
                 groupDetails.innerHTML = modListContentsTemplate({
                     id: group.id,
                     name: group.name,
