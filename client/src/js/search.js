@@ -22,7 +22,7 @@ module.exports = {
                 games: gameResult
             })
         })
-        .catch((error) => { //when there's an error it doesn't catch it
+        .catch((error) => {
             console.log(error)
             if(error == "Could not find game!") return itemsContainer.innerHTML = global.noResultsTemplate();
             else return itemsContainer.innerHTML = global.errorTemplate(error.body)

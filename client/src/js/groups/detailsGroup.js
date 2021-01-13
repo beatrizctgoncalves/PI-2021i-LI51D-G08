@@ -13,17 +13,29 @@ const modListContentsTemplate =
                     <p class="card-text"><em>Description: {{desc}}</em></p>
                 </div>
                 <div class="card-footer text-muted">
+                    <div class="card-body text-center">
+                        <a href="#searchGame/{{name}}/{{id}}" class="float-left text-blue">
+                            <i class="fas fa-plus"></i>
+                        </a><br>
+                    </div>
                     {{#each games}}
                         <div class="card">
-                            <img class="card-img-top img-fluid" src="{{urlImage}}" alt="Card image cap">
+                            {{#if urlImage}}
+                                <img class="card-img-top img-fluid" src="{{urlImage}}" alt="Card image cap">
+                            {{/if}}
                             <div class="card-body text-center">
+                                <div class="card-body text-center">
+                                    <a href="#removeGame/{{id}}" class="float-right text-pink">
+                                        <i class="fas fa-minus"></i>
+                                    </a>
+                                </div>
                                 <a href={{url}}>{{name}}</a>
                                 <p class="card-text">{{summary}}</p>
                                 {{#if total_rating}}
                                     <div class="progress">
                                         <div class="progress-bar bg-primary" role="progressbar" style="width: {{total_rating}}%">{{total_rating}}</div>
                                     </div>
-                                {{/if}}
+                                {{/if}}<br>
                             </div>
                         </div>
                     {{/each}}
@@ -49,8 +61,8 @@ module.exports  = {
         api.getGroupById(req.args[1])
         .then(group => {
             if (!group.error) {
-                console.log(group.name);
                 groupDetails.innerHTML = modListContentsTemplate({
+                    id: group.id,
                     name: group.name,
                     desc: group.desc,
                     games: group.games

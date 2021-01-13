@@ -10,5 +10,7 @@ module.exports = {
     groups: require('./groups/groups.js'),
     editGroup: require('./groups/editGroup.js'),
     removeGroup: require('./groups/removeGroup.js'),
-    detailsGroup: require('./groups/detailsGroup.js')
+    detailsGroup: require('./groups/detailsGroup.js'),
+    searchGame: require('./groups/searchGameToAdd.js'),
+    addGame: require('./groups/addGame.js')
 };

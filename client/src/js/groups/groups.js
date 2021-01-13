@@ -24,14 +24,6 @@ const modListContentsTemplate =
                         <p class="card-text"><em>{{desc}}</em></p>
                     </div>
                     <div class="card-footer text-muted">
-                        <div class="card-body text-center">
-                            <a href="#addGame/{{id}}" class="float-left text-blue">
-                                 <i class="fas fa-plus"></i>
-                            </a>
-                             <a href="#removeGame/{{id}}" class="float-right text-pink">
-                                 <i class="fas fa-minus"></i>
-                            </a>
-                         </div>
                         {{#each games}}
                             <div class="card-body text-center">
                                 <a href={{url}}>{{name}}</a>
@@ -59,7 +51,6 @@ module.exports = {
         const itemsContainer = document.querySelector('#groups');
         api.getGroups(currentUser)
         .then(allGroups => {
-            console.log(allGroups)
             if (!allGroups.error) {
                 itemsContainer.innerHTML = modListContentsTemplate({
                     groups: allGroups

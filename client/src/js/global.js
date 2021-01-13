@@ -17,33 +17,17 @@ module.exports = {
 
     successTemplate: (msg) => {
         if (msg) {
-            return `
-                <div class="alert alert-success m-5" role="alert">
-                ${msg}
-                </div>
-                	`
+            return `<div class="alert alert-success m-5" role="alert">${msg}</div>`
         } else {
-            return `
-                <div class="alert alert-success m-5" role="alert">
-                Operation Completed Successfully
-                </div>
-                	`
+            return `<div class="alert alert-success m-5" role="alert">Operation Completed Successfully</div>`
         }
     },
 
     noResultsTemplate: (msg) => {
         if (msg) {
-            return `
-                <div class="alert alert-warning m-5" role="alert">
-                    ${msg}
-                </div>
-                	`
+            return `<div class="alert alert-warning m-5" role="alert">${msg}</div>`
         } else {
-            return `
-                <div class="alert alert-warning m-5" role="alert">
-                    No Results Found
-                </div>
-                	`
+            return `<div class="alert alert-warning m-5" role="alert">No Results Found</div>`
         }
     },
     
@@ -63,18 +47,18 @@ module.exports = {
     gamesTemplate: function() {
         return `<div class="card-columns card-popular m-3">
            {{#each games}}
-           <div class="card">
-                <img class="card-img-top img-fluid" src="{{urlImage}}" alt="Card image cap">
-                <div class="card-body text-center">
-                    <a href={{url}}>{{name}}</a>
-                    <p class="card-text">{{summary}}</p>
-                    {{#if total_rating}}
-                        <div class="progress">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{total_rating}}%">{{total_rating}}</div>
-                        </div>
-                    {{/if}}
+                <div class="card">
+                    <img class="card-img-top img-fluid" src="{{urlImage}}" alt="Card image cap">
+                    <div class="card-body text-center">
+                        <a href={{url}}>{{name}}</a>
+                        <p class="card-text">{{summary}}</p>
+                        {{#if total_rating}}
+                            <div class="progress">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{total_rating}}%">{{total_rating}}</div>
+                            </div>
+                        {{/if}}
+                    </div>
                 </div>
-            </div>
             {{/each}}
         </div>`;
     }

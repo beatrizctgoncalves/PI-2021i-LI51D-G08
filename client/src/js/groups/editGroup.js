@@ -41,7 +41,6 @@ module.exports = {
                 alert('Group Description is empty');
                 return;
             }
-            console.log(req.args[0]);
             return api.editGroup(req.args[1],groupName,groupDesc)
             .then(response => {
                 if (!response.error) {
