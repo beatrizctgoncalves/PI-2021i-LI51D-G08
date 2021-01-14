@@ -1,13 +1,11 @@
 const api = require('../covida-api.js');
-const global = require('../global.js');
+const statusCode = require('../covida-status.js');
 
 module.exports = {
 
-    getView: () => {
-        //TODO: undefined
-        return `<h1>Removed Group</h1>
-        <div id='removeGroup'></div>`
-    },        
+    getView: () => 
+        `<h1></h1>
+        <div id='removeGroup'></div>`,        
 
     authenticationRequired: true,
 
@@ -21,7 +19,7 @@ module.exports = {
                 return Promise.reject(response.error);
             }
         }).catch(error => {
-            alert(error);
+            alert(error.body);
         })
     }
 }

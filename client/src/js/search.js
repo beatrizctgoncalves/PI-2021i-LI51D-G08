@@ -27,8 +27,9 @@ module.exports = {
             }
         })
         .catch((error) => {
-            if(error == "Could not find game!") return itemsContainer.innerHTML = global.noResultsTemplate();
-            else return itemsContainer.innerHTML = global.errorTemplate(error.body)
+            if(error.status == statusCode.NOT_FOUND) {
+                return getRatings.innerHTML = global.noResultsTemplate();
+            } else return getRatings.innerHTML = global.errorTemplate(error.body);
         })
     }
 }

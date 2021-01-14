@@ -1,8 +1,9 @@
 const global = require('../global.js');
 const api = require('../covida-api.js');
+const statusCode = require('../covida-status.js');
 
 const handlebars = global.handlebars;
-const modListContentsTemplate =
+const gamesTemplate =
     handlebars.compile(
         `<div class="card-columns card-popular m-3">
            {{#each games}}
@@ -59,7 +60,7 @@ module.exports = {
                         g.group_name = request.args[0];
                         g.group_id = request.args[1];
                     })
-                    itemsContainer.innerHTML = modListContentsTemplate({
+                    itemsContainer.innerHTML = gamesTemplate({
                         games: gameResult
                     })
                 } else {
@@ -67,8 +68,9 @@ module.exports = {
                 }
             })
             .catch((error) => {
-                if(error == "Could not find game!") return itemsContainer.innerHTML = global.noResultsTemplate();
-                else return itemsContainer.innerHTML = global.errorTemplate(error.body)
+                if(error.status == statusCode.NOT_FOUND) {
+                    return getRatings.innerHTML = global.noResultsTemplate();
+                } else return getRatings.innerHTML = global.errorTemplate(error.body);
             })
         }
     }

@@ -1,5 +1,6 @@
 const api = require('../covida-api.js');
 const auth = require('../auth.js');
+const statusCode = require('../covida-status.js');
 const global = require('../global.js');
 
 const handlebars = global.handlebars;
@@ -41,6 +42,9 @@ module.exports = {
         return `<h1>${currentUser}'s Groups</h1>
             <div id='groups'>
                 ${global.spinnerTemplate}
+            </div>
+            <div class = "col text-center">
+                <button id="backButton" class="btn btn-primary">Go Back</button>
             </div>`
     },
 
@@ -60,8 +64,14 @@ module.exports = {
             }
         })
         .catch(error => {
-            alert(error);
+            alert(error.body);
             location.assign('#account');
         })
+
+        const backButton = document.querySelector('#backButton');
+        backButton.onclick= () => 
+        {
+            location.assign('#account');
+        }
     }
 }

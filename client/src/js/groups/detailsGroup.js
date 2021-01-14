@@ -1,9 +1,10 @@
 const api = require('../covida-api.js');
+const statusCode = require('../covida-status.js');
 const global = require('../global.js');
 const handlebars = global.handlebars;
 
 const modListContentsTemplate =
-    handlebars.compile( `
+    handlebars.compile(`
         <div class="col-lg-6 offset-lg-3">
             <div class="card text-center">
                 <div class="card-header bg-primary">
@@ -14,7 +15,7 @@ const modListContentsTemplate =
                 </div>
                 <div class="card-footer text-muted">
                     <div class="card-body text-center">
-                        <a href="#searchGame/{{name}}/{{id}}" class="float-left text-blue">
+                        <a href="#searchGame/{{name}}/{{id}}" class="float-left">
                             <i class="fas fa-plus"></i>
                         </a><br>
                     </div>
@@ -25,7 +26,7 @@ const modListContentsTemplate =
                             {{/if}}
                             <div class="card-body text-center">
                                 <div class="card-body text-center">
-                                    <a href="#removeGame/{{group_id}}/{{id}}" class="float-right text-pink">
+                                    <a href="#removeGame/{{group_id}}/{{id}}" class="float-right">
                                         <i class="fas fa-minus"></i>
                                     </a>
                                 </div>
@@ -44,12 +45,35 @@ const modListContentsTemplate =
         </div>
     `);
 
+const gamesTemplate =
+    handlebars.compile(global.gamesTemplate());
+
 module.exports  = {
-    getView: () => {
-        return `<h1 id='title'></h1>
-            <div id='groupDetails'>
-            </div>`
-    },
+    getView: () => 
+        `<h1 id='title'></h1>
+        <div id='groupDetails'></div>
+        <br><br><br>
+        <div class="col-lg-6 offset-lg-3">
+            <div class = "col text-center">
+                <p class="card-text text-white">Want to see the best Games you have in this Group?</p><br>
+            </div>
+            <div class="form-group row">
+                <div class = "col text-center">
+                    <input type="text" class="form-control" id="minimum" placeholder="Rating Minimum" required>
+                </div>
+                <div class = "col text-center">
+                    <input type="text" class="form-control" id="maximum" placeholder="Rating Maximum" required>
+                </div>
+            </div>
+            <div class = "col text-center">
+                <button id="getRatingsButton" class="btn btn-primary">Get Games with the best rating!</button>
+            </div>
+        </div>
+        <div id='getRatings'></div>
+
+        <div class = "col text-center">
+            <br><br><button id="backButton" class="btn btn-primary">Go Back</button><br><br>
+        </div>`,
 
     authenticationRequired: true,
 
@@ -72,6 +96,45 @@ module.exports  = {
                 return Promise.reject(group.error);
             }
         })
-        .catch(error => alert(error));
+        .catch(error => alert(error.body));
+
+        const getRatings = document.querySelector(`#getRatings`);
+        const getRatingsButton = document.querySelector('#getRatingsButton');
+        const minimum = document.getElementById("minimum");
+        const maximum = document.getElementById("maximum");
+        getRatingsButton.onclick= () => 
+        {
+            const minimumValue = minimum.value;
+            if (minimumValue.length === 0) {
+                alert('Please insert a Minimum Value!');
+                return;
+            }
+            const maximumValue = maximum.value;
+            if (maximumValue.length === 0) {
+                alert('Please insert a Maximum Value!');
+                return;
+            }
+            return api.getRatingsFromGames(req.args[1], maximumValue, minimumValue)
+            .then(gamesResult => {
+                if (!gamesResult.error) {
+                    getRatings.innerHTML = gamesTemplate({
+                        games: gamesResult
+                    })
+                } else {
+                    return Promise.reject(gamesResult.error);
+                }
+            })
+            .catch(error => {
+                if(error.status == statusCode.NOT_FOUND) {
+                    return getRatings.innerHTML = global.noResultsTemplate();
+                } else return getRatings.innerHTML = global.errorTemplate(error.body);
+            });
+        }
+
+        const backButton = document.querySelector('#backButton');
+        backButton.onclick= () => 
+        {
+            window.history.back();
+        }
     }
 }

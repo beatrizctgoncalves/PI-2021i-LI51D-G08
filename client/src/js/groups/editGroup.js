@@ -1,5 +1,6 @@
 const api = require('../covida-api.js');
 const global = require('../global.js');
+const statusCode = require('../covida-status.js');
 
 module.exports = {
 
@@ -13,6 +14,11 @@ module.exports = {
                         <label for="groupDesc" class="col-sm-2 col-form-label">Description:</label>
                         <input type="text" class="form-control" id="newGroupDesc" placeholder="Enter A New Description" required><br><br><br>
                         <button id="editButton" class="btn btn-primary">Edit</button>
+                    </div>
+                </div>
+                <div class="col-lg-6 offset-lg-3">
+                    <div class = "col text-center">
+                        <button id="backButton" class="btn btn-primary">Go Back</button>
                     </div>
                 </div>
             </div>`
@@ -50,8 +56,14 @@ module.exports = {
                     return Promise.reject(response.error);
                 }
             }).catch(error => {
-                alert(error);
+                alert(error.body);
             })
+        }
+
+        const backButton = document.querySelector('#backButton');
+        backButton.onclick= () => 
+        {
+            window.history.back();
         }
     }
 }

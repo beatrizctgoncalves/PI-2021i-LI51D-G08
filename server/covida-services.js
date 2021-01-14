@@ -175,28 +175,22 @@ function services(data, db, covidaResponses) {
 
         //Implementation of the route to get a game between the given interval of values which accesses to both database and api
         getRatingsFromGames: function(group_id, max, min) { 
-            if(max > 100 || min < 0) {  //Check if the values are acceptable
+            var regExp = /[a-zA-Z]/g;
+            if(max > 100 || min < 0 || max < 0 || min > max || regExp.test(max) || regExp.test(min)) {  //Check if the values are acceptable
                 return covidaResponses.setError(covidaResponses.BAD_REQUEST, covidaResponses.RATINGS_WRONG_MSG);
             }
             return db.getGroupById(group_id)
             .then(groupObj => {
-                const gameExists = groupObj.games.findIndex(g => g.id === parseInt(game_id))
-                if(gameExists == -1) {  //check if the game already exists in the group
-                    return covidaResponses.setError(
-                        covidaResponses.NOT_FOUND,
-                        covidaResponses.GAME_NOT_FOUND_MSG
+                var games = groupObj.games.filter(g => g.total_rating > min && g.total_rating < max);
+                if(games.length) {
+                    games.sort((a, b) => b.total_rating - a.total_rating); //sort the array games so that games can appear decreasingly
+                    return covidaResponses.setSuccessToList(
+                        covidaResponses.OK,
+                        games
                     )
                 } else {
-                    return data.getSpecificGame(game_id) //get game's information because ratings can change
-                    .then(gamesObj => {
-                        var games = gamesObj.games.filter(g => g.total_rating > min && g.total_rating < max);
-                        games.sort((a, b) => b.total_rating - a.total_rating); //sort the array games so that games can appear decreasingly
-                        return covidaResponses.setSuccessToList(
-                            covidaResponses.OK,
-                            games
-                        ) 
-                    })
-                }       
+                    return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAMES_0_MSG);
+                }        
             })
         },
 

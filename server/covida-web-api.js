@@ -167,7 +167,7 @@ function promisesAsyncImplementation(promise, res) {
     .catch(err => {
         //Error response
         res.statusCode = err.status
-        res.json({error: err.body})
+        res.json({error: err})
     });
 }
 

@@ -66,7 +66,7 @@ module.exports = {
                 groupsField.innerHTML = `<b>0</b> Groups Registered`
                 gamesField.innerHTML = `<b>0</b> Games Saved`
             }
-        })
+        });
 
         const txtName = document.querySelector('#groupName');
         const txtDescription = document.querySelector('#groupDesc');
@@ -86,12 +86,13 @@ module.exports = {
             .then(response => {
                 if (!response.error) {
                     alert(`New Group ${groupName} successfully created`)
-                    location.reload();
+                    var startIndex = response.lastIndexOf('/');
+                    location.assign(`#detailsGroup/${groupName}${response.slice(startIndex)}`);
                 } else {
                     return Promise.reject(response.error);
                 }
             }).catch(error => {
-                alert(error);
+                alert(error.body);
             })
         }
     }

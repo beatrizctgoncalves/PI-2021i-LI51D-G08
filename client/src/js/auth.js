@@ -75,7 +75,7 @@ module.exports = {
                     } else return Promise.reject(loginResponse.error)
                 })
                 .catch(error => {
-                    console.log(error.error)
+                    console.log(error.body)
                     alert(error);
                     txtUsername.value = "";
                     txtPassword.value = "";
@@ -147,7 +147,7 @@ module.exports = {
                     } else return Promise.reject(createResponse.error);
                 })
                 .catch(errorMsg => {
-                    alert(errorMsg);
+                    alert(errorMsg.body);
                     txtUsername.value = "";
                     txtPassword.value = "";
                     butSignUp.innerHTML = buttonText;

@@ -1,9 +1,10 @@
 const global = require('../global.js');
 const api = require('../covida-api.js');
+const statusCode = require('../covida-status.js');
 
 module.exports = {
     getView: () => 
-        `<h1>Search For A Game To Add</h1>
+        `<h1></h1>
         <div id='addGame'></div>`,
     
     authenticationRequired: true,
@@ -19,7 +20,7 @@ module.exports = {
             }
         })
         .catch((error) => {
-            alert(error);
+            alert(error.body);
         })
     }
 }
