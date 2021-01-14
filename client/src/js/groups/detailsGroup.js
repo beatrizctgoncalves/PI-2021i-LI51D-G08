@@ -3,7 +3,7 @@ const statusCode = require('../covida-status.js');
 const global = require('../global.js');
 const handlebars = global.handlebars;
 
-const modListContentsTemplate =
+const GroupsAndGamesTemplate =
     handlebars.compile(`
         <div class="col-lg-6 offset-lg-3">
             <div class="card text-center">
@@ -26,7 +26,7 @@ const modListContentsTemplate =
                             {{/if}}
                             <div class="card-body text-center">
                                 <div class="card-body text-center">
-                                    <a href="#removeGame/{{group_id}}/{{id}}" class="float-right">
+                                    <a href="#removeGame/{{group_id}}/{{name}}/{{id}}" class="float-right">
                                         <i class="fas fa-minus"></i>
                                     </a>
                                 </div>
@@ -40,6 +40,33 @@ const modListContentsTemplate =
                             </div>
                         </div>
                     {{/each}}
+                </div>
+            </div>
+        </div>
+    `);
+
+const noGamesTemplate =
+    handlebars.compile(`
+        <div class="col-lg-6 offset-lg-3">
+            <div class="card text-center">
+                <div class="card-header bg-primary">
+                    Name: {{name}}
+                </div>
+                <div class="card-body text-center">
+                    <p class="card-text"><em>Description: {{desc}}</em></p>
+                </div>
+                <div class="card-footer text-muted">
+                    <div class="card-body text-center">
+                        <a href="#searchGame/{{name}}/{{id}}" class="float-left">
+                            <i class="fas fa-plus"></i>
+                        </a><br>
+                    </div>
+                    <div class="card"> 
+                        <div class="card-body text-center">
+                            <p class="card-text">You do not have any game saved in this group.</p><br>
+                            <p class="card-text">Add your first game!</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,11 +93,10 @@ module.exports  = {
                 </div>
             </div>
             <div class = "col text-center">
-                <button id="getRatingsButton" class="btn btn-primary">Get Games with the best rating!</button>
+                <button id="getRatingsButton" class="btn btn-primary">Get the Games with the best rating!</button>
             </div>
         </div>
         <div id='getRatings'></div>
-
         <div class = "col text-center">
             <br><br><button id="backButton" class="btn btn-primary">Go Back</button><br><br>
         </div>`,
@@ -85,19 +111,28 @@ module.exports  = {
         api.getGroupById(req.args[1])
         .then(group => {
             if (!group.error) {
-                group.games.map(g => g.group_id = req.args[1])
-                groupDetails.innerHTML = modListContentsTemplate({
-                    id: group.id,
-                    name: group.name,
-                    desc: group.desc,
-                    games: group.games
-                })
+                if(!group.games.length) {
+                    groupDetails.innerHTML = noGamesTemplate({
+                        id: group.id,
+                        name: group.name,
+                        desc: group.desc
+                    })
+                } else {
+                    group.games.map(g => g.group_id = req.args[1])
+                    groupDetails.innerHTML = GroupsAndGamesTemplate({
+                        id: group.id,
+                        name: group.name,
+                        desc: group.desc,
+                        games: group.games
+                    })
+                }
             } else {
                 return Promise.reject(group.error);
             }
         })
         .catch(error => alert(error.body));
 
+        //TODO: this shouldn't appear when there are no games!
         const getRatings = document.querySelector(`#getRatings`);
         const getRatingsButton = document.querySelector('#getRatingsButton');
         const minimum = document.getElementById("minimum");
