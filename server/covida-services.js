@@ -36,7 +36,7 @@ function services(data, db, covidaResponses) {
                 )
             } else {
                 return data.searchGamesByName(game_name)
-                .then(gamesObj => {                   
+                .then(gamesObj => {  
                     const newObj = gamesObj.map(e => {
                         return data.getImage(e.id)
                         .then(urlImage => e.urlImage = urlImage)

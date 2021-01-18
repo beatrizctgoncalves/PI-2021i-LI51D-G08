@@ -44,7 +44,7 @@ module.exports = {
                 ${global.spinnerTemplate}
             </div>
             <div class = "col text-center">
-                <button id="backButton" class="btn btn-primary">Go Back</button>
+                <button type="button "id="backButton" class="btn btn-primary">Go Back</button>
             </div>`
     },
 

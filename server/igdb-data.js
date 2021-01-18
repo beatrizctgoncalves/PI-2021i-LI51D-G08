@@ -6,7 +6,7 @@ const fetch = require('node-fetch')
 const GET_API_IMAGE = "https://api.igdb.com/v4/covers"
 const IGDB_HOST = 'https://api.igdb.com/v4/games' //API IGDB's base URL with a specific endpoint
 const IGDB_CID = 's4fwgb8isqexk2j87n2xagqfc3hhy6'
-const IGDB_KEY = 'Bearer 5tfgildk5un7ie5tz6fzywdd1dcryr'
+const IGDB_KEY = 'Bearer jpzsqyp11uomkcirybhg2s41w6sfy5'
 const API_IMAGE = "https:"
 
 module.exports = {

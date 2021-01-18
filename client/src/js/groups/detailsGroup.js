@@ -169,7 +169,7 @@ module.exports  = {
         const backButton = document.querySelector('#backButton');
         backButton.onclick= () => 
         {
-            window.history.back();
+            location.assign('#groups');
         }
     }
 }
