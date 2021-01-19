@@ -13,7 +13,7 @@ module.exports = {
                             <div class="card-body">                    
                                 <h5 class="card-title"><i class="fas fa-lock"></i> Groups</h5>
                                 <p class="card-text" id="groupsCounter"></p>
-                                <h5 class="card-title"><i class="fas fa-tv"></i> Games</h5>
+                                <h5 class="card-title"><i class="fas fa-gamepad"></i> Games</h5>
                                 <p class="card-text" id="gamesCounter"></p>
                             </div>
                         </div>
@@ -56,16 +56,16 @@ module.exports = {
         .then(allGroups => {
             let groupsField = document.getElementById("groupsCounter");
             let gamesField = document.getElementById("gamesCounter");
+            var gamesCounter = 0;
             if (!allGroups.error) {
                 groupsCounter = allGroups;
-                groupsCounter.map(group => gamesCounter = group.games.length);
+                groupsCounter.map(group => gamesCounter = gamesCounter + group.games.length);
 
                 groupsField.innerHTML = `<b>${groupsCounter.length}</b> Groups Registered`
-                gamesField.innerHTML = `<b>${gamesCounter}</b> Games Saved`
             } else {
                 groupsField.innerHTML = `<b>0</b> Groups Registered`
-                gamesField.innerHTML = `<b>0</b> Games Saved`
             }
+            gamesField.innerHTML = `<b>${gamesCounter}</b> Games Saved`
         });
 
         const txtName = document.querySelector('#groupName');
