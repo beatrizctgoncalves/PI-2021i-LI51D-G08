@@ -30,9 +30,15 @@ module.exports = {
             "desc": desc,
             "games": []
         });
-        return makeFetch('groups/_doc?refresh=true', arrayMethods.POST, requestBody)
-        .then(body => body._id)
-        .catch(() => covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG))
+        return makeFetch('groups/_doc', arrayMethods.POST, requestBody)
+        .then(body => {
+            if(!body.error) return body._id;
+            else covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_REQUESTS_MSG);
+        })
+        .catch(error => {
+            if(error.body == covidaResponses.DB_ERROR_REQUESTS_MSG) return covidaResponses.setError(error.status, error.body);
+            else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_MSG)
+        })
     },
 
     getGroups: function(owner) {
