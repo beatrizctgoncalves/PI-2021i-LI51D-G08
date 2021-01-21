@@ -18,32 +18,32 @@ module.exports = {
                             </div>
                         </div>
                     </div>
+                    <div class="col-sm">
+                        <h5 class="text-center mb-4">Create A New Group!</h5>
+                        <div class="form-group row">
+                            <label for="groupName" class="col-sm-2 col-form-label">Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="groupName" placeholder="Enter Group Name" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="groupDesc" class="col-sm-2 col-form-label">Description</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="groupDesc" placeholder="Enter Group Description" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col text-center">
+                                <button id="createButton" class="btn btn-primary">Create</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm">
-                    <h5 class="text-center mb-4">Create A New Group!</h5>
-                    <div class="form-group row">
-                        <label for="groupName" class="col-sm-2 col-form-label">Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="groupName" placeholder="Enter Group Name" required>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class = "mx-auto">
+                            <a href="#groups" class="btn btn-primary btn-lg btn-block mt-5">My Groups</a>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="groupDesc" class="col-sm-2 col-form-label">Description</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="groupDesc" placeholder="Enter Group Description" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col text-center">
-                            <button id="createButton" class="btn btn-primary">Create</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm">
-                    <div class = "mx-auto">
-                        <a href="#groups" class="btn btn-primary btn-lg btn-block mt-5">My Groups</a>
                     </div>
                 </div>
             </div>`
