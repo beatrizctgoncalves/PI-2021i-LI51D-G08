@@ -91,7 +91,7 @@ module.exports = {
         .then(response => response.json())
         .then(body => {
             if(body.length)
-                return API_IMAGE.concat(body[0].url)
+                return API_IMAGE.concat(body[0].url.replace("thumb", "720p"))
             else 
                 return undefined;
         })

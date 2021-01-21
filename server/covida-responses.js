@@ -35,6 +35,7 @@ module.exports = {
     GROUPS_0_MSG: "Could not find any group!", //When listGroups 
     CONFLIT_GAME_MSG: "This game already exists in this group!",
     DB_ERROR_MSG: "Bad Gateway: Error in DataBase",
+    DB_ERROR_REQUESTS_MSG: "Bad Gateway: Error in DataBase, too many requests!",
     API_ERROR_MSG: "Service Unavailable: Error in IGDB API",
 
     CONFLIT_USER_MSG: "This user already exists!",

@@ -18,6 +18,7 @@ module.exports = {
                             </div>
                         </div>
                     </div>
+                </div>
                 <div class="col-sm">
                     <h5 class="text-center mb-4">Create A New Group!</h5>
                     <div class="form-group row">
@@ -67,14 +68,14 @@ module.exports = {
             }
             gamesField.innerHTML = `<b>${gamesCounter}</b> Games Saved`
         });
-
+        
         const txtName = document.querySelector('#groupName');
         const txtDescription = document.querySelector('#groupDesc');
         const createButton = document.querySelector('#createButton');
         createButton.onclick = () => {
             const groupName = txtName.value;
             const groupDesc = txtDescription.value;
-            if (groupName.length === 0 || groupName.length >= 10) {
+            if (groupName.length === 0) {
                 alert('Group Name invalid');
                 return;
             }

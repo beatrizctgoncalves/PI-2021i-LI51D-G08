@@ -5,7 +5,7 @@ const servicesCreator = require('./covida-services');
 const data = require('./igdb-data');
 const db = require('./covida-db');
 const covidaResponses = require('./covida-responses');
-const services = servicesCreator(data, db, covidaResponses)
+const services = servicesCreator(data, db, covidaResponses);
 
 function userToRef(user, done) {
     done(null, user);
