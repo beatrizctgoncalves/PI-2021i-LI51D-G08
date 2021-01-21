@@ -33,7 +33,7 @@ module.exports = {
         return makeFetch('groups/_doc', arrayMethods.POST, requestBody)
         .then(body => {
             if(!body.error) return body._id;
-            else covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_REQUESTS_MSG);
+            else return covidaResponses.setError(covidaResponses.DB_ERROR, covidaResponses.DB_ERROR_REQUESTS_MSG);
         })
         .catch(error => {
             if(error.body == covidaResponses.DB_ERROR_REQUESTS_MSG) return covidaResponses.setError(error.status, error.body);
