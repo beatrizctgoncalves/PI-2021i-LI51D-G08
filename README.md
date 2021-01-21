@@ -3,5 +3,5 @@ Programação Na Internet, 2020/2021, winter semester
 
 # G8
 44803 Beatriz Gonçalves
-Tomás Santos
+45363 Tomás Santos
 Diogo Fernandes
