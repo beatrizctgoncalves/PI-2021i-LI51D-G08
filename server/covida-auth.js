@@ -1,10 +1,11 @@
 const passport = require('passport');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
-const servicesCreator = require('./covida-services');
+
 const data = require('./igdb-data');
 const db = require('./covida-db');
 const covidaResponses = require('./covida-responses');
+const servicesCreator = require('./covida-services');
 const services = servicesCreator(data, db, covidaResponses);
 
 function userToRef(user, done) {

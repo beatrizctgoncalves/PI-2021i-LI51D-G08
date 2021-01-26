@@ -90,13 +90,13 @@ module.exports = {
 
         run: () => {
             api.logout()
-            .catch(error => { //TODO: correct error: "SyntaxError: Unexpected end of JSON input"
-                alert(error);
-            })
             .then(() => {
                 alert(`See you soon ${currUsername}. Bye!`);
                 setCurrentUser(null);
                 location.assign('#home');
+            })
+            .catch(error => {
+                alert(error);
             })
         }
     },

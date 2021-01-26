@@ -57,19 +57,28 @@ module.exports = {
     },
 
     removeGroup: function(group_id) {
-        return makeFetch(`/groups/${group_id}`, arrayMethods.DELETE, null)
+        var requestBody = JSON.stringify({
+            "group_id": group_id,
+        });
+        return makeFetch(`/groups`, arrayMethods.DELETE, requestBody)
     },
 
-    addGameToGroup: function(game_id, group_id){
-        return makeFetch(`/groups/${group_id}/games/${game_id}`, arrayMethods.PUT, null)
+    addGameToGroup: function(game_id, group_id) {
+        var requestBody = JSON.stringify({
+            "game_id": game_id,
+        });
+        return makeFetch(`/groups/${group_id}/games`, arrayMethods.PUT, requestBody)
     },
 
-    getRatingsFromGames: function(group_id, max, min){
+    getRatingsFromGames: function(group_id, max, min) {
         return makeFetch(`/groups/${group_id}/games/${min}&${max}`, arrayMethods.GET, null)
     },
 
-    removeGame: function(game_id, group_id){
-        return makeFetch(`/groups/${group_id}/games/${game_id}`, arrayMethods.DELETE, null)
+    removeGame: function(game_id, group_id) {
+        var requestBody = JSON.stringify({
+            "game_id": game_id,
+        });
+        return makeFetch(`/groups/${group_id}/games`, arrayMethods.DELETE, requestBody)
     },
 
     signUp: function(username, password) {

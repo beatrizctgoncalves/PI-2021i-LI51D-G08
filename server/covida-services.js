@@ -40,7 +40,7 @@ function services(data, db, covidaResponses) {
                     const newObj = gamesObj.map(e => {
                         return data.getImage(e.id)
                         .then(urlImage => e.urlImage = urlImage)
-                    });
+                    })
                     return Promise.all(newObj)
                     .then(() => {
                         return covidaResponses.setSuccessToList(
@@ -310,7 +310,7 @@ function services(data, db, covidaResponses) {
                 if (user) {
                     resolve(covidaResponses.setSuccessToUri(
                         covidaResponses.OK,
-                        '/users',
+                        'users/',
                         user
                     ));
                 } else {
