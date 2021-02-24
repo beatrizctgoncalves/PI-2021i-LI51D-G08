@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="./../../../../../../../css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="./../../../../../../../css/style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/png" href="/favicon.png"/>
+    <link rel="icon" type="image/png" href="./../../../../../../images/logo.png"/>
+</head>
+
+<body id="home-body">
+   <!-- Navigation -->
+   <nav>
+      <div class='navbar navbar-expand-lg navbar-dark bg-dark'>
+         <a class="navbar-brand" href="/">
+            <img src='./../../../../../../images/covida.png' width="75" height="30" alt="">
+         </a>
+         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav" id="navBarLinks">
+               <div class="form-inline">
+                  <input id="searchForm" class="form-control mr-sm-2" type="search" placeholder="Search">
+                  <button id="searchButton" class="btn btn-primary" onclick="location.href='/games/search'">
+                     <i class="fas fa-search"></i>
+                  </button>
+               </div>
+            </div>
+            <div>
+               <a class="text-white p-4" href='/signIn'>Sign In</a>
+		            <a href='/signUp'<button class="btn btn-primary" type="button">Sign Up</button></a>
+            </div>
+         </div>
+      </div>
+   </nav>
+   <hr>
+
+    <!-- Page Content -->
+    <h1>Sign Up</h1>
+    <div class="col-lg-6 offset-lg-3">
+      <div class="card text-center">
+         <form class="box" action="/users/signup" method="POST">
+            <br><br><p class="text-muted"> Please enter a new username and password!</p>
+            <div class="form-group">
+               <label for="username" class="col-sm-2 col-form-label">Username:</label>
+               <div class="col-lg-6 offset-lg-3">
+                  <input type="text" class="form-control" name="username" placeholder="Enter Username" required><br>
+               </div>
+               <label for="password" class="col-sm-2 col-form-label">Password:</label>
+               <div class="col-lg-6 offset-lg-3">
+                  <input type="password" class="form-control" name="password" placeholder="Enter Password" required><br><br>
+               </div>
+               <input type="submit" name="" class="btn btn-primary" value="Sign Up" href="#">
+            </div>
+         </form>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("searchButton").onclick = () => {
+         let userInput = document.getElementById("searchForm").value
+         if(userInput) {
+            let result = "http://localhost:8080/site/games/name/".concat(userInput)
+            location.href = result
+         } else {
+            alert("To search for a Game you need to insert a name!")
+         }
+      }
+   </script>
+</body>
+
+</html>

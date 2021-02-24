@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+      <link href="./../../../../../../css/bootstrap.css" rel="stylesheet">
+      <link rel="stylesheet" href="./../../../../../../css/style.css">
+      <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+      <link rel="icon" type="image/png" href="/favicon.png"/>
+      <link rel="icon" type="image/png" href="./../../../../../../images/logo.png"/>
+      <title>COVIDA</title>
+   </head>
+
+   <body id="home-body">
+<!-- Navigation -->
+   <nav>
+      <div class='navbar navbar-expand-lg navbar-dark bg-dark'>
+            <a class="navbar-brand" href="/">
+               <img src='./../../../../../../images/covida.png' width="75" height="30" alt="">
+            </a>
+         
+         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav" id="navBarLinks">
+               <div class="form-inline">
+                  <input id="searchForm" class="form-control mr-sm-2" type="search" placeholder="Search">
+                  <button class="btn btn-primary" type="button" id="searchButton">
+                     <i class="fas fa-search"></i>
+                  </button>
+               </div>
+            </div>
+            <div>
+               {{#if username}}
+                  <a class="text-white p-4" href="/account">{{username}}</a>
+                  <a href="/logout"<button class="btn btn-primary" type="button">Log Out</button></a>
+               {{/if}}
+               {{#if isNotAuth}}
+                  <a class="text-white p-4" href="/signIn">Sign In</a>
+                  <a href="/signUp"<button class="btn btn-primary" type="button">Sign Up</button></a>
+               {{/if}}
+            </div>
+         </div>
+      </div>
+   </nav>
+
+      <h1>Error <span class="errorcode">{{status}}</span></h1>
+      <div class="card text-center">
+         <div class="jumbotron m-3">
+            <div class="col-lg-6 offset-lg-3">
+               <div class="intro">
+                  <h2 class="output">{{body}}</h2><br>
+                     <a href="javascript:history.back()"<button class="btn btn-primary" type="button">Go Back</button></a><br><br>
+               </div>
+            </div>
+         </div>
+      </div>
+   </body>
+</html>

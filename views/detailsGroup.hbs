@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="./../../../../../../css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="./../../../../../../css/style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/png" href="/favicon.png"/>
+    <link rel="icon" type="image/png" href="./../../../../../../images/logo.png"/>
+    <title>COVIDA</title>
+</head>
+
+<body id="home-body">
+   <!-- Navigation -->
+   <nav>
+      <div class='navbar navbar-expand-lg navbar-dark bg-dark'>
+         <a class="navbar-brand" href="/">
+            <img src='./../../../../../../images/covida.png' width="75" height="30" alt="">
+         </a>
+         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav" id="navBarLinks">
+               <div class="form-inline">
+                  <input id="searchForm" class="form-control mr-sm-2" type="search" placeholder="Search">
+                  <button id="searchButton" class="btn btn-primary">
+                     <i class="fas fa-search"></i>
+                  </button>
+               </div>
+            </div>
+            <div>
+                <a class="text-white p-4" href="/account">{{username}}</a>
+		        <a href="/logout"<button class="btn btn-primary" type="button">Log Out</button></a>
+            </div>
+         </div>
+      </div>
+   </nav>
+   <hr>
+
+    <!-- Page Content -->
+    <h1>{{name}}'s Details</h1>
+    <div class="col-lg-6 offset-lg-3">
+        <div class="card text-center">
+            <div class="card-header bg-primary">
+                Name: {{name}}
+            </div>
+            <div class="card-body text-center">
+                <p class="card-text"><em>Description: {{desc}}</em></p>
+            </div>
+            <div class="card-footer text-muted">
+                <div class="card-body text-center">
+                    <a href="/searchGame/{{name}}/{{id}}" class="float-left">
+                        <i class="fas fa-plus"></i>
+                    </a><br>
+                </div>
+                {{#each games}}
+                    <div class="card">
+                        {{#if urlImage}}
+                            <img class="card-img-top img-fluid" src="{{urlImage}}" alt="Card image cap">
+                        {{/if}}
+                        <div class="card-body text-center">
+                            <div class="card-body text-center">
+                                <form class="float-right text-dark" action="/site/groups/{{../id}}/games/{{id}}" method="POST">
+                                    <input type="image" src="./../../../../../../../images/minus.png" alt="" width="20" height="20">
+                                </form>
+                            </div>
+                            <a href={{url}}>{{name}}</a>
+                            <p class="card-text">{{summary}}</p>
+                            {{#if total_rating}}
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{total_rating}}%">{{total_rating}}</div>
+                                </div>
+                            {{/if}}<br>
+                        </div>
+                    </div>
+                {{/each}}
+                {{#if hasNoGames}}
+                    <p class="card-text">You do not have any Game saved in this Group yet.</p>
+                    <p class="card-text">Add your first Game now!</p>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+    <br><br><br>
+    <div class="col-lg-6 offset-lg-3">
+        <div class = "col text-center">
+            <p class="card-text text-white">Want to see the best Games you have in this Group?</p><br>
+        </div>
+        <div class="form-group row">
+            <div class = "col text-center">
+                <input type="text" class="form-control" id="minimum" placeholder="Rating Minimum" required>
+            </div>
+            <div class = "col text-center">
+                <input type="text" class="form-control" id="maximum" placeholder="Rating Maximum" required>
+            </div>
+        </div>
+        <div class = "col text-center">
+            <button id="getRatingsButton" class="btn btn-primary" value={{id}}>Get the Games with the best rating!</button>
+        </div>
+    </div>
+
+    <div class = "col text-center">
+        <br><br><a href="/site/groups/owner/{{username}}"<button class="btn btn-primary" type="button">Go Back</button></a><br><br>
+    </div>        
+
+    <script>
+        const getRatingsButton = document.querySelector('#getRatingsButton');
+        const minimum = document.getElementById("minimum");
+        const maximum = document.getElementById("maximum");
+        getRatingsButton.onclick= () => 
+        {
+            const minimumValue = minimum.value;
+            if (minimumValue.length === 0) {
+                alert('Please insert a Minimum Value!');
+                return;
+            }
+            const maximumValue = maximum.value;
+            if (maximumValue.length === 0) {
+                alert('Please insert a Maximum Value!');
+                return;
+            }
+            location.href = `http://localhost:8080/site/groups/${getRatingsButton.value}/games?min=${minimumValue}&max=${maximumValue}`
+        }
+
+        document.getElementById("searchButton").onclick = () => {
+            let userInput = document.getElementById("searchForm").value
+            if(userInput) {
+                let result = "http://localhost:8080/site/games/name/".concat(userInput)
+                location.href = result
+            } else {
+                alert("To search for a Game you need to insert a name!")
+            }
+        }
+    </script>
+</body>
+</html>

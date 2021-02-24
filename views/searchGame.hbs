@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="./../../../../../../css/bootstrap.css" rel="stylesheet">
+        <link rel="stylesheet" href="./../../../../../../css/style.css">
+        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+        <link rel="icon" type="image/png" href="/favicon.png"/>
+        <link rel="icon" type="image/png" href="./../../../../../../images/logo.png"/>
+        <title>COVIDA</title>
+    </head>
+
+    <body id="home-body">
+        <!-- Navigation -->
+        <nav>
+            <div class='navbar navbar-expand-lg navbar-dark bg-dark'>
+                <a class="navbar-brand" href="/">
+                    <img src='./../../../../../../images/covida.png' width="75" height="30" alt="">
+                </a>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav" id="navBarLinks">
+                    <div class="form-inline">
+                        <input id="searchForm" class="form-control mr-sm-2" type="search" placeholder="Search">
+                        <button id="searchButton" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    </div>
+                    <div>
+                        <a class="text-white p-4" href="/account">{{username}}</a>
+                        <a href="/logout"<button class="btn btn-primary" type="button">Log Out</button></a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <hr>
+
+        <!-- Page Content -->
+        <h1>Search For A Game To Add</h1>
+        <div class="col-lg-6 offset-lg-3">
+            <div class="form-group row">
+                <input type="text" class="form-control" id="search" placeholder="Search" required><br><br><br>
+            </div>
+            <div class = "col text-center">
+                <button id="butSearch" value={{id}} class="btn btn-primary">Search</button>
+            </div>
+        </div>
+        <div class = "col text-center">
+            <br><br><a href="javascript:history.back()"<button class="btn btn-primary" type="button">Go Back</button></a><br><br>
+         </div> 
+    
+        <script>
+            document.getElementById("butSearch").onclick = () => {
+                let search = document.getElementById("search").value
+                if(search) {
+                    let result = `http://localhost:8080/site/toAdd/groups/${document.getElementById("butSearch").value}/games/${search}`
+                    location.href = result
+                } else {
+                    alert("To search for a Game you need to insert a name!")
+                }
+            }
+
+            document.getElementById("searchButton").onclick = () => {
+                let userInput = document.getElementById("searchForm").value
+                if(userInput) {
+                    let result = "http://localhost:8080/site/games/name/".concat(userInput)
+                    location.href = result
+                } else {
+                    alert("To search for a Game you need to insert a name!")
+                }
+            }
+        </script>
+    </body>
+</html>

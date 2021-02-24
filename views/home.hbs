@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+   <head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="preconnect" href="https://fonts.gstatic.com">
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+   <link rel="stylesheet" href="./../../../../../../css/bootstrap.css">
+   <link rel="stylesheet" href="./../../../../../../css/style.css">
+   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+   <link rel="icon" type="image/png" href="/favicon.png"/>
+      <link rel="icon" type="image/png" href="./../../../../../../images/logo.png"/>
+   <title>COVIDA</title>
+   </head>
+
+   <body id="home-body">
+      <!-- Navigation -->
+      <nav>
+         <div class='navbar navbar-expand-lg navbar-dark bg-dark'>
+            <a class="navbar-brand" href="/">
+               <img src='./../../../../../../images/covida.png' width="75" height="30" alt="">
+            </a>
+            
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+               <div class="navbar-nav" id="navBarLinks">
+                  <div class="form-inline">
+                     <input id="searchForm" class="form-control mr-sm-2" type="search" placeholder="Search">
+                     <button class="btn btn-primary" type="button" id="searchButton">
+                        <i class="fas fa-search"></i>
+                     </button>
+                  </div>
+               </div>
+               <div>
+                  {{#if username}}
+                     <a class="text-white p-4" href="/account">{{username}}</a>
+                     <a href="/logout"<button class="btn btn-primary" type="button">Log Out</button></a>
+                  {{/if}}
+                  {{#if isNotAuth}}
+                     <a class="text-white p-4" href="/signIn">Sign In</a>
+                     <a href="/signUp"<button class="btn btn-primary" type="button">Sign Up</button></a>
+                  {{/if}}
+               </div>
+            </div>
+         </div>
+      </nav>
+      <hr>
+
+      <!-- Page Content -->
+      <div class="homeItems">
+         <div class="jumbotron m-3">
+            <div class="row">
+               <div class="col-md-8">
+                  <div class="intro">
+                     <h2>Chelas Open VIDeogame Application</h2>
+                     <p>Never miss any detail of your favourite game and do not forget those you have already played!<br />
+                        <br /><em>Made in ISEL.</em>
+                     </p>
+                  </div>
+               </div>
+               <div class="col-10 col-sm-4 offset-0">
+                  <img class="align-items-center device" src="./images/covida.png" style="width: 300px;" />
+                  <div class="d-none d-md-block"></div>
+               </div>
+            </div>
+         </div>
+         <div class="jumbotron features m-3">
+            <div class="row">
+               <div class="col mb-5">
+                  <h2 class="text-center">Features</h2>
+                     <p class="text-center">Take a peek at all that COVIDA has to offer</p>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col">
+                  <div class="card text-white bg-primary mb-3 h-100 p-3">
+                     <i class="fas fa-gamepad icon featuresIcon"></i>
+                     <h3 class="name">IGDB</h3>
+                     <p class="description">Based on The IGDB API.</p>
+                  </div>
+               </div>
+               <div class="col">
+                  <div class="card text-white bg-primary mb-3 h-100 p-3">
+                     <i class="fas fa-money-bill-alt icon featuresIcon"></i>
+                     <h3 class="name">Always Free</h3>
+                     <p class="description">COVIDA is, and always will be, completely free.</p>
+                  </div>
+               </div>
+               <div class="col">
+                  <div class="card text-white bg-primary mb-3 h-100 p-3">
+                     <i class="far fa-user-circle icon featuresIcon"></i>
+                     <h3 class="name">Customizable </h3>
+                     <p class="description">Create groups with your favorite games.</p>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="footer-basic text-center">
+            <footer>
+               <div class="container">
+                  <a class="btn btn-primary btn-circle btn-sm footerItem" href="https://github.com/beatrizctgoncalves">
+                     <i class="fab fa-github footerIcon"></i>
+                  </a>
+
+                  <a class="btn btn-primary btn-circle btn-sm footerItem" href="https://github.com/tomassms">
+                     <i class="fab fa-github footerIcon"></i>
+                  </a>
+
+                  <a class="btn btn-primary btn-circle btn-sm footerItem" href="https://github.com/bullycow">
+                     <i class="fab fa-github footerIcon"></i>
+                  </a>
+               </div>
+               <p class="copyright">ISEL-PI-G08 © 2021</p>
+            </footer>
+         </div>
+      </div>
+
+      <script>
+         document.getElementById("searchButton").onclick = () => {
+            let userInput = document.getElementById("searchForm").value
+            if(userInput) {
+               let result = "http://localhost:8080/site/games/name/".concat(userInput)
+               location.href = result
+            } else {
+               alert("To search for a Game you need to insert a name!")
+            }
+         }
+      </script>
+
+   </body>
+
+</html>
