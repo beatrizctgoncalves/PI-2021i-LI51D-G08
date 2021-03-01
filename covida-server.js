@@ -17,7 +17,8 @@ app.use(bodyParser.urlencoded({extended: true})) //Parse application/x-www-form-
 app.engine('handlebars', expressHbs())
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
-app.use(express.static('views'))
+app.use(express.static('views/images'))
+app.use(express.static('views/css'))
 
 const data = require('./igdb-data')
 const db = require('./covida-db')
