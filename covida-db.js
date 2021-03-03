@@ -118,7 +118,7 @@ module.exports = {
     },
 
     removeGroup: function(group_id) {
-        return makeFetch(`groups/_doc/${group_id}`, arrayMethods.DELETE, null)
+        return makeFetch(`groups/_doc/${group_id}?refresh=true`, arrayMethods.DELETE, null)
         .then(body => {
             if(body.result === 'deleted') return body._id
             else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GROUP_NOT_FOUND_MSG);

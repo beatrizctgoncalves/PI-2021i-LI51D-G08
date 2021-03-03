@@ -42,10 +42,13 @@ module.exports = function(services) {
     function searchGamesToAdd(req, res) { //Implementation of the route to get a specificsearch for a game by name
         console.log("Search Game By Name")
         const group_id = req.params.group_id
-        const username = req.user.body[0].username
-        services.searchGamesByName(req.params.game_name)
-            .then(games => res.status(games.status).render('addGame', { games: games.body, group_id: group_id, username: username}))
-            .catch(err => error(err, req, res))
+        if(!req.user) error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res)
+        else {
+            const username = req.user.body[0].username
+            services.searchGamesByName(req.params.game_name)
+                .then(games => res.status(games.status).render('addGame', { games: games.body, group_id: group_id, username: username}))
+                .catch(err => error(err, req, res))
+        }
     }
 
     function createGroup(req, res) { //Implementation of the route to create a group
@@ -69,9 +72,19 @@ module.exports = function(services) {
 
     function removeGroup(req, res) {    //Implementation of the route to remove a group by id
         console.log("Remove Group by ID")
-        services.removeGroup(req.params.group_id, 'site/')
-            .then(() => res.redirect('/account'))
-            .catch(err => error(err, req, res))
+        if(!req.user) error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res)
+        else {
+            const username = req.user.body[0].username;
+            services.removeGroup(req.params.group_id, 'site/')
+                .then(() => {
+                    services.getGroups(username)
+                        .then(groups => res.status(groups.status).render('groups', { 
+                            groups: groups.body,
+                            username: username
+                        }))
+                })
+                .catch(err => error(err, req, res))
+        }
     }
 
     function getGroups(req, res) { //Implementation of the route to get all groups
@@ -124,9 +137,18 @@ module.exports = function(services) {
 
     function getRatingsFromGames(req,res) { //Implementation of the route to get a game between the given interval of values
         console.log("Get Ratings From Games From Group")
-        services.getRatingsFromGames(req.params.group_id, req.query.max, req.query.min)
-            .then(games => res.status(games.status).render('search', {games: games.body}))
-            .catch(err => error(err, req, res))
+        if(!req.user) error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res)
+        else {
+            let isNotAuth = false;
+            const username = req.user.body[0].username
+            services.getRatingsFromGames(req.params.group_id, req.query.max, req.query.min)
+                .then(games => res.status(games.status).render('search', {
+                    games: games.body,
+                    username: username,
+                    isNotAuth: isNotAuth
+                }))
+                .catch(err => error(err, req, res))
+        }
     }
 
     function addGameToGroup(req, res) { //Implementation of the route to add a game by id to a specific group

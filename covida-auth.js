@@ -14,10 +14,10 @@ function userToRef(user, done) {
 
 function refToUser(userRef, done) {
     services.getUserByName(userRef.username)
-    .then(user => {
-        done(null, user)
-    })
-    .catch(() => done("User Unknown"))
+        .then(user => {
+            done(null, user)
+        })
+        .catch(() => done("User Unknown"))
 }
 
 module.exports = {

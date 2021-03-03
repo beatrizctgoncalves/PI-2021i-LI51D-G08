@@ -50,8 +50,8 @@ app.get('/account', function(req, res) {
             if(groups.error) {
                 Promise.reject(groups.error)
             } else {
-                if(!req.user.body) {
-                    error({ status: 401, body: "You are unauthenticated" }, res);
+                if(!req.user) {
+                    Promise.reject({ status: 401 })
                 } else {
                     let gamesCounter = null;
                     groups.map(g => gamesCounter = gamesCounter + g.games.length)
@@ -64,7 +64,6 @@ app.get('/account', function(req, res) {
             }
         })
         .catch(error => {
-            console.log(error)
             if(error.status === 404) {
                 res.status(200).render('account', {
                     username: req.user.body[0].username,
@@ -72,8 +71,7 @@ app.get('/account', function(req, res) {
                     games_length: 0
                 })
             } else {
-                const status = error.status || 500
-                res.status(status).render('error', error)
+                error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res);
             }            
         })
 })
@@ -86,7 +84,7 @@ app.get('/editGroup/:group_id/:group_name', function(req, res) {
             id: req.params.group_id
         });
     } else {
-        error({ status: 401, body: "You are unauthenticated" }, res);
+        error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res);
     }
 })
 
@@ -98,7 +96,7 @@ app.get('/searchGame/:group_name/:group_id', function(req, res) {
             id: req.params.group_id
         });
     } else {
-        error({ status: 401, body: "You are unauthenticated" }, res);
+        error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res);
     }
 })
 
@@ -120,9 +118,18 @@ app.use('/api', webApiCreator)
 app.use('/site', webSiteCreator)
 app.use('/users', usersCreator)
 
-function error(err, res) {
+function error(err, req, res) {
     const status = err.status || 500
-    res.status(status).render('error', err)
+    let isNotAuth = false;
+    let username = "";
+    if(!req.user) isNotAuth = true;
+    else username = req.user.body[0].username;
+    res.status(status).render('error', {
+        status: err.status,
+        body: err.body,
+        username: username,
+        isNotAuth: isNotAuth
+    })
 }
 
 const PORT = 8080;
