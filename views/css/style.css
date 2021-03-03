@@ -18,15 +18,6 @@
     transform: translateY(-50%);
 }
 
-.navButtons {
-    text-align: center;
-}
-
-.navitem {
-    display: inline-block;
-    margin: 20px;
-}
-
 .featuresIcon {
     text-align: center;
     font-size: 4em;
