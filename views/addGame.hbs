@@ -7,11 +7,11 @@
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <link rel="stylesheet" href="./../../../../../../../../bootstrap.css">
-        <link rel="stylesheet" href="./../../../../../../../../style.css">
+        <link rel="stylesheet" href="http://localhost:8080/bootstrap.css">
+        <link rel="stylesheet" href="http://localhost:8080/style.css">
         <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
         <link rel="icon" type="image/png" href="/favicon.png"/>
-        <link rel="icon" type="image/png" href="logo.png"/>
+        <link rel="icon" type="image/png" href="http://localhost:8080/logo.png"/>
         <title>COVIDA</title>
     </head>
 
@@ -20,7 +20,7 @@
     <nav>
         <div class='navbar navbar-expand-lg navbar-dark bg-dark'>
             <a class="navbar-brand" href="/">
-                <img src='./../../../../../../../covida.png' width="75" height="30" alt="">
+                <img src='http://localhost:8080/covida.png' width="75" height="30" alt="">
             </a>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav" id="navBarLinks">
@@ -53,7 +53,7 @@
                         <a href={{url}}>{{name}}</a>
                         <div class="card-body text-center">
                             <form class="float-right text-dark" action="/site/add/groups/{{../group_id}}/games/{{id}}" method="POST">
-                                <input type="image" src="./../../../../../../plus.png" alt="" width="20" height="20">
+                                <input type="image" src="http://localhost:8080/plus.png" alt="" width="20" height="20">
                             </form>
                         </div>
                         <p class="card-text">{{summary}}</p>
