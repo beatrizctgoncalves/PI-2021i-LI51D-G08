@@ -22,12 +22,14 @@ module.exports = {
 
     //ERROR
     BAD_REQUEST: 400,
+    UNAUTHENTICATED: 401,
     NOT_FOUND: 404,
     FORBIDDEN: 403,
     DB_ERROR: 502,
     API_ERROR: 503,
 
     BAD_REQUEST_MSG: "Please insert a valid parameter!",
+    UNAUTHENTICATED_MSG: "You are unauthenticated, please Sign In",
     RATINGS_WRONG_MSG: "Please insert a valid interval for ratings! It needs to be between 0 and 100 inclusive.",
     GAME_NOT_FOUND_MSG: "Could not find game!",
     GAMES_0_MSG: "Could not find any game with ratings between the given interval!", //When ratings aren't between the given interval

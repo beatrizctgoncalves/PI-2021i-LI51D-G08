@@ -17,34 +17,34 @@
 
    <body id="home-body">
    <!-- Navigation -->
-   <nav>
-      <div class='navbar navbar-expand-lg navbar-dark bg-dark'>
-            <a class="navbar-brand" href="/">
-               <img src='http://localhost:8080/covida.png' width="75" height="30" alt="">
-            </a>
-         
-         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav" id="navBarLinks">
-               <div class="form-inline">
-                  <input id="searchForm" class="form-control mr-sm-2" type="search" placeholder="Search">
-                  <button class="btn btn-primary" type="button" id="searchButton">
-                     <i class="fas fa-search"></i>
-                  </button>
+      <nav>
+         <div class='navbar navbar-expand-lg navbar-dark bg-dark'>
+               <a class="navbar-brand" href="/">
+                  <img src='http://localhost:8080/covida.png' width="75" height="30" alt="">
+               </a>
+            
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+               <div class="navbar-nav" id="navBarLinks">
+                  <div class="form-inline">
+                     <input id="searchForm" class="form-control mr-sm-2" type="search" placeholder="Search">
+                     <button class="btn btn-primary" type="button" id="searchButton">
+                        <i class="fas fa-search"></i>
+                     </button>
+                  </div>
+               </div>
+               <div class="userInfo">
+                  {{#if username}}
+                     <a class="text-white p-4" href="/account">{{username}}</a>
+                     <a href="/logout"<button class="btn btn-primary" type="button">Log Out</button></a>
+                  {{/if}}
+                  {{#if isNotAuth}}
+                     <a class="text-white p-4" href="/signIn">Sign In</a>
+                     <a href="/signUp"<button class="btn btn-primary" type="button">Sign Up</button></a>
+                  {{/if}}
                </div>
             </div>
-            <div class="userInfo">
-               {{#if username}}
-                  <a class="text-white p-4" href="/account">{{username}}</a>
-                  <a href="/logout"<button class="btn btn-primary" type="button">Log Out</button></a>
-               {{/if}}
-               {{#if isNotAuth}}
-                  <a class="text-white p-4" href="/signIn">Sign In</a>
-                  <a href="/signUp"<button class="btn btn-primary" type="button">Sign Up</button></a>
-               {{/if}}
-            </div>
          </div>
-      </div>
-   </nav>
+      </nav>
 
       <h1>Error <span class="errorcode">{{status}}</span></h1>
       <div class="card text-center">
@@ -52,7 +52,7 @@
             <div class="col-lg-6 offset-lg-3">
                <div class="intro">
                   <h2 class="output">{{body}}</h2><br>
-                  <img class="align-items-center device" src="./../../../../../error.png" style="width: 300px;"><br><br>
+                  <img class="align-items-center device" src="http://localhost:8080/error.png" style="width: 300px;"><br><br>
                   <a href="javascript:history.back()"<button class="btn btn-primary" type="button">Go Back</button></a><br><br>
                </div>
             </div>

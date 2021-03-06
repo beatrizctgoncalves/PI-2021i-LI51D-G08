@@ -37,75 +37,69 @@ app.get('/', function(req, res) {
     let username = "";
     if(!req.user) isNotAuth = true;
     else username = req.user.body[0].username;
-    res.status(200).render('home', {
+    res.status(covidaResponses.OK).render('home', {
         username: username,
         isNotAuth: isNotAuth
     })
 })
 
 app.get('/account', function(req, res) {
-    fetch(`http://localhost:8080/api/groups/owner/${req.user.body[0].username}`)
-        .then(response => response.json())
-        .then(groups => {
-            if(groups.error) {
-                Promise.reject(groups.error)
-            } else {
-                if(!req.user) {
-                    Promise.reject({ status: 401 })
+    if(!req.user) {
+        error({ status: covidaResponses.UNAUTHENTICATED, body: covidaResponses.UNAUTHENTICATED_MSG }, req, res)
+    } else {
+        fetch(`http://localhost:8080/api/groups/owner/${req.user.body[0].username}`)
+            .then(response => response.json())
+            .then(groups => {
+                if(groups.error) {
+                    res.status(covidaResponses.OK).render('account', {
+                        username: req.user.body[0].username,
+                        groups_length: 0,
+                        games_length: 0
+                    })
                 } else {
                     let gamesCounter = null;
                     groups.map(g => gamesCounter = gamesCounter + g.games.length)
-                    res.status(200).render('account', {
+                    res.status(covidaResponses.OK).render('account', {
                         username: req.user.body[0].username,
                         groups_length: groups.length,
                         games_length: gamesCounter
                     })
                 }
-            }
-        })
-        .catch(error => {
-            if(error.status === 404) {
-                res.status(200).render('account', {
-                    username: req.user.body[0].username,
-                    groups_length: 0,
-                    games_length: 0
-                })
-            } else {
-                error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res);
-            }            
-        })
+            })
+            .catch(error => error(error, req, res))
+    }
 })
 
 app.get('/editGroup/:group_id/:group_name', function(req, res) {
     if(req.user) {
-        res.status(200).render('editGroup', {
+        res.status(covidaResponses.OK).render('editGroup', {
             username: req.user.body[0].username,
             name: req.params.group_name,
             id: req.params.group_id
         });
     } else {
-        error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res);
+        error({ status: covidaResponses.UNAUTHENTICATED, body: covidaResponses.UNAUTHENTICATED_MSG }, req, res);
     }
 })
 
 app.get('/searchGame/:group_name/:group_id', function(req, res) {
     if(req.user) {
-        res.status(200).render('searchGame', {
+        res.status(covidaResponses.OK).render('searchGame', {
             username: req.user.body[0].username,
             name: req.params.group_name,
             id: req.params.group_id
         });
     } else {
-        error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res);
+        error({ status: covidaResponses.UNAUTHENTICATED, body: covidaResponses.UNAUTHENTICATED_MSG }, req, res);
     }
 })
 
 app.get('/signIn', function(req, res) {
-    res.status(200).render('sign-in');
+    res.status(covidaResponses.OK).render('sign-in');
 })
 
 app.get('/signUp', function(req, res) {
-    res.status(200).render('sign-up');
+    res.status(covidaResponses.OK).render('sign-up');
 })
 
 app.get('/logout', function(req, res) {
