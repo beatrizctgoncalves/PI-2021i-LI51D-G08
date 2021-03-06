@@ -1,6 +1,7 @@
 'use strict'
 
-const express = require('express')
+const express = require('express');
+const covidaResponses = require('./covida-responses');
 
 module.exports = function(services) {
     if (!services) {
@@ -82,9 +83,16 @@ module.exports = function(services) {
                             groups: groups.body,
                             username: username
                         }))
-                })
+                        .catch(err => {
+                            if(err.status == covidaResponses.NOT_FOUND)  {
+                                res.redirect('/account')
+                            }else{
+                                error(err, req, res)
+                            }    
+                        })
+                    })
                 .catch(err => error(err, req, res))
-        }
+            }
     }
 
     function getGroups(req, res) { //Implementation of the route to get all groups
