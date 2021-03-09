@@ -31,13 +31,7 @@ module.exports = {
         .then(body => {
             if(body.length > 1) return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.GAME_NOT_FOUND_MSG);
             else {
-                return body.map(e => ({
-                    "id": e.id,
-                    "name": e.name,
-                    "summary": e.summary,
-                    "total_rating": e.total_rating,
-                    "url": e.url
-                }));
+                return body[0]
             }
         })
         .catch(error => {

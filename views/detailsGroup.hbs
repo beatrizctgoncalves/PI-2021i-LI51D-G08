@@ -26,7 +26,7 @@
             <div class="navbar-nav" id="navBarLinks">
                <div class="form-inline">
                   <input id="searchForm" class="form-control mr-sm-2" type="search" placeholder="Search">
-                  <button id="searchButton" class="btn btn-primary">
+                  <button id="searchButton" value={{id}} class="btn btn-primary">
                      <i class="fas fa-search"></i>
                   </button>
                </div>
@@ -41,7 +41,7 @@
    <hr>
 
     <!-- Page Content -->
-    <h1>{{name}}'s Details</h1>
+    <h1>Details of {{name}}</h1>
     <div class="col-lg-6 offset-lg-3">
         <div class="card text-center">
             <div class="card-header bg-primary">
@@ -90,16 +90,20 @@
         <div class = "col text-center">
             <p class="card-text text-white">Want to see the best Games you have in this Group?</p><br>
         </div>
-        <div class="form-group row">
-            <div class = "col text-center">
-                <input type="text" class="form-control" id="minimum" placeholder="Rating Minimum" required>
-            </div>
-            <div class = "col text-center">
-                <input type="text" class="form-control" id="maximum" placeholder="Rating Maximum" required>
-            </div>
-        </div>
-        <div class = "col text-center">
-            <button id="getRatingsButton" class="btn btn-primary" value={{id}}>Get the Games with the best rating!</button>
+        <div class="card text-center">
+            <form class="box" action="http://localhost:8080/site/groups/{{id}}/games" method="GET">
+                <label for="min" class="col-sm-2 col-form-label">Minimum</label>
+                <div class="col-lg-6 offset-lg-3">
+                    <input type="number" min="0" max="100" class="form-control" id="min" name="min" placeholder="Rating Minimum" required>
+                </div>
+                <label for="max" class="col-sm-2 col-form-label">Maximum</label>
+                <div class="col-lg-6 offset-lg-3">
+                    <input type="number" min="0" max="100" class="form-control" id="max" name="max" placeholder="Rating Maximum" required>
+                </div>
+                <div class="col text-center">
+                    <input type="submit" name="" class="btn btn-primary" value="Search" href="#">
+                </div>
+            </form>
         </div>
     </div>
     <div class = "col text-center">
@@ -107,28 +111,10 @@
     </div>        
 
     <script>
-        const getRatingsButton = document.querySelector('#getRatingsButton');
-        const minimum = document.getElementById("minimum");
-        const maximum = document.getElementById("maximum");
-        getRatingsButton.onclick= () => 
-        {
-            const minimumValue = minimum.value;
-            if (minimumValue.length === 0) {
-                alert('Please insert a Minimum Value!');
-                return;
-            }
-            const maximumValue = maximum.value;
-            if (maximumValue.length === 0) {
-                alert('Please insert a Maximum Value!');
-                return;
-            }
-            location.href = `http://localhost:8080/site/groups/${getRatingsButton.value}/games?min=${minimumValue}&max=${maximumValue}`
-        }
-
         document.getElementById("searchButton").onclick = () => {
-            let userInput = document.getElementById("searchForm").value
-            if(userInput) {
-                let result = "http://localhost:8080/site/games/name/".concat(userInput)
+            let search = document.getElementById("searchForm").value
+            if(search) {
+                let result = `http://localhost:8080/site/toAdd/groups/${document.getElementById("searchButton").value}/games/${search}`
                 location.href = result
             } else {
                 alert("To search for a Game you need to insert a name!")

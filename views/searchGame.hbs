@@ -26,7 +26,7 @@
                     <div class="navbar-nav" id="navBarLinks">
                     <div class="form-inline">
                         <input id="searchForm" class="form-control mr-sm-2" type="search" placeholder="Search">
-                        <button id="searchButton" class="btn btn-primary">
+                        <button id="searchButton" value={{id}} class="btn btn-primary">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
@@ -66,9 +66,9 @@
             }
 
             document.getElementById("searchButton").onclick = () => {
-                let userInput = document.getElementById("searchForm").value
-                if(userInput) {
-                    let result = "http://localhost:8080/site/games/name/".concat(userInput)
+                let search = document.getElementById("searchForm").value
+                if(search) {
+                    let result = `http://localhost:8080/site/toAdd/groups/${document.getElementById("searchButton").value}/games/${search}`
                     location.href = result
                 } else {
                     alert("To search for a Game you need to insert a name!")
