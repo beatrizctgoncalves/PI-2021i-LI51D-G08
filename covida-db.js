@@ -137,12 +137,12 @@ module.exports = {
                 "inline": "ctx._source.games.add(params.games)",
                 "params": {
                     "games": {
-                        "id": game[0].id,
-                        "name": game[0].name,
-                        "summary": game[0].summary,
-                        "total_rating": game[0].total_rating,
-                        "url": game[0].url,
-                        "urlImage": game[0].urlImage
+                        "id": game.id,
+                        "name": game.name,
+                        "summary": game.summary,
+                        "total_rating": game.total_rating,
+                        "url": game.url,
+                        "urlImage": game.urlImage
                     }
                 }
             }
@@ -196,7 +196,7 @@ module.exports = {
         .then(body => {
             if(body.hits) {
                 if(body.hits.hits.length) {
-                    return body.hits.hits.map(hit => hit._source);
+                    return body.hits.hits.map(hit => hit._source)[0];
                 } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.USERNAME_USER_MSG);
             } else return covidaResponses.setError(covidaResponses.NOT_FOUND, covidaResponses.USERNAME_USER_MSG);
         })

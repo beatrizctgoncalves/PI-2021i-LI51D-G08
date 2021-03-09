@@ -1,7 +1,5 @@
 'use strict'
 
-const { request } = require("express")
-
 function services(data, db, covidaResponses) {
     const serv = {
         
@@ -14,13 +12,13 @@ function services(data, db, covidaResponses) {
                 )
             }
             return data.getSpecificGame(game_id)
-            .then(gamesObj => {
+            .then(gameObj => {
                 return data.getImage(game_id)
                 .then(urlImage => {
-                    gamesObj[0].urlImage = urlImage; //get image
+                    gameObj.urlImage = urlImage; //get image
                     return covidaResponses.setSuccessToList(
                         covidaResponses.OK,
-                        gamesObj
+                        gameObj
                     )
                 })
             })
@@ -60,7 +58,7 @@ function services(data, db, covidaResponses) {
             const owner = request.body.owner;
 
             var regExp = /[a-zA-Z]/g;
-            if(!regExp.test(group_name)) {  //verify if group_name has a string
+            if(!regExp.test(group_name) || !group_desc || !owner) {  //verify if group_name has a string
                 return covidaResponses.setError(
                     covidaResponses.BAD_REQUEST,
                     covidaResponses.BAD_REQUEST_MSG
@@ -149,20 +147,20 @@ function services(data, db, covidaResponses) {
         //Implementation of the route to add a game by name to a specific group which accesses to the database
         addGameToGroup: function(game_id, group_id, index) { //save just game id and name
             return data.getSpecificGame(game_id) //check if the game exists
-                .then(gamesObj => {
-                    return data.getImage(game_id)
-                        .then(urlImage => {
-                            gamesObj[0].urlImage = urlImage; //get image
-                            return db.getGroupById(group_id) //check if the group exists
-                                .then(groupObj => {
-                                    const gameExists = groupObj.games.findIndex(g => g.id === parseInt(game_id))
-                                    if(gameExists != -1) {  //check if the game already exists in the group
-                                        return covidaResponses.setError(
-                                            covidaResponses.FORBIDDEN,
-                                            covidaResponses.FORBIDDEN_GAME_MSG
-                                        )
-                                    } else {
-                                        return db.addGameToGroup(gamesObj, group_id) //add game
+                .then(gameObj => {
+                    return db.getGroupById(group_id) //check if the group exists
+                        .then(groupObj => {
+                            const gameExists = groupObj.games.findIndex(g => g.id === parseInt(game_id))
+                            if(gameExists != -1) {  //check if the game already exists in the group
+                                return covidaResponses.setError(
+                                    covidaResponses.FORBIDDEN,
+                                    covidaResponses.FORBIDDEN_GAME_MSG
+                                )
+                            } else {
+                                return data.getImage(game_id)
+                                    .then(urlImage => {
+                                        gameObj.urlImage = urlImage; //get image
+                                        return db.addGameToGroup(gameObj, group_id) //add game
                                             .then(finalObj => {
                                                 return covidaResponses.setSuccessToUri(
                                                     covidaResponses.OK,
@@ -171,8 +169,8 @@ function services(data, db, covidaResponses) {
                                                     finalObj
                                                 )   
                                             })
-                                    }
-                                })
+                                    })
+                            }
                         })
                 })
         },
@@ -189,11 +187,11 @@ function services(data, db, covidaResponses) {
                     const newObj = groupObj.games.map(g => {
                         return data.getSpecificGame(g.id)
                             .then(gameResult => {
-                                if(gameResult[0].total_rating > min && gameResult[0].total_rating < max) {
+                                if(gameResult.total_rating > min && gameResult.total_rating < max) {
                                     return data.getImage(g.id)
                                         .then(urlImage => {
-                                            gameResult[0].urlImage = urlImage; //get image
-                                            gamesArray.push(gameResult[0]);
+                                            gameResult.urlImage = urlImage; //get image
+                                            gamesArray.push(gameResult);
                                             return;
                                         })
                                 } else {
@@ -255,22 +253,22 @@ function services(data, db, covidaResponses) {
                             covidaResponses.FORBIDDEN,
                             covidaResponses.FORBIDDEN_USER_MSG
                         )
-                })
-                .catch(error => {
-                    if(error.status == covidaResponses.FORBIDDEN || error.status == covidaResponses.BAD_REQUEST || error.status == covidaResponses.DB_ERROR) {
-                        return covidaResponses.setError(error.status, error.body);
-                    } else {
-                        return db.createUser(username, password)
-                            .then(obj => {
-                                return covidaResponses.setSuccessToUri( //send the uri with id
-                                    covidaResponses.CREATED,
-                                    index,
-                                    'users/',
-                                    obj
-                                )
-                            })
-                    }
-                })
+                    })
+                    .catch(error => {
+                        if(error.status == covidaResponses.FORBIDDEN || error.status == covidaResponses.BAD_REQUEST || error.status == covidaResponses.DB_ERROR) {
+                            return covidaResponses.setError(error.status, error.body);
+                        } else {
+                            return db.createUser(username, password)
+                                .then(obj => {
+                                    return covidaResponses.setSuccessToUri( //send the uri with id
+                                        covidaResponses.CREATED,
+                                        index,
+                                        'users/',
+                                        obj
+                                    )
+                                })
+                        }
+                    })
             }             
         },
 
@@ -302,7 +300,7 @@ function services(data, db, covidaResponses) {
             const password = requestBody.password;
             return this.getUserByName(username)
                 .then(foundUser => {
-                    if(foundUser.body[0].password != password) {
+                    if(foundUser.body.password != password) {
                         return covidaResponses.setError(
                             covidaResponses.NOT_FOUND,
                             covidaResponses.PASSWORD_USER_MSG
@@ -310,7 +308,7 @@ function services(data, db, covidaResponses) {
                     } else {
                         //User Login
                         return new Promise((resolve, reject) => {
-                            request.login(foundUser.body[0], (err, result) => {
+                            request.login(foundUser.body, (err, result) => {
                                 if (err) {        
                                     reject(err);
                                 } else {
@@ -327,7 +325,7 @@ function services(data, db, covidaResponses) {
                     }
                 })
         }
-    };
+    }
     return serv;
 }
 

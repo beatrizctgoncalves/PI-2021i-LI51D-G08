@@ -41,7 +41,7 @@
     <hr>
 
     <!-- Page Content -->
-    <h1>Choose a Game to Add</h1>
+    <h1>Search Results</h1>
     <div class="search">
         <div class="card-columns card-popular m-3">
             {{#each games}}
@@ -52,8 +52,8 @@
                     <div class="card-body text-center">
                         <a href={{url}}>{{name}}</a>
                         <div class="card-body text-center">
-                            <form class="float-right text-dark" action="/site/add/groups/{{../group_id}}/games/{{id}}" method="POST">
-                                <input type="image" src="http://localhost:8080/plus.png" alt="" width="20" height="20">
+                            <form class="float-right text-dark" action="/site/groups/{{../id}}/games/{{id}}" method="POST">
+                                <input type="image" src="http://localhost:8080/minus.png" alt="" width="20" height="20">
                             </form>
                         </div>
                         <p class="card-text">{{summary}}</p>

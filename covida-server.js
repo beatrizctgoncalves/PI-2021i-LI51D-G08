@@ -36,7 +36,7 @@ app.get('/', function(req, res) {
     let isNotAuth = false;
     let username = "";
     if(!req.user) isNotAuth = true;
-    else username = req.user.body[0].username;
+    else username = req.user.body.username;
     res.status(covidaResponses.OK).render('home', {
         username: username,
         isNotAuth: isNotAuth
@@ -47,12 +47,12 @@ app.get('/account', function(req, res) {
     if(!req.user) {
         error({ status: covidaResponses.UNAUTHENTICATED, body: covidaResponses.UNAUTHENTICATED_MSG }, req, res)
     } else {
-        fetch(`http://localhost:8080/api/groups/owner/${req.user.body[0].username}`)
+        fetch(`http://localhost:8080/api/groups/owner/${req.user.body.username}`)
             .then(response => response.json())
             .then(groups => {
                 if(groups.error) {
                     res.status(covidaResponses.OK).render('account', {
-                        username: req.user.body[0].username,
+                        username: req.user.body.username,
                         groups_length: 0,
                         games_length: 0
                     })
@@ -60,7 +60,7 @@ app.get('/account', function(req, res) {
                     let gamesCounter = null;
                     groups.map(g => gamesCounter = gamesCounter + g.games.length)
                     res.status(covidaResponses.OK).render('account', {
-                        username: req.user.body[0].username,
+                        username: req.user.body.username,
                         groups_length: groups.length,
                         games_length: gamesCounter
                     })
@@ -73,7 +73,7 @@ app.get('/account', function(req, res) {
 app.get('/editGroup/:group_id/:group_name', function(req, res) {
     if(req.user) {
         res.status(covidaResponses.OK).render('editGroup', {
-            username: req.user.body[0].username,
+            username: req.user.body.username,
             name: req.params.group_name,
             id: req.params.group_id
         });
@@ -85,7 +85,7 @@ app.get('/editGroup/:group_id/:group_name', function(req, res) {
 app.get('/searchGame/:group_name/:group_id', function(req, res) {
     if(req.user) {
         res.status(covidaResponses.OK).render('searchGame', {
-            username: req.user.body[0].username,
+            username: req.user.body.username,
             name: req.params.group_name,
             id: req.params.group_id
         });
@@ -117,7 +117,7 @@ function error(err, req, res) {
     let isNotAuth = false;
     let username = "";
     if(!req.user) isNotAuth = true;
-    else username = req.user.body[0].username;
+    else username = req.user.body.username;
     res.status(status).render('error', {
         status: err.status,
         body: err.body,

@@ -1,7 +1,6 @@
 'use strict'
 
 const express = require('express');
-const covidaResponses = require('./covida-responses');
 
 module.exports = function(services) {
     if (!services) {
@@ -30,7 +29,7 @@ module.exports = function(services) {
         let isNotAuth = false;
         let username = "";
         if(!req.user) isNotAuth = true;
-        else username = req.user.body[0].username;
+        else username = req.user.body.username;
         services.searchGamesByName(req.params.game_name)
             .then(games => res.status(games.status).render('search', { 
                 games: games.body,
@@ -45,9 +44,9 @@ module.exports = function(services) {
         const group_id = req.params.group_id
         if(!req.user) error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res)
         else {
-            const username = req.user.body[0].username
+            const username = req.user.body.username
             services.searchGamesByName(req.params.game_name)
-                .then(games => res.status(games.status).render('addGame', { games: games.body, group_id: group_id, username: username}))
+                .then(games => res.status(games.status).render('addGame', { games: games.body, group_id: group_id, username: username }))
                 .catch(err => error(err, req, res))
         }
     }
@@ -55,19 +54,7 @@ module.exports = function(services) {
     function createGroup(req, res) { //Implementation of the route to create a group
         console.log("Create Group")
         services.createGroup(req, 'site/')
-            .then(groupUrl => services.getGroupById(groupUrl.body.split('/groups/')[1]))
-            .then(group => {
-                let hasNoGames = true
-                if(group.body.games.length) hasNoGames = false
-                res.status(group.status).render('detailsGroup', {
-                    name: group.body.name,
-                    id: group.body.id,
-                    games: group.body.games,
-                    desc: group.body.desc,
-                    username: group.body.owner,
-                    hasNoGames: hasNoGames
-                })
-            })
+            .then(groupUrl => res.redirect(`http://localhost:8080/site/groups/${groupUrl.body.split('/groups/')[1]}`))
             .catch(err => error(err, req, res))
     }
 
@@ -75,24 +62,11 @@ module.exports = function(services) {
         console.log("Remove Group by ID")
         if(!req.user) error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res)
         else {
-            const username = req.user.body[0].username;
+            const username = req.user.body.username;
             services.removeGroup(req.params.group_id, 'site/')
-                .then(() => {
-                    services.getGroups(username)
-                        .then(groups => res.status(groups.status).render('groups', { 
-                            groups: groups.body,
-                            username: username
-                        }))
-                        .catch(err => {
-                            if(err.status == covidaResponses.NOT_FOUND)  {
-                                res.redirect('/account')
-                            }else{
-                                error(err, req, res)
-                            }    
-                        })
-                    })
+                .then(() => res.redirect(`http://localhost:8080/site/groups/owner/${username}`))
                 .catch(err => error(err, req, res))
-            }
+        }
     }
 
     function getGroups(req, res) { //Implementation of the route to get all groups
@@ -127,30 +101,19 @@ module.exports = function(services) {
         console.log("Edit Group")
         const id = req.params.group_id
         services.editGroup(id, req.body.name, req.body.desc, 'site/')
-            .then(() => services.getGroupById(id))
-            .then(group => {
-                let hasNoGames = true
-                if(group.body.games.length) hasNoGames = false
-                res.status(group.status).render('detailsGroup', {
-                    name: group.body.name,
-                    id: group.body.id,
-                    games: group.body.games,
-                    desc: group.body.desc,
-                    username: group.body.owner,
-                    hasNoGames: hasNoGames
-                })
-            })
+            .then(groupUrl => res.redirect(`http://localhost:8080/site/groups/${groupUrl.body.split('/groups/')[1]}`))
             .catch(err => error(err, req, res))
     }
 
-    function getRatingsFromGames(req,res) { //Implementation of the route to get a game between the given interval of values
+    function getRatingsFromGames(req, res) { //Implementation of the route to get a game between the given interval of values
         console.log("Get Ratings From Games From Group")
         if(!req.user) error({ status: 401, body: "You are unauthenticated, please Sign In" }, req, res)
         else {
             let isNotAuth = false;
-            const username = req.user.body[0].username
+            const username = req.user.body.username
             services.getRatingsFromGames(req.params.group_id, req.query.max, req.query.min)
-                .then(games => res.status(games.status).render('search', {
+                .then(games => res.status(games.status).render('searchAndDelete', {
+                    id: req.params.group_id,
                     games: games.body,
                     username: username,
                     isNotAuth: isNotAuth
@@ -161,21 +124,9 @@ module.exports = function(services) {
 
     function addGameToGroup(req, res) { //Implementation of the route to add a game by id to a specific group
         console.log("Add Game to Group")      
-        const id = req.params.group_id;  
+        const id = req.params.group_id;
         services.addGameToGroup(req.params.game_id, id, 'site/')
-            .then(() => services.getGroupById(id))
-            .then(group => {
-                let hasNoGames = true
-                if(group.body.games.length) hasNoGames = false
-                res.status(group.status).render('detailsGroup', {
-                    name: group.body.name,
-                    id: group.body.id,
-                    games: group.body.games,
-                    desc: group.body.desc,
-                    username: group.body.owner,
-                    hasNoGames: hasNoGames
-                })
-            })
+            .then(groupUrl => res.redirect(`http://localhost:8080/site/groups/${groupUrl.body.split('/groups/')[1]}`))
             .catch(err => error(err, req, res))
     }
 
@@ -183,19 +134,7 @@ module.exports = function(services) {
         console.log("Remove Game By ID")
         const id = req.params.group_id;
         services.removeGame(id, req.params.game_id, 'site/')
-            .then(() => services.getGroupById(id))
-            .then(group => {
-                let hasNoGames = true
-                if(group.body.games.length) hasNoGames = false
-                res.status(group.status).render('detailsGroup', {
-                    name: group.body.name,
-                    id: group.body.id,
-                    games: group.body.games,
-                    desc: group.body.desc,
-                    username: group.body.owner,
-                    hasNoGames: hasNoGames
-                })
-            })
+            .then(groupUrl => res.redirect(`http://localhost:8080/site/groups/${groupUrl.body.split('/groups/')[1]}`))
             .catch(err => error(err, req, res))
     }
 }
@@ -205,7 +144,7 @@ function error(err, req, res) {
     let isNotAuth = false;
     let username = "";
     if(!req.user) isNotAuth = true;
-    else username = req.user.body[0].username;
+    else username = req.user.body.username;
     res.status(status).render('error', {
         status: err.status,
         body: err.body,
